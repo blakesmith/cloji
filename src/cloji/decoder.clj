@@ -6,4 +6,4 @@
   (as-string (read-bytes input-stream 32)))
 
 (defn decode-mobi [input-stream]
-  {:palmdoc_header (decode-palmdoc-header input-stream)})
+  {:name (decode-palmdoc-header input-stream)})
