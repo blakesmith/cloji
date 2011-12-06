@@ -7,7 +7,7 @@
 (defn byte-array-int [coll]
   (reduce +
     (map (fn [b i]
-           (bit-shift-left (bit-and 0x000000FF b) (* i 8)))
+           (bit-shift-left b (* i 8)))
          coll (iterate dec (- (count coll) 1)))))
 
 
