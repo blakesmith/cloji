@@ -10,4 +10,6 @@
 
 (deftest decode-mobi-impl
   (testing "palmdoc header"
-    (is (= "The_Adventur-herlock_Holmes" (:name no-images)))))
+    (is (= "The_Adventur-herlock_Holmes" (:name no-images))))
+  (testing "attributes"
+    (is (= [] (:attributes no-images)))))
