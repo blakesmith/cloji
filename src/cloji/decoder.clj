@@ -1,12 +1,11 @@
 (ns cloji.decoder
   (:use [cloji.core]))
 
-(defn decode-palmdoc-header [input-stream]
-  (.seek input-stream 0)
-  (as-string (read-bytes input-stream 32)))
+(defn decode-palmdoc-name [coll]
+  (as-string coll))
 
-(defn decode-palmdoc-attributes [input-stream]
-  (bitfield (byte-array-int (read-bytes input-stream 2))
+(defn decode-palmdoc-attributes [coll]
+  (bitfield (byte-array-int coll)
             {:res-db 0x0001
              :read-only 0x0002
              :appinfo-dirty 0x0004
@@ -15,6 +14,12 @@
              :reset 0x0020
              :no-copy 0x0040}))
 
+(def mobi-attributes
+  [[:name 32 decode-palmdoc-name]
+   [:attributes 2 decode-palmdoc-attributes]])
+
 (defn decode-mobi [input-stream]
-  {:name (decode-palmdoc-header input-stream)
-   :attributes (decode-palmdoc-attributes input-stream)})
+  (into {}
+    (for [[attr-name len f] mobi-attributes]
+      [attr-name (f (read-bytes input-stream len))])))
+
