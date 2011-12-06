@@ -1,8 +1,5 @@
 (ns cloji.core
-  (:import [java.io RandomAccessFile]))
-
-(defn as-string [coll]
-  (apply str (map char (filter #(not (= 0 %)) coll))))
+  (:import [java.util Date]))
 
 (defn byte-array-int [coll]
   (reduce +
@@ -23,4 +20,10 @@
           (if (= -1 next-byte)
             coll
             (conj coll next-byte))) (inc bytes-read)))))
+
+(defn as-string [coll]
+  (apply str (map char (filter #(not (= 0 %)) coll))))
+
+(defn as-date [coll]
+  (doto (new Date) (.setTime (* 1000 (byte-array-int coll)))))
 
