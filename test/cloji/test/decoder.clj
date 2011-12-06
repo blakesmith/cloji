@@ -30,4 +30,6 @@
   (testing "type"
     (is (= "BOOK" (:type no-images))))
   (testing "creator"
-    (is (= "MOBI" (:creator no-images)))))
+    (is (= "MOBI" (:creator no-images))))
+  (testing "unique seed id"
+    (is (= 379 (:seed-id no-images)))))
