@@ -12,4 +12,6 @@
   (testing "palmdoc header"
     (is (= "The_Adventur-herlock_Holmes" (:name no-images))))
   (testing "attributes"
-    (is (= [] (:attributes no-images)))))
+    (is (= [] (:attributes no-images))))
+  (testing "version"
+    (is (= 0 (:version no-images)))))

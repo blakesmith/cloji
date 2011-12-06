@@ -1,9 +1,6 @@
 (ns cloji.decoder
   (:use [cloji.core]))
 
-(defn decode-palmdoc-name [coll]
-  (as-string coll))
-
 (defn decode-palmdoc-attributes [coll]
   (bitfield (byte-array-int coll)
             {:res-db 0x0001
@@ -15,8 +12,9 @@
              :no-copy 0x0040}))
 
 (def mobi-attributes
-  [[:name 32 decode-palmdoc-name]
-   [:attributes 2 decode-palmdoc-attributes]])
+  [[:name 32 as-string]
+   [:attributes 2 decode-palmdoc-attributes]
+   [:version 2 byte-array-int]])
 
 (defn decode-mobi [input-stream]
   (into {}
