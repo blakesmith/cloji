@@ -6,8 +6,8 @@
 (defn mobi-fixture [name]
   (RandomAccessFile. (str "fixtures/" name) "r"))
 
-(def no-images (mobi-fixture "no_images.mobi"))
+(def no-images (decode-mobi (mobi-fixture "no_images.mobi")))
 
 (deftest decode-mobi-impl
   (testing "palmdoc header"
-    (is (= "The_Adventur-herlock_Holmes" (:name (decode-mobi no-images))))))
+    (is (= "The_Adventur-herlock_Holmes" (:name no-images)))))
