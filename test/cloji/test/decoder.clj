@@ -16,4 +16,8 @@
   (testing "version"
     (is (= 0 (:version no-images))))
   (testing "creation date"
-    (is (= 1303171212000 (.getTime (:creation-date no-images))))))
+    (is (= 1303171212000 (.getTime (:creation-date no-images)))))
+  (testing "modification date"
+    (is (= 1303171212000 (.getTime (:modification-date no-images)))))
+  (testing "backup date"
+    (is (= nil (:backup-date no-images)))))

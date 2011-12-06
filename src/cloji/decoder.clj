@@ -15,7 +15,9 @@
   [[:name 32 as-string]
    [:attributes 2 decode-palmdoc-attributes]
    [:version 2 byte-array-int]
-   [:creation-date 4 as-date]])
+   [:creation-date 4 as-date]
+   [:modification-date 4 as-date]
+   [:backup-date 4 as-date]])
 
 (defn decode-mobi [input-stream]
   (into {}

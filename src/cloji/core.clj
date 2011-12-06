@@ -25,5 +25,7 @@
   (apply str (map char (filter #(not (= 0 %)) coll))))
 
 (defn as-date [coll]
-  (doto (new Date) (.setTime (* 1000 (byte-array-int coll)))))
+  (let [t (byte-array-int coll)]
+    (when (not (= 0 t))
+      (doto (new Date) (.setTime (* 1000 t))))))
 
