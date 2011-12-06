@@ -20,4 +20,14 @@
   (testing "modification date"
     (is (= 1303171212000 (.getTime (:modification-date no-images)))))
   (testing "backup date"
-    (is (= nil (:backup-date no-images)))))
+    (is (= nil (:backup-date no-images))))
+  (testing "modification number"
+    (is (= 0 (:modification-number no-images))))
+  (testing "appinfo offset"
+    (is (= 0 (:appinfo-offset no-images))))
+  (testing "sortinfo offset"
+    (is (= 0 (:sortinfo-offset no-images))))
+  (testing "type"
+    (is (= "BOOK" (:type no-images))))
+  (testing "creator"
+    (is (= "MOBI" (:creator no-images)))))

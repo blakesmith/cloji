@@ -17,7 +17,12 @@
    [:version 2 byte-array-int]
    [:creation-date 4 as-date]
    [:modification-date 4 as-date]
-   [:backup-date 4 as-date]])
+   [:backup-date 4 as-date]
+   [:modification-number 4 byte-array-int]
+   [:appinfo-offset 4 byte-array-int]
+   [:sortinfo-offset 4 byte-array-int]
+   [:type 4 as-string]
+   [:creator 4 as-string]])
 
 (defn decode-mobi [input-stream]
   (into {}
