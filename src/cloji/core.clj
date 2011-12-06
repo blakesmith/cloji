@@ -1,6 +1,9 @@
 (ns cloji.core
   (:import [java.io RandomAccessFile]))
 
+(defn as-string [coll]
+  (apply str (map char (filter #(not (= 0 %)) coll))))
+
 (defn read-bytes [input-stream n]
   (loop [coll [] bytes-read 0]
     (let [next-byte (.read input-stream)]
