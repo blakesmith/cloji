@@ -23,7 +23,9 @@
    [:sortinfo-offset 4 byte-array-int]
    [:type 4 as-string]
    [:creator 4 as-string]
-   [:seed-id 4 byte-array-int]])
+   [:seed-id 4 byte-array-int]
+   [:next-record-id 4 byte-array-int]
+   [:record-count 2 byte-array-int]])
 
 (defn decode-mobi [input-stream]
   (into {}

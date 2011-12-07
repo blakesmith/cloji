@@ -32,4 +32,8 @@
   (testing "creator"
     (is (= "MOBI" (:creator no-images))))
   (testing "unique seed id"
-    (is (= 379 (:seed-id no-images)))))
+    (is (= 379 (:seed-id no-images))))
+  (testing "next record list id"
+    (is (= 0 (:next-record-id no-images))))
+  (testing "record count"
+    (is (= 190 (:record-count no-images)))))
