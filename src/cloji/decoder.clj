@@ -1,6 +1,11 @@
 (ns cloji.decoder
   (:use [cloji.core]))
 
+(defmacro with-padding [input-stream byte-padding & body]
+  `(let [value# ~@body]
+     (.skipBytes ~input-stream ~byte-padding)
+     value#))
+
 (defn decode-palmdoc-attributes [coll]
   (bitfield (byte-array-int coll)
             {:res-db 0x0001
@@ -11,7 +16,18 @@
              :reset 0x0020
              :no-copy 0x0040}))
 
-(def mobi-attributes
+(defn decode-attributes [attrs input-stream]
+  (into {}
+    (for [[attr-name len f] attrs]
+      [attr-name (f (read-bytes input-stream len))])))
+
+(defn decode-record-info [attrs x input-stream]
+  (map (fn [_]
+    (with-padding input-stream 2
+      (decode-attributes attrs input-stream))) (range x)))
+
+
+(def pdb-attributes
   [[:name 32 as-string]
    [:attributes 2 decode-palmdoc-attributes]
    [:version 2 byte-array-int]
@@ -27,8 +43,16 @@
    [:next-record-id 4 byte-array-int]
    [:record-count 2 byte-array-int]])
 
+(def record-info-attributes
+  [[:data-offset 4 byte-array-int]])
+
+(def top-level-attributes
+  [pdb-attributes])
+
 (defn decode-mobi [input-stream]
-  (into {}
-    (for [[attr-name len f] mobi-attributes]
-      [attr-name (f (read-bytes input-stream len))])))
+  (let [pdb-header (decode-attributes
+              (first top-level-attributes) input-stream)
+        record-count (:record-count pdb-header)]
+    (assoc pdb-header :record-list(decode-record-info
+                        record-info-attributes record-count input-stream))))
 
