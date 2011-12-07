@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)http://wiki.mobileread.com/wiki/PDB#Palm_Database_Format -->
+<html lang="en" dir="ltr" class="client-chrome client-chrome-1 client-webkit client-mac"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<title>MobileRead Wiki - PDB</title>
+<meta name="generator" content="MediaWiki 1.17.0">
+<link rel="alternate" type="application/x-wiki" title="Edit" href="http://wiki.mobileread.com/w/index.php?title=PDB&action=edit">
+<link rel="edit" title="Edit" href="http://wiki.mobileread.com/w/index.php?title=PDB&action=edit">
+<link rel="shortcut icon" href="http://wiki.mobileread.com/favicon.ico">
+<link rel="search" type="application/opensearchdescription+xml" href="http://wiki.mobileread.com/w/opensearch_desc.php" title="MobileRead (en)">
+<link rel="EditURI" type="application/rsd+xml" href="http://wiki.mobileread.com/w/api.php?action=rsd">
+<link title="Creative Commons" type="application/rdf+xml" href="http://wiki.mobileread.com/w/index.php?title=PDB&action=creativecommons" rel="meta">
+<link rel="copyright" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">
+<link rel="alternate" type="application/atom+xml" title="MobileRead Atom feed" href="http://wiki.mobileread.com/w/index.php?title=Special:RecentChanges&feed=atom">
+<link rel="stylesheet" href="http://wiki.mobileread.com/w/load.php?debug=false&lang=en&modules=mediawiki.legacy.commonPrint%2Cshared%7Cskins.vector&only=styles&skin=vector&*">
+<style type="text/css" media="all">.suggestions{overflow:hidden;position:absolute;top:0px;left:0px;width:0px;border:none;z-index:99;padding:0;margin:-1px -1px 0 0} html > body .suggestions{margin:-1px 0 0 0}.suggestions-special{position:relative;background-color:Window;font-size:0.8em;cursor:pointer;border:solid 1px #aaaaaa;padding:0;margin:0;margin-top:-2px;display:none;padding:0.25em 0.25em;line-height:1.25em}.suggestions-results{background-color:white;background-color:Window;font-size:0.8em;cursor:pointer;border:solid 1px #aaaaaa;padding:0;margin:0}.suggestions-result{color:black;color:WindowText;margin:0;line-height:1.5em;padding:0.01em 0.25em;text-align:left}.suggestions-result-current{background-color:#4C59A6;background-color:Highlight;color:white;color:HighlightText}.suggestions-special .special-label{font-size:0.8em;color:gray;text-align:left}.suggestions-special .special-query{color:black;font-style:italic;text-align:left}.suggestions-special .special-hover{background-color:silver}.suggestions-result-current .special-label,.suggestions-result-current .special-query{color:white;color:HighlightText}.autoellipsis-matched,.highlight{font-weight:bold}</style><meta name="ResourceLoaderDynamicStyles" content=""><link rel="stylesheet" href="http://wiki.mobileread.com/w/load.php?debug=false&lang=en&modules=site&only=styles&skin=vector&*">
+<link rel="stylesheet" href="http://wiki.mobileread.com/w/load.php?debug=false&lang=en&modules=site&only=styles&skin=vector&*">
+<link rel="stylesheet" href="http://wiki.mobileread.com/w/load.php?debug=false&lang=en&modules=site&only=styles&skin=vector&*">
+
+<script async="" type="text/javascript" src="./pdb-spec_files/gpt.js"></script><script src="./pdb-spec_files/quant.js" async="" type="text/javascript"></script><script type="text/javascript" async="" src="./pdb-spec_files/ga.js"></script><script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-65192-2']);
+_gaq.push(['_trackPageview']);
+(function() {
+	var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+ 
+<script type="text/javascript">
+  var _qevents = _qevents || [];
+
+  (function() {
+   var elem = document.createElement('script');
+
+   elem.src = (document.location.protocol == "https:" ? "https://secure" : "http://edge") + ".quantserve.com/quant.js";
+   elem.async = true;
+   elem.type = "text/javascript";
+   var scpt = document.getElementsByTagName('script')[0];
+   scpt.parentNode.insertBefore(elem, scpt);  
+  })();
+</script>
+
+<script type="text/javascript">
+var googletag = googletag || {};
+googletag.cmd = googletag.cmd || [];
+(function() {
+var gads = document.createElement('script');
+gads.async = true;
+gads.type = 'text/javascript';
+var useSSL = 'https:' == document.location.protocol;
+gads.src = (useSSL ? 'https:' : 'http:') + 
+'//www.googletagservices.com/tag/js/gpt.js';
+var node = document.getElementsByTagName('script')[0];
+node.parentNode.insertBefore(gads, node);
+})();
+</script>
+<!--test-->
+<script type="text/javascript">
+googletag.cmd.push(function() {
+googletag.defineSlot('/1019725/MRW-728Ad1', [728, 90], 'div-gpt-ad-1319669668549-3').addService(googletag.pubads());
+googletag.defineSlot('/1019725/MRW-300Ad1', [300, 250], 'div-gpt-ad-1319669668549-0').addService(googletag.pubads());
+googletag.enableServices();
+});
+</script>		
+<!--[if lt IE 7]><style type="text/css">body{behavior:url("/w/skins/vector/csshover.min.htc")}</style><![endif]--><script async="" type="text/javascript" src="./pdb-spec_files/google_ads_gpt.js"></script></head>
+<body class="mediawiki ltr ns-0 ns-subject page-PDB skin-vector">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<!-- content -->
+		<div id="content">
+			<a id="top"></a>
+			<div id="mw-js-message" style="display:none;"></div>
+			
+							<!-- MRW-728Ad1 -->
+				<div id="div-gpt-ad-1319669668549-3" style="width:728px; height:90px; padding-top:10px;">
+				<script type="text/javascript">
+					googletag.cmd.push(function() { googletag.display('div-gpt-ad-1319669668549-3'); });
+				</script>
+				<iframe id="google_ads_iframe_/1019725/MRW-728Ad1_0" name="google_ads_iframe_/1019725/MRW-728Ad1_0" width="728" height="90" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" style="border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-style: initial; border-color: initial; "></iframe><iframe id="google_ads_iframe_/1019725/MRW-728Ad1_0__hidden__" name="google_ads_iframe_/1019725/MRW-728Ad1_0__hidden__" width="0" height="0" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" style="border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-style: initial; border-color: initial; visibility: hidden; display: none; "></iframe></div>
+			
+			<!-- firstHeading -->
+			<h1 id="firstHeading" class="firstHeading">PDB</h1>
+			<!-- /firstHeading -->
+			<!-- bodyContent -->
+			<div id="bodyContent">
+				<!-- tagline -->
+				<div id="siteSub">From MobileRead</div>
+				<!-- /tagline -->
+				<!-- subtitle -->
+				<div id="contentSub"></div>
+				<!-- /subtitle -->
+																<!-- jumpto -->
+				<div id="jump-to-nav">
+					Jump to: <a href="http://wiki.mobileread.com/wiki/PDB#mw-head">navigation</a>,
+					<a href="http://wiki.mobileread.com/wiki/PDB#p-search">search</a>
+				</div>
+				<!-- /jumpto -->
+								<!-- bodytext -->
+				<p><a href="http://wiki.mobileread.com/wiki/PalmOS" title="PalmOS" class="mw-redirect">PalmOS</a> keeps all RAM storage in a database format. There is no file system in the RAM. When sync'd to a <a href="http://wiki.mobileread.com/wiki/PC" title="PC">PC</a> these databases will be saved in separate files and this is where the extension is added.  All <i>files</i> in device RAM must be in Palm Database format, whether programs or data.  The PDB files created for external storage are data files, which can contain arbitrary content.
+</p>
+<table id="toc" class="toc"><tbody><tr><td><div id="toctitle"><h2>Contents</h2> <span class="toctoggle">[<a id="togglelink" class="internal" href="http://wiki.mobileread.com/wiki/PDB#">hide</a>]</span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="http://wiki.mobileread.com/wiki/PDB#Intro_to_the_Database_format"><span class="tocnumber">1</span> <span class="toctext">Intro to the Database format</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="http://wiki.mobileread.com/wiki/PDB#Intro_to_PalmDOC"><span class="tocnumber">2</span> <span class="toctext">Intro to PalmDOC</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="http://wiki.mobileread.com/wiki/PDB#Intro_to_zTXT"><span class="tocnumber">3</span> <span class="toctext">Intro to zTXT</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="http://wiki.mobileread.com/wiki/PDB#Palm_Database_File_Code"><span class="tocnumber">4</span> <span class="toctext">Palm Database File Code</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="./pdb-spec_files/pdb-spec.html"><span class="tocnumber">5</span> <span class="toctext">Palm Database Format</span></a>
+<ul>
+<li class="toclevel-2 tocsection-6"><a href="http://wiki.mobileread.com/wiki/PDB#PDB_Times"><span class="tocnumber">5.1</span> <span class="toctext">PDB Times</span></a></li>
+</ul>
+</li>
+</ul>
+</td></tr></tbody></table>
+
+<h2><span class="mw-headline">Advertisement</span></h2> 
+<!-- MRW-300Ad1 -->
+<div id="div-gpt-ad-1319669668549-0" style="width:300px; height:250px;">
+<script type="text/javascript">
+googletag.cmd.push(function() { googletag.display('div-gpt-ad-1319669668549-0'); });
+</script>
+<iframe id="google_ads_iframe_/1019725/MRW-300Ad1_0" name="google_ads_iframe_/1019725/MRW-300Ad1_0" width="300" height="250" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" style="border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-style: initial; border-color: initial; "></iframe><iframe id="google_ads_iframe_/1019725/MRW-300Ad1_0__hidden__" name="google_ads_iframe_/1019725/MRW-300Ad1_0__hidden__" width="0" height="0" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" style="border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; border-style: initial; border-color: initial; visibility: hidden; display: none; "></iframe></div>
+<h2><span class="editsection">[<a href="http://wiki.mobileread.com/w/index.php?title=PDB&action=edit&section=1" title="Edit section: Intro to the Database format">edit</a>]</span> <span class="mw-headline" id="Intro_to_the_Database_format">Intro to the Database format</span></h2>
+<p>The first record of the database contains attribute information about the database, including the Creator ID, Type, Date Created, Date Modified, Launchable, database (book) name, and other data. Palm database files will generally have a .pdb extension but in some cases they may have a .prc extension (see <a href="http://wiki.mobileread.com/wiki/PRC" title="PRC">PRC</a>). The extension doesn't really matter on the Palm device so long as it is one of these two. The launcher will look inside the file to determine its type.
+</p><p>PalmOS programs are expected to have a unique four character "Creator" ID.  All data files used by a program will have the same Creator ID as the program that uses them.  PalmOS uses the Creator ID to know what data files are used by a program, and what program is used to open any particular data file.
+</p>
+<h2><span class="editsection">[<a href="http://wiki.mobileread.com/w/index.php?title=PDB&action=edit&section=2" title="Edit section: Intro to PalmDOC">edit</a>]</span> <span class="mw-headline" id="Intro_to_PalmDOC">Intro to PalmDOC</span></h2>
+<p>The default text file format on Palm devices is the <a href="http://wiki.mobileread.com/wiki/PalmDOC" title="PalmDOC">PalmDOC</a> file.  This format was originally used by Aportis for their Aportis Reader product.  It starts as a plain ASCII text file and is converted using a form of RLE compression to save space in RAM.  Available doc readers decompress the file on the fly as they display it.  The compression method is "asynchronous" -- it can be decompressed much faster than it can be compressed.  Most doc files are created on desktops and synced to the target device, as compressing <i>on</i> the Palm is slow.  RLE compression results in an approximate 40% reduction in file size.
+</p><p>Aportis went out of business years ago, and the Aportis Reader is no longer available, but the DOC format was reverse engineered and many reader products can view it.  Even reader applications with their own private format can generally also read this format. PalmDOC files have a Creator ID of REAd and a Type of TEXt. <a href="http://wiki.mobileread.com/wiki/TealDoc" title="TealDoc">TealDoc</a> also has a Type of TEXt and it is identical with PalmDOC.
+</p>
+<h2><span class="editsection">[<a href="http://wiki.mobileread.com/w/index.php?title=PDB&action=edit&section=3" title="Edit section: Intro to zTXT">edit</a>]</span> <span class="mw-headline" id="Intro_to_zTXT">Intro to zTXT</span></h2>
+<p>A newer plain text format for PalmOS is the <a href="http://wiki.mobileread.com/wiki/ZTXT" title="ZTXT">zTXT</a> file.  zTXT files also start as plain ASCII text files, but are then compressed with gzip compatible compression, for an average reduction of 70%.  Decompressing the files requires sysZlib.prc, a port of the Zlib library, implemented as a PalmOS shared library.  sysZlib is currently used by the <a href="http://wiki.mobileread.com/wiki/LionDoc" title="LionDoc">LionDoc</a>, <a href="http://wiki.mobileread.com/wiki/Palm_Fiction" title="Palm Fiction">Palm Fiction</a>, <a href="http://wiki.mobileread.com/wiki/Plucker" title="Plucker">Plucker</a>, and <a href="http://wiki.mobileread.com/wiki/WeaselReader" title="WeaselReader">WeaselReader</a> document viewers.
+</p><p>If the PDB file has the Launchable attribute set, an icon for the file will appear in the launcher.  The icon will be that of the program with the Creator ID of the PDB file.  If the Creator app supports the PalmOS sysAppLaunchCmdOpenDB function, the user can tap on the document icon and invoke the owning program to view/edit the file, similar to the Way windows shortcuts work.  Not all programs support this usage, so experimentation is needed to see if it will work.
+</p>
+<h2><span class="editsection">[<a href="http://wiki.mobileread.com/w/index.php?title=PDB&action=edit&section=4" title="Edit section: Palm Database File Code">edit</a>]</span> <span class="mw-headline" id="Palm_Database_File_Code">Palm Database File Code</span></h2>
+<p><b>A table showing the decode of the various Palm database formats.</b> Note that are are more database formats but the table is the ones likely to be encountered by users dealing with eBooks. The first 4 characters identify the type of database and the second four characters identify the program that uses this database.
+</p>
+<table class="wikitable">
+
+<tbody><tr style="vertical-align:top;">
+<th><center>Reader</center></th>
+<th><center>Type Code</center>
+</th></tr>
+<tr>
+<td><a href="http://wiki.mobileread.com/wiki/Adobe_Reader" title="Adobe Reader">Adobe Reader</a></td>
+<td>.pdfADBE
+</td></tr>
+<tr>
+<td><a href="http://wiki.mobileread.com/wiki/PalmDOC" title="PalmDOC">PalmDOC</a> </td>
+<td>TEXtREAd
+</td></tr>
+<tr>
+<td><a href="http://wiki.mobileread.com/wiki/BDicty" title="BDicty">BDicty</a></td>
+<td>BVokBDIC
+</td></tr>
+<tr>
+<td>DB (Database program)</td>
+<td>DB99DBOS
+</td></tr>
+<tr>
+<td><a href="http://wiki.mobileread.com/wiki/EReader" title="EReader">eReader</a></td>
+<td>PNRdPPrs
+</td></tr>
+<tr>
+<td><a href="http://wiki.mobileread.com/wiki/EReader" title="EReader">eReader</a></td>
+<td>DataPPrs
+</td></tr>
+<tr>
+<td>FireViewer (ImageViewer)</td>
+<td> vIMGView
+</td></tr>
+<tr>
+<td>HanDBase </td>
+<td>PmDBPmDB
+</td></tr>
+<tr>
+<td>InfoView </td>
+<td>InfoINDB
+</td></tr>
+<tr>
+<td><a href="http://wiki.mobileread.com/wiki/ISilo" title="ISilo">iSilo</a> </td>
+<td>ToGoToGo
+</td></tr>
+<tr>
+<td><a href="http://wiki.mobileread.com/wiki/ISilo" title="ISilo">iSilo</a> 3 </td>
+<td>SDocSilX
+</td></tr>
+<tr>
+<td>JFile 	</td>
+<td>JbDbJBas
+</td></tr>
+<tr>
+<td>JFile Pro 	</td>
+<td>JfDbJFil
+</td></tr>
+<tr>
+<td>LIST 	</td>
+<td>DATALSdb
+</td></tr>
+<tr>
+<td>MobileDB 	</td>
+<td>Mdb1Mdb1
+</td></tr>
+<tr>
+<td><a href="http://wiki.mobileread.com/wiki/MobiPocket" title="MobiPocket">MobiPocket</a>	</td>
+<td>BOOKMOBI
+</td></tr>
+<tr>
+<td><a href="http://wiki.mobileread.com/wiki/Plucker" title="Plucker">Plucker</a> 	</td>
+<td>DataPlkr
+</td></tr>
+<tr>
+<td>QuickSheet 	</td>
+<td>DataSprd
+</td></tr>
+<tr>
+<td>SuperMemo</td>
+<td>SM01SMem
+</td></tr>
+<tr>
+<td><a href="http://wiki.mobileread.com/wiki/TealDoc" title="TealDoc">TealDoc</a> 	</td>
+<td>TEXtTlDc
+</td></tr>
+<tr>
+<td>TealInfo 	</td>
+<td>InfoTlIf
+</td></tr>
+<tr>
+<td>TealMeal 	</td>
+<td>DataTlMl
+</td></tr>
+<tr>
+<td>TealPaint 	</td>
+<td>DataTlPt
+</td></tr>
+<tr>
+<td>ThinkDB 	</td>
+<td>dataTDBP
+</td></tr>
+<tr>
+<td>Tides 	</td>
+<td>TdatTide
+</td></tr>
+<tr>
+<td><a href="http://wiki.mobileread.com/wiki/TR" title="TR">TomeRaider</a> </td>
+<td>ToRaTRPW
+</td></tr>
+<tr>
+<td><a href="http://wiki.mobileread.com/wiki/WeaselReader" title="WeaselReader">Weasel</a></td>
+<td>zTXTGPlm
+</td></tr>
+<tr>
+<td><a href="http://wiki.mobileread.com/wiki/WordSmith" title="WordSmith">WordSmith</a> 	</td>
+<td>BDOCWrdS
+</td></tr>
+</tbody></table>
+<p>You can usually use a standard text editor to view the file even though it is a binary image. The file type will show up as clear text on the first line. The internal title for the book is also visible on the first line. Be careful not to modify the file when viewing it in this fashion.
+</p>
+<h2><span class="editsection">[<a href="http://wiki.mobileread.com/w/index.php?title=PDB&action=edit&section=5" title="Edit section: Palm Database Format">edit</a>]</span> <span class="mw-headline" id="Palm_Database_Format">Palm Database Format</span></h2>
+<p>A Palm Database is not a file when stored on the Palm in RAM. However it will be stored as a file if it is synced to a computer. The name of that file will always be the database name. Multi-byte numerical fields are stored in big-endian order, with the most significant byte first. The file will have the following content:
+</p>
+<table class="wikitable">
+
+<tbody><tr style="vertical-align:top;">
+<th>offset</th>
+<th>bytes</th>
+<th>content</th>
+<th>comments
+</th></tr>
+<tr>
+<td>0</td>
+<td>32</td>
+<td>name</td>
+<td>database name. This name is 0 terminated in the field and will be used as the file name on a computer. For eBooks this usually contains the title and may have the author depending on the length available.
+</td></tr>
+<tr>
+<td>32</td>
+<td>2</td>
+<td>attributes</td>
+<td>bit field.
+<p>0x0002 Read-Only
+</p><p>0x0004 Dirty AppInfoArea
+</p><p>0x0008 Backup this database (i.e. no conduit exists)
+</p><p>0x0010 (16 decimal) Okay to install newer over existing copy, if present on PalmPilot
+</p><p>0x0020 (32 decimal) Force the PalmPilot to reset after this database is installed
+</p><p>0x0040 (64 decimal) Don't allow copy of file to be beamed to other Pilot.
+</p>
+</td></tr>
+<tr>
+<td>34</td>
+<td>2</td>
+<td>version</td>
+<td>file version
+</td></tr>
+<tr>
+<td>36</td>
+<td>4</td>
+<td>creation date</td>
+<td>No. of seconds since start of <a href="http://wiki.mobileread.com/wiki/PDB#PDB_Times" title="PDB">January 1, 1904</a>.
+</td></tr>
+<tr>
+<td>40</td>
+<td>4</td>
+<td>modification date</td>
+<td> No. of seconds since start of January 1, 1904.
+</td></tr>
+<tr>
+<td>44</td>
+<td>4</td>
+<td>last backup date</td>
+<td>No. of seconds since start of January 1, 1904.
+</td></tr>
+<tr>
+<td>48</td>
+<td>4</td>
+<td>modificationNumber</td>
+<td>
+</td></tr>
+<tr>
+<td>52</td>
+<td>4</td>
+<td>appInfoID</td>
+<td>offset to start of Application Info (if present) or null
+</td></tr>
+<tr>
+<td>56</td>
+<td>4</td>
+<td>sortInfoID</td>
+<td>offset to start of Sort Info (if present) or null
+</td></tr>
+<tr>
+<td>60</td>
+<td>4</td>
+<td>type</td>
+<td>See above table. (For Applications this data will be 'appl')
+</td></tr>
+<tr>
+<td>64</td>
+<td>4</td>
+<td>creator</td>
+<td>See above table. This program will be launched if the file is tapped
+</td></tr>
+<tr>
+<td>68</td>
+<td>4</td>
+<td>uniqueIDseed</td>
+<td>used internally to identify record
+</td></tr>
+<tr>
+<td>72</td>
+<td>4</td>
+<td>nextRecordListID</td>
+<td>Only used when in-memory on Palm OS. Always set to zero in stored files.
+</td></tr>
+<tr>
+<td>76</td>
+<td>2</td>
+<td>number of Records</td>
+<td>number of records in the file - N
+</td></tr>
+<tr>
+<td>78</td>
+<td>8N </td>
+<td>record Info List</td>
+<td>
+</td></tr>
+<tr>
+<td> </td>
+<td>start of record info entry</td>
+<td> Repeat N times to end of record info entry
+</td></tr>
+<tr>
+<td></td>
+<td>4</td>
+<td>record Data Offset</td>
+<td> the offset of record n from the start of the PDB of this record
+</td></tr>
+<tr>
+<td></td>
+<td>1</td>
+<td>record Attributes</td>
+<td>bit field. The least significant four bits are used to represent the category values. These are the categories used to split the databases for viewing on the screen. A few of the 16 categories are pre-defined but the user can add their own. There is an undefined category for use if the user or programmer hasn't set this.
+<p>0x10 (16 decimal) Secret record bit.
+</p><p>0x20 (32 decimal) Record in use (busy bit).
+</p><p>0x40 (64 decimal) Dirty record bit.
+</p><p>0x80 (128, unsigned decimal) Delete record on next HotSync.
+</p>
+</td></tr>
+<tr>
+<td></td>
+<td>3</td>
+<td>UniqueID</td>
+<td>The unique ID for this record. Often just a sequential count from 0
+</td></tr>
+<tr>
+<td> </td>
+<td>end of record info entry
+</td></tr>
+<tr>
+<td></td>
+<td>2?</td>
+<td>Gap to data</td>
+<td>traditionally 2 zero bytes to Info or raw data
+</td></tr>
+<tr>
+<td></td>
+<td>?</td>
+<td>Records</td>
+<td>The actual data in the file. AppInfoArea (if present), SortInfoArea (if present) and then records sequentially
+</td></tr></tbody></table>
+<h3><span class="editsection">[<a href="http://wiki.mobileread.com/w/index.php?title=PDB&action=edit&section=6" title="Edit section: PDB Times">edit</a>]</span> <span class="mw-headline" id="PDB_Times">PDB Times</span></h3>
+<p>The original PDB format used times counting in seconds from 1st January, 1904. This is the base time used by the original Mac OS, and there were close links between Palm OS and Mac OS. Using an unsigned 32-bit integer this will overflow sometime in 2040.
+</p><p>However, the PDB tool written for Perl says that the time should be counted from 1st January 1970 (the Unix base time), and uses a signed 32-bit integer which will overflow sometime in 2038.
+</p><p>This conflict is unfortunate, but there's a simple way to sort out what's been done in a file you are examining.
+</p>
+<dl><dd>If the time has the top bit set, it's an unsigned 32-bit number counting from 1st Jan 1904
+</dd><dd>If the time has the top bit clear, it's a signed 32-bit number counting from 1st Jan 1970.
+</dd></dl>
+<p>This can be stated this with some confidence, as otherwise the time would be before 1972 or before 1970, depending on the interpretation and the PDB format wasn't around then.
+</p><p>For either system, overflow will occur in around 30 years time. Hopefully by then everyone will be on some properly documented eBook standard.
+</p>
+<!-- 
+NewPP limit report
+Preprocessor node count: 23/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key mobileread-com-wiki:pcache:idhash:1768-0!*!0!!en!* and timestamp 20111103075714 -->
+<div class="printfooter">
+Retrieved from "<a href="http://wiki.mobileread.com/wiki/PDB">http://wiki.mobileread.com/wiki/PDB</a>"</div>
+				<!-- /bodytext -->
+								<!-- catlinks -->
+				<div id="catlinks" class="catlinks"><div id="mw-normal-catlinks"><a href="http://wiki.mobileread.com/wiki/Special:Categories" title="Special:Categories">Categories</a>: <span dir="ltr"><a href="http://wiki.mobileread.com/wiki/Category:Palm" title="Category:Palm">Palm</a></span> | <span dir="ltr"><a href="http://wiki.mobileread.com/wiki/Category:Formats" title="Category:Formats">Formats</a></span></div></div>				<!-- /catlinks -->
+												<div class="visualClear"></div>
+			</div>
+			<!-- /bodyContent -->
+		</div>
+		<!-- /content -->
+		<!-- header -->
+		<div id="mw-head" class="noprint">
+			
+<!-- 0 -->
+<div id="p-personal" class="">
+	<h5>Personal tools</h5>
+	<ul>
+					<li id="pt-login"><a href="http://wiki.mobileread.com/w/index.php?title=Special:UserLogin&returnto=PDB" title="You are encouraged to log in; however, it is not mandatory [ctrl-option-o]" accesskey="o">Log in / create account</a></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+			<div id="left-navigation">
+				
+<!-- 0 -->
+<div id="p-namespaces" class="vectorTabs">
+	<h5>Namespaces</h5>
+	<ul>
+					<li id="ca-nstab-main" class="selected"><span><a href="http://wiki.mobileread.com/wiki/PDB" title="View the content page [ctrl-option-c]" accesskey="c">Page</a></span></li>
+					<li id="ca-talk"><span><a href="http://wiki.mobileread.com/wiki/Talk:PDB" title="Discussion about the content page [ctrl-option-t]" accesskey="t">Discussion</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-variants" class="vectorMenu emptyPortlet">
+		<h5><span>Variants</span><a href="http://wiki.mobileread.com/wiki/PDB#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+			</div>
+			<div id="right-navigation">
+				
+<!-- 0 -->
+<div id="p-views" class="vectorTabs">
+	<h5>Views</h5>
+	<ul>
+					<li id="ca-view" class="selected"><span><a href="http://wiki.mobileread.com/wiki/PDB">Read</a></span></li>
+					<li id="ca-edit"><span><a href="http://wiki.mobileread.com/w/index.php?title=PDB&action=edit" title="You can edit this page. Please use the preview button before saving [ctrl-option-e]" accesskey="e">Edit</a></span></li>
+					<li id="ca-history" class="collapsible "><span><a href="http://wiki.mobileread.com/w/index.php?title=PDB&action=history" title="Past revisions of this page [ctrl-option-h]" accesskey="h">View history</a></span></li>
+			</ul>
+</div>
+
+<!-- /0 -->
+
+<!-- 1 -->
+<div id="p-cactions" class="vectorMenu emptyPortlet">
+	<h5><span>Actions</span><a href="http://wiki.mobileread.com/wiki/PDB#"></a></h5>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+
+<!-- /1 -->
+
+<!-- 2 -->
+<div id="p-search">
+	<h5><label for="searchInput">Search</label></h5>
+	<form action="http://wiki.mobileread.com/w/index.php" id="searchform">
+		<input type="hidden" name="title" value="Special:Search">
+				<div id="simpleSearch">
+						<input id="searchInput" name="search" type="text" title="Search MobileRead [ctrl-option-f]" accesskey="f" value="" placeholder="Search" autocomplete="off">
+						<button id="searchButton" type="submit" name="button" title="Search the pages for this text"><img src="./pdb-spec_files/search-ltr.png" alt="Search"></button>
+					</div>
+			</form>
+</div>
+
+<!-- /2 -->
+			</div>
+		</div>
+		<!-- /header -->
+		<!-- panel -->
+			<div id="mw-panel" class="noprint">
+				<!-- logo -->
+					<div id="p-logo"><a style="background-image: url(/i/logo.png);" href="http://wiki.mobileread.com/wiki/Main_Page" title="Visit the main page"></a></div>
+				<!-- /logo -->
+				
+<!-- navigation -->
+<div class="portal" id="p-navigation">
+	<h5>Navigation</h5>
+	<div class="body">
+				<ul>
+					<li id="n-mainpage"><a href="http://wiki.mobileread.com/wiki/Main_Page" title="Visit the main page [ctrl-option-z]" accesskey="z">Main Page</a></li>
+					<li id="n-portal"><a href="http://wiki.mobileread.com/wiki/MobileRead:Community_Portal" title="About the project, what you can do, where to find things">Community portal</a></li>
+					<li id="n-recentchanges"><a href="http://wiki.mobileread.com/wiki/Special:RecentChanges" title="The list of recent changes in the wiki [ctrl-option-r]" accesskey="r">Recent changes</a></li>
+					<li id="n-help"><a href="http://wiki.mobileread.com/wiki/Help:Contents" title="The place to find out">Help</a></li>
+				</ul>
+			</div>
+</div>
+
+<!-- /navigation -->
+
+<!-- MobileRead Networks -->
+<div class="portal" id="p-MobileRead_Networks">
+	<h5>MobileRead Networks</h5>
+	<div class="body">
+				<ul>
+					<li id="n-FORUMS"><a href="http://www.mobileread.com/forums/">FORUMS</a></li>
+					<li id="n-Frontnews"><a href="http://www.mobileread.com/">Frontnews</a></li>
+					<li id="n-Developer-Hub"><a href="http://dev.mobileread.com/">Developer Hub</a></li>
+				</ul>
+			</div>
+</div>
+
+<!-- /MobileRead Networks -->
+
+<!-- SEARCH -->
+
+<!-- /SEARCH -->
+
+<!-- TOOLBOX -->
+<div class="portal" id="p-tb">
+	<h5>Toolbox</h5>
+	<div class="body">
+		<ul>
+					<li id="t-whatlinkshere"><a href="http://wiki.mobileread.com/wiki/Special:WhatLinksHere/PDB" title="List of all wiki pages that link here [ctrl-option-j]" accesskey="j">What links here</a></li>
+						<li id="t-recentchangeslinked"><a href="http://wiki.mobileread.com/wiki/Special:RecentChangesLinked/PDB" title="Recent changes in pages linked from this page [ctrl-option-k]" accesskey="k">Related changes</a></li>
+																																										<li id="t-specialpages"><a href="http://wiki.mobileread.com/wiki/Special:SpecialPages" title="List of all special pages [ctrl-option-q]" accesskey="q">Special pages</a></li>
+									<li id="t-print"><a href="http://wiki.mobileread.com/w/index.php?title=PDB&printable=yes" rel="alternate" title="Printable version of this page [ctrl-option-p]" accesskey="p">Printable version</a></li>
+						<li id="t-permalink"><a href="http://wiki.mobileread.com/w/index.php?title=PDB&oldid=20584" title="Permanent link to this revision of the page">Permanent link</a></li>
+						</ul>
+	</div>
+</div>
+
+<!-- /TOOLBOX -->
+
+<!-- LANGUAGES -->
+
+<!-- /LANGUAGES -->
+			</div>
+		<!-- /panel -->
+		<!-- footer -->
+		<div id="footer">
+											<ul id="footer-info">
+																	<li id="footer-info-viewcount">This page has been accessed 33,440 times.</li>
+																							<li id="footer-info-credits">This page was last modified 18:56, 8 September 2010 by <a href="http://wiki.mobileread.com/wiki/User:DaleDe" title="User:DaleDe">Dale DePriest</a>. Based on work by <a href="http://wiki.mobileread.com/w/index.php?title=User:Pdurrant&action=edit&redlink=1" class="new" title="User:Pdurrant (page does not exist)">Paul Durrant</a>, MobileRead anonymous user <a href="http://wiki.mobileread.com/wiki/Special:Contributions/131.107.0.111" title="Special:Contributions/131.107.0.111">131.107.0.111</a> and <a href="http://wiki.mobileread.com/w/index.php?title=PDB&action=credits" title="PDB">others</a>.</li>
+																							<li id="footer-info-copyright">Content is available under <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/" class="external ">Creative Commons Attribution Non-Commercial Share Alike</a>.</li>
+															</ul>
+															<ul id="footer-places">
+																	<li id="footer-places-privacy"><a href="http://wiki.mobileread.com/wiki/MobileRead:Privacy_policy" title="MobileRead:Privacy policy">Privacy policy</a></li>
+																							<li id="footer-places-about"><a href="http://wiki.mobileread.com/wiki/MobileRead:About" title="MobileRead:About">About MobileRead</a></li>
+																							<li id="footer-places-disclaimer"><a href="http://wiki.mobileread.com/wiki/MobileRead:General_disclaimer" title="MobileRead:General disclaimer">Disclaimers</a></li>
+															</ul>
+											<ul id="footer-icons" class="noprint">
+					<li id="footer-copyrightico">
+						<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img src="./pdb-spec_files/cc-by-nc-sa.png" alt="Creative Commons Attribution Non-Commercial Share Alike" width="88" height="31"></a>
+					</li>
+				</ul>
+						<div style="clear:both"></div>
+		</div>
+		<!-- /footer -->
+		
+<script src="./pdb-spec_files/load.php"></script><script src="./pdb-spec_files/load(1).php"></script>
+<script>if ( window.mediaWiki ) {
+	mediaWiki.config.set({"wgCanonicalNamespace": "", "wgCanonicalSpecialPageName": false, "wgNamespaceNumber": 0, "wgPageName": "PDB", "wgTitle": "PDB", "wgAction": "view", "wgArticleId": 1768, "wgIsArticle": true, "wgUserName": null, "wgUserGroups": ["*"], "wgCurRevisionId": 20584, "wgCategories": ["Palm", "Formats"], "wgBreakFrames": false, "wgRestrictionEdit": [], "wgRestrictionMove": [], "wgSearchNamespaces": [0], "wgVectorEnabledModules": {"collapsiblenav": false, "collapsibletabs": false, "editwarning": true, "expandablesearch": false, "footercleanup": false, "simplesearch": true}, "wgWikiEditorEnabledModules": {"toolbar": true, "dialogs": true, "templateEditor": false, "templates": false, "addMediaWizard": false, "preview": true, "previewDialog": false, "publish": false, "toc": false}});
+}
+</script>
+<script>if ( window.mediaWiki ) {
+	mediaWiki.loader.load(["mediawiki.util", "mediawiki.legacy.wikibits", "mediawiki.legacy.ajax", "mediawiki.legacy.mwsuggest", "ext.vector.editWarning", "ext.vector.simpleSearch"]);
+	mediaWiki.loader.go();
+}
+</script><script type="text/javascript" src="./pdb-spec_files/load(2).php"></script><script type="text/javascript" src="./pdb-spec_files/load(3).php"></script>
+
+<script src="./pdb-spec_files/load(4).php"></script>
+<script>if ( window.mediaWiki ) {
+	mediaWiki.user.options.set({"ccmeonemails":0,"cols":80,"contextchars":50,"contextlines":5,"date":"default","diffonly":0,"disablemail":0,"disablesuggest":0,"editfont":"default","editondblclick":0,"editsection":1,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":0,"extendwatchlist":0,"externaldiff":0,"externaleditor":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"highlightbroken":1,"imagesize":2,"justify":0,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nocache":0,"noconvertlink":0,"norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"quickbar":1,"rcdays":7,"rclimit":50,"rememberpassword":0,"rows":25,"searchlimit":20,"showhiddencats":0,"showjumplinks":1,"shownumberswatching":1,"showtoc":1,"showtoolbar":1,"skin":"vector","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":0,"watchdefault":0,"watchdeletion":0,
+	"watchlistdays":3,"watchlisthideanons":0,"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,"vector-simplesearch":1,"usebetatoolbar":true,"usebetatoolbar-cgd":true,"wikieditor-preview":true,"variant":"en","language":"en","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false});;mediaWiki.loader.state({"user.options":"ready"});
+}
+</script><script type="text/javascript">
+_qevents.push( { qacct:"p-13lWtv_C89CCg"} );
+</script>
+<noscript>
+&lt;div style="display: none;"&gt;&lt;img src="//pixel.quantserve.com/pixel/p-test123.gif" height="1" width="1" alt="Quantcast"/&gt;&lt;/div&gt;
+</noscript>
+			<!-- fixalpha -->
+		<script type="text/javascript"> if ( window.isMSIE55 ) fixalpha(); </script>
+		<!-- /fixalpha -->
+		<!-- Served in 0.093 secs. -->			
+<!-- Cached 20111103075714 -->
+
+<div style="top: 71px; width: 203px; display: none; left: auto; right: 30px; " class="suggestions"><div class="suggestions-results"></div><div class="suggestions-special"></div></div></body></html>
