@@ -46,4 +46,7 @@
       (is (= 10532 (:data-offset second-record)))
       (is (= [] (:attributes second-record)))
       (is (= 2 (:id second-record))))
-    (is (= 190 (count (:record-list no-images))))))
+    (is (= 190 (count (:record-list no-images)))))
+  (testing "palmdoc header"
+    (is (= 2 (:palmdoc-header no-images)))))
+

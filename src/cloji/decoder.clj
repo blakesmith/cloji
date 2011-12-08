@@ -43,18 +43,21 @@
    [:next-record-id 4 byte-array-int]
    [:record-count 2 byte-array-int]])
 
-(def record-info-attributes
+(def record-attributes
   [[:data-offset 4 byte-array-int]
    [:attributes 1 decode-record-attributes]
    [:id 3 byte-array-int]])
 
-(def top-level-attributes
-  [pdb-attributes])
+(def palmdoc-attributes
+  [[:compression 2 byte-array-int]])
 
 (defn decode-mobi [input-stream]
-  (let [pdb-header (decode-attributes
-              (first top-level-attributes) input-stream)
+  (let [pdb-header
+         (decode-attributes
+            pdb-attributes input-stream)
         record-count (:record-count pdb-header)]
-    (assoc pdb-header :record-list (decode-record-info
-                        record-info-attributes record-count input-stream))))
+    (-> pdb-header
+      (assoc :record-list
+        (decode-record-info
+          record-attributes record-count input-stream)))))
 
