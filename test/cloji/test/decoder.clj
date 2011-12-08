@@ -38,5 +38,8 @@
   (testing "record count"
     (is (= 190 (:record-count no-images))))
   (testing "record-list"
-    (let [first-record (first (:record-list no-images))]
-      (is (= 1600 (:data-offset first-record))))))
+    (let [first-record (first (:record-list no-images))
+          second-record (nth (:record-list no-images) 2)]
+      (is (= 1600 (:data-offset first-record)))
+      (is (= [] (:attributes first-record)))
+      (is (= 0 (:id first-record))))))

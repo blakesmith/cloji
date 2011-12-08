@@ -16,16 +16,22 @@
              :reset 0x0020
              :no-copy 0x0040}))
 
+(defn decode-record-attributes [coll]
+  (bitfield (byte-array-int coll)
+            {:secret 0x0010
+             :in-use 0x0020
+             :dirty 0x0040
+             :delete 0x0080}))
+
 (defn decode-attributes [attrs input-stream]
   (into {}
     (for [[attr-name len f] attrs]
       [attr-name (f (read-bytes input-stream len))])))
 
 (defn decode-record-info [attrs x input-stream]
-  (map (fn [_]
-    (with-padding input-stream 2
-      (decode-attributes attrs input-stream))) (range x)))
-
+  (with-padding input-stream 2
+    (map (fn [_]
+      (decode-attributes attrs input-stream)) (range x))))
 
 (def pdb-attributes
   [[:name 32 as-string]
@@ -44,7 +50,9 @@
    [:record-count 2 byte-array-int]])
 
 (def record-info-attributes
-  [[:data-offset 4 byte-array-int]])
+  [[:data-offset 4 byte-array-int]
+   [:attributes 1 decode-record-attributes]
+   [:id 3 byte-array-int]])
 
 (def top-level-attributes
   [pdb-attributes])
