@@ -39,7 +39,11 @@
     (is (= 190 (:record-count no-images))))
   (testing "record-list"
     (let [first-record (first (:record-list no-images))
-          second-record (nth (:record-list no-images) 2)]
+          second-record (nth (:record-list no-images) 1)]
       (is (= 1600 (:data-offset first-record)))
       (is (= [] (:attributes first-record)))
-      (is (= 0 (:id first-record))))))
+      (is (= 0 (:id first-record)))
+      (is (= 10532 (:data-offset second-record)))
+      (is (= [] (:attributes second-record)))
+      (is (= 2 (:id second-record))))
+    (is (= 190 (count (:record-list no-images))))))

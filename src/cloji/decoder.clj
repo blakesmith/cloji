@@ -1,11 +1,6 @@
 (ns cloji.decoder
   (:use [cloji.core]))
 
-(defmacro with-padding [input-stream byte-padding & body]
-  `(let [value# ~@body]
-     (.skipBytes ~input-stream ~byte-padding)
-     value#))
-
 (defn decode-palmdoc-attributes [coll]
   (bitfield (byte-array-int coll)
             {:res-db 0x0001
@@ -29,9 +24,8 @@
       [attr-name (f (read-bytes input-stream len))])))
 
 (defn decode-record-info [attrs x input-stream]
-  (with-padding input-stream 2
-    (map (fn [_]
-      (decode-attributes attrs input-stream)) (range x))))
+  (map (fn [_]
+    (decode-attributes attrs input-stream)) (range x)))
 
 (def pdb-attributes
   [[:name 32 as-string]
@@ -61,6 +55,6 @@
   (let [pdb-header (decode-attributes
               (first top-level-attributes) input-stream)
         record-count (:record-count pdb-header)]
-    (assoc pdb-header :record-list(decode-record-info
+    (assoc pdb-header :record-list (decode-record-info
                         record-info-attributes record-count input-stream))))
 
