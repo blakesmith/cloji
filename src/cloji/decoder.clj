@@ -52,12 +52,11 @@
   [[:compression 2 byte-array-int]])
 
 (defn decode-mobi [input-stream]
-  (let [pdb-header
-         (decode-attributes
-            pdb-attributes input-stream)
-        record-count (:record-count pdb-header)]
+  (let [pdb-header (decode-attributes pdb-attributes input-stream)
+        record-count (:record-count pdb-header)
+        record-list (decode-record-info record-attributes record-count input-stream)
+        palmdoc-header (decode-attributes palmdoc-attributes input-stream)]
     (-> pdb-header
-      (assoc :record-list
-        (decode-record-info
-          record-attributes record-count input-stream)))))
+      (assoc :record-list record-list)
+      (assoc :palmdoc-header palmdoc-header))))
 
