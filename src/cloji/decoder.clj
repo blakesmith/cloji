@@ -1,6 +1,24 @@
 (ns cloji.decoder
   (:use [cloji.core]))
 
+(defn type-lookup [types coll]
+  (get types (byte-array-int coll)))
+
+(defn mobi-type [coll]
+  (type-lookup
+    {2 :mobi-book
+     3 :palmdoc-book
+     4 :audio
+     257 :news
+     258 :news-feed
+     259 :news-magazine
+     513 :pics
+     514 :world
+     515 :xls
+     516 :ppt
+     517 :text
+     518 :html} coll))
+
 (defn decode-palmdoc-attributes [coll]
   (bitfield (byte-array-int coll)
             {:res-db 0x0001
@@ -59,6 +77,10 @@
    [:record-size byte-array-int 2]
    [:current-position byte-array-int 4]])
 
+(def mobi-attributes
+  [[:header-length byte-array-int 4 4]
+   [:mobi-type mobi-type 4]])
+
 (defn decode-mobi [input-stream]
   (let [pdb-header (decode-attributes pdb-attributes input-stream)
         record-count (:record-count pdb-header)
@@ -66,8 +88,10 @@
         first-offset (:data-offset (first record-list))
         palmdoc-header
           (with-location first-offset input-stream
-             (decode-attributes palmdoc-attributes input-stream))]
+             (decode-attributes palmdoc-attributes input-stream))
+        mobi-header (decode-attributes mobi-attributes input-stream)]
     (-> pdb-header
       (assoc :record-list record-list)
-      (assoc :palmdoc-header palmdoc-header))))
+      (assoc :palmdoc-header palmdoc-header)
+      (assoc :mobi-header mobi-header))))
 

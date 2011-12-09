@@ -52,5 +52,8 @@
     (is (= 730093 (:text-length (:palmdoc-header no-images))))
     (is (= 179 (:record-count (:palmdoc-header no-images))))
     (is (= 4096 (:record-size (:palmdoc-header no-images))))
-    (is (= 0 (:current-position (:palmdoc-header no-images))))))
+    (is (= 0 (:current-position (:palmdoc-header no-images)))))
+  (testing "mobi header"
+    (is (= 232 (:header-length (:mobi-header no-images))))
+    (is (= :mobi-book (:mobi-type (:mobi-header no-images))))))
 
