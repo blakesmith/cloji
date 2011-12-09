@@ -24,8 +24,8 @@
       [attr-name (f (read-bytes input-stream len))])))
 
 (defn decode-record-info [attrs x input-stream]
-  (map (fn [_]
-    (decode-attributes attrs input-stream)) (range x)))
+  (doall (map (fn [_]
+    (decode-attributes attrs input-stream)) (range x))))
 
 (def pdb-attributes
   [[:name 32 as-string]
