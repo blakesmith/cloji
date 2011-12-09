@@ -23,6 +23,10 @@
     (for [[attr-name len f] attrs]
       [attr-name (f (read-bytes input-stream len))])))
 
+(defmacro with-location [l input-stream body]
+  `(do (.seek ~input-stream ~l)
+    ~body))
+
 (defn decode-record-info [attrs x input-stream]
   (doall (map (fn [_]
     (decode-attributes attrs input-stream)) (range x))))
@@ -55,7 +59,10 @@
   (let [pdb-header (decode-attributes pdb-attributes input-stream)
         record-count (:record-count pdb-header)
         record-list (decode-record-info record-attributes record-count input-stream)
-        palmdoc-header (decode-attributes palmdoc-attributes input-stream)]
+        first-offset (:data-offset (first record-list))
+        palmdoc-header
+          (with-location first-offset input-stream
+             (decode-attributes palmdoc-attributes input-stream))]
     (-> pdb-header
       (assoc :record-list record-list)
       (assoc :palmdoc-header palmdoc-header))))
