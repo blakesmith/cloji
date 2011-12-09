@@ -20,7 +20,7 @@
 
 (defn decode-attributes [attrs input-stream]
   (into {}
-    (for [[attr-name len f skip] attrs]
+    (for [[attr-name f len skip] attrs]
       [attr-name (f (read-bytes input-stream len skip))])))
 
 (defmacro with-location [l input-stream body]
@@ -32,29 +32,29 @@
     (decode-attributes attrs input-stream)) (range x))))
 
 (def pdb-attributes
-  [[:name 32 as-string]
-   [:attributes 2 decode-palmdoc-attributes]
-   [:version 2 byte-array-int]
-   [:creation-date 4 as-date]
-   [:modification-date 4 as-date]
-   [:backup-date 4 as-date]
-   [:modification-number 4 byte-array-int]
-   [:appinfo-offset 4 byte-array-int]
-   [:sortinfo-offset 4 byte-array-int]
-   [:type 4 as-string]
-   [:creator 4 as-string]
-   [:seed-id 4 byte-array-int]
-   [:next-record-id 4 byte-array-int]
-   [:record-count 2 byte-array-int]])
+  [[:name as-string 32]
+   [:attributes decode-palmdoc-attributes 2]
+   [:version byte-array-int 2]
+   [:creation-date as-date 4]
+   [:modification-date as-date 4]
+   [:backup-date as-date 4]
+   [:modification-number byte-array-int 4]
+   [:appinfo-offset byte-array-int 4]
+   [:sortinfo-offset byte-array-int 4]
+   [:type as-string 4]
+   [:creator as-string 4]
+   [:seed-id byte-array-int 4]
+   [:next-record-id byte-array-int 4]
+   [:record-count byte-array-int 2]])
 
 (def record-attributes
-  [[:data-offset 4 byte-array-int]
-   [:attributes 1 decode-record-attributes]
-   [:id 3 byte-array-int]])
+  [[:data-offset byte-array-int 4]
+   [:attributes decode-record-attributes 1]
+   [:id byte-array-int 3]])
 
 (def palmdoc-attributes
-  [[:compression 2 byte-array-int]
-   [:text-length 4 byte-array-int 2]])
+  [[:compression byte-array-int 2]
+   [:text-length byte-array-int 4 2]])
 
 (defn decode-mobi [input-stream]
   (let [pdb-header (decode-attributes pdb-attributes input-stream)
