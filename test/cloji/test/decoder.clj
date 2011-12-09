@@ -49,5 +49,8 @@
     (is (= 190 (count (:record-list no-images)))))
   (testing "palmdoc header"
     (is (= 2 (:compression (:palmdoc-header no-images))))
-    (is (= 730093 (:text-length (:palmdoc-header no-images))))))
+    (is (= 730093 (:text-length (:palmdoc-header no-images))))
+    (is (= 179 (:record-count (:palmdoc-header no-images))))
+    (is (= 4096 (:record-size (:palmdoc-header no-images))))
+    (is (= 0 (:current-position (:palmdoc-header no-images))))))
 

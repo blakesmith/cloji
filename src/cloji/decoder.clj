@@ -54,7 +54,10 @@
 
 (def palmdoc-attributes
   [[:compression byte-array-int 2]
-   [:text-length byte-array-int 4 2]])
+   [:text-length byte-array-int 4 2]
+   [:record-count byte-array-int 2]
+   [:record-size byte-array-int 2]
+   [:current-position byte-array-int 4]])
 
 (defn decode-mobi [input-stream]
   (let [pdb-header (decode-attributes pdb-attributes input-stream)
