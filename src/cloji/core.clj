@@ -11,7 +11,8 @@
   (map first
     (filter #(< 0 (bit-and (last %) value)) mappings)))
 
-(defn read-bytes [input-stream n]
+(defn read-bytes [input-stream n skip]
+  (when skip (.skipBytes input-stream skip))
   (loop [coll [] bytes-read 0]
     (if (= bytes-read n)
       coll

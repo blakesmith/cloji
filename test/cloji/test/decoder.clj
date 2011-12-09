@@ -48,5 +48,6 @@
       (is (= 2 (:id second-record))))
     (is (= 190 (count (:record-list no-images)))))
   (testing "palmdoc header"
-    (is (= 2 (:compression (:palmdoc-header no-images))))))
+    (is (= 2 (:compression (:palmdoc-header no-images))))
+    (is (= 730093 (:text-length (:palmdoc-header no-images))))))
 

@@ -20,8 +20,8 @@
 
 (defn decode-attributes [attrs input-stream]
   (into {}
-    (for [[attr-name len f] attrs]
-      [attr-name (f (read-bytes input-stream len))])))
+    (for [[attr-name len f skip] attrs]
+      [attr-name (f (read-bytes input-stream len skip))])))
 
 (defmacro with-location [l input-stream body]
   `(do (.seek ~input-stream ~l)
@@ -53,7 +53,8 @@
    [:id 3 byte-array-int]])
 
 (def palmdoc-attributes
-  [[:compression 2 byte-array-int]])
+  [[:compression 2 byte-array-int]
+   [:text-length 4 byte-array-int 2]])
 
 (defn decode-mobi [input-stream]
   (let [pdb-header (decode-attributes pdb-attributes input-stream)
