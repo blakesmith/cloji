@@ -27,9 +27,10 @@
         (and (<= 0x01 nc) (>= 0x08 nc)) (recur (drop (+ 1 nc) cs) (into us (take nc (rest cs))) (+ pos nc 1))
         (and (<= 0x09 nc) (>= 0x7F nc)) (recur (rest cs) (conj us nc) (inc pos))
         (and (<= 0x80 nc) (>= 0xBF nc))
-          (let [distance (- pos (bit-xor 1024 (bit-or (bit-shift-left nc 3) (bit-shift-right (nth cs 1) 5))))
-                length (+ 3 (bit-and 7 (nth cs 1)))]
-            (recur (drop 2 cs) (into us (take length (drop distance us))) (+ pos 2)))
+          (let [lz7 (bit-and 0x3FFF (bit-or (bit-shift-left nc 8) (nth cs 1)))
+                distance (bit-shift-right lz7 3)
+                length (+ 3 (bit-and 7 lz7))]
+            (recur (drop 2 cs) (into us (take length (drop (- (count us) distance) us))) (+ pos 2)))
         (and (<= 0xC0 nc) (>= 0xFF nc)) (recur (rest cs) (into us [32 (bit-xor nc 0x80)]) (inc pos))))))
 
 (defn palmdoc-string [coll]

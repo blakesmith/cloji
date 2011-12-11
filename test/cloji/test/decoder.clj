@@ -63,5 +63,8 @@
 
 (deftest palmdoc-decompression
   (testing "Literals and space compression"
-    (is (= "<html><head><guide><reference title=" (palmdoc-string (take 35 pbytes))))))
+    (is (= "<html><head><guide><reference title=" (palmdoc-string (take 35 pbytes)))))
+  (testing "Distance pairs"
+    (is (= "<html><head><guide><reference title=\"CONTENTS\" type=\"toc\"  file" (palmdoc-string (take 60 pbytes))))))
+
 
