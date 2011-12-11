@@ -8,6 +8,10 @@
 
 (def no-images (decode-mobi (mobi-fixture "no_images.mobi")))
 
+(def pbytes
+  (let [f (RandomAccessFile. "fixtures/palmdoc_comp" "r")]
+    (repeatedly 4096 #(.read f))))
+
 (deftest decode-mobi-impl
   (testing "palmdoc header"
     (is (= "The_Adventur-herlock_Holmes" (:name no-images))))
@@ -56,4 +60,8 @@
   (testing "mobi header"
     (is (= 232 (:header-length (:mobi-header no-images))))
     (is (= :mobi-book (:mobi-type (:mobi-header no-images))))))
+
+(deftest palmdoc-decompression
+  (testing "Literals and space compression"
+    (is (= "<html><head><guide><reference title=" (apply str (map char (decomp-palmdoc (take 35 pbytes))))))))
 
