@@ -27,10 +27,10 @@
         (and (<= 0x01 nc) (>= 0x08 nc)) (recur (drop (+ 1 nc) cs) (concat us (take nc (rest cs))) (+ pos nc 1))
         (and (<= 0x09 nc) (>= 0x7F nc)) (recur (rest cs) (conj us nc) (inc pos))
         (and (<= 0x80 nc) (>= 0xBF nc))
-          (let [distance (bit-xor 1024 (bit-or (bit-shift-left nc 3) (bit-shift-right (nth cs 1) 5)))
-                length (bit-and 7 (nth c 1))]
-            (recur (drop 2 cs) (concat us (take length (drop (- pos distance) us))) (+ pos 2)))
-        (and (<= 0xC0 nc) (>= 0xFF nc)) (recur (rest cs) (concat us [\space (bit-xor nc 0x80)]) (inc pos))))))
+          (let [distance (- pos (bit-xor 1024 (bit-or (bit-shift-left nc 3) (bit-shift-right (nth cs 1) 5))))
+                length (+ 3 (bit-and 7 (nth cs 1)))]
+            (recur (drop 2 cs) (concat us (take length (drop distance us))) (+ pos 2)))
+        (and (<= 0xC0 nc) (>= 0xFF nc)) (recur (rest cs) (concat us [32 (bit-xor nc 0x80)]) (inc pos))))))
 
 (defn decode-mobi [input-stream]
   (let [pdb-header (decode-attributes pdb-attributes input-stream)
