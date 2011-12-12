@@ -9,7 +9,8 @@
 (def no-images (decode-mobi (mobi-fixture "no_images.mobi")))
 
 (def pbytes
-  (let [f (RandomAccessFile. "fixtures/palmdoc_comp" "r")]
+  (let [f (mobi-fixture "no_images.mobi")]
+    (.seek f 10532)
     (repeatedly 4096 #(.read f))))
 
 (deftest decode-mobi-impl
