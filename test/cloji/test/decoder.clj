@@ -1,17 +1,9 @@
 (ns cloji.test.decoder
-  (:import [java.io RandomAccessFile])
   (:use [cloji.decoder])
+  (:use [cloji.test.helper])
   (:use [clojure.test]))
 
-(defn mobi-fixture [name]
-  (RandomAccessFile. (str "fixtures/" name) "r"))
-
 (def no-images (decode-mobi (mobi-fixture "no_images.mobi")))
-
-(def pbytes
-  (let [f (mobi-fixture "no_images.mobi")]
-    (.seek f 10532)
-    (repeatedly 4096 #(.read f))))
 
 (deftest decode-mobi-impl
   (testing "palmdoc header"
@@ -61,12 +53,5 @@
   (testing "mobi header"
     (is (= 232 (:header-length (:mobi-header no-images))))
     (is (= :mobi-book (:mobi-type (:mobi-header no-images))))))
-
-(deftest palmdoc-decompression
-  (testing "Literals and space compression"
-    (is (= "<html><head><guide><reference title=" (palmdoc-string (take 35 pbytes)))))
-  (testing "Distance pairs"
-    (is (= "<html><head><guide><reference title=\"CONTENTS\" type=\"toc\"  file" (palmdoc-string (take 60 pbytes))))
-    (is (= 7277 (count (palmdoc-string (take 4096 pbytes)))))))
 
 
