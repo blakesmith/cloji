@@ -52,6 +52,7 @@
     (is (= 0 (:current-position (:palmdoc-header no-images)))))
   (testing "mobi header"
     (is (= 232 (:header-length (:mobi-header no-images))))
-    (is (= :mobi-book (:mobi-type (:mobi-header no-images))))))
-
+    (is (= :mobi-book (:mobi-type (:mobi-header no-images)))))
+  (testing "body"
+    (is (= "<html>" (apply str (take 6 (:body no-images)))))))
 
