@@ -47,7 +47,7 @@
                   distance (bit-shift-right lz7 3)
                   length (+ 3 (bit-and 7 lz7))]
               (recur (drop 2 cs) (into us (take length (drop (- (count us) distance) us)))))
-            (catch java.lang.IndexOutOfBoundsException e (prn "Died at cs: " (count cs) "Us: " (count us))))
+            (catch java.lang.IndexOutOfBoundsException e us))
         (and (<= 0xC0 nc) (>= 0xFF nc)) (recur (rest cs) (into us [32 (bit-xor nc 0x80)]))))))
 
 (defn palmdoc-string [coll]

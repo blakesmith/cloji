@@ -59,5 +59,7 @@
   (testing "decoding record n"
     (is (= "<html>" (apply str (take 6 (decode-record no-images f 1))))))
   (testing "decoding a record with out of bounds errors"
-    (is (= "after" (apply str (take 5 (decode-record no-images f 8)))))))
+    (is (= "after" (apply str (take 5 (decode-record no-images f 8))))))
+  (testing "decoding the last record text record"
+    (is (= "ectro" (apply str (take 5 (decode-record no-images f 179)))))))
 
