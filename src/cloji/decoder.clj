@@ -16,8 +16,11 @@
     (decode-attributes attrs input-stream)) (range x))))
 
 (defn decode-record [headers input-stream n]
-  (with-location (:data-offset (nth (:record-list headers) n)) input-stream
-    (palmdoc-string (read-bytes input-stream 4096 nil))))
+  (let [record (nth (:record-list headers) n)
+        next-record (nth (:record-list headers) (inc n))
+        read-size (- (:data-offset next-record) (:data-offset record))]
+    (with-location (:data-offset record) input-stream
+      (palmdoc-string (read-bytes input-stream read-size nil)))))
 
 (defn decode-mobi [input-stream]
   (let [pdb-header (decode-attributes pdb-attributes input-stream)

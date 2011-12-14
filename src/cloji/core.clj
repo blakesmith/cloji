@@ -42,10 +42,12 @@
         (and (<= 0x01 nc) (>= 0x08 nc)) (recur (drop (+ 1 nc) cs) (into us (take nc (rest cs))))
         (and (<= 0x09 nc) (>= 0x7F nc)) (recur (rest cs) (conj us nc))
         (and (<= 0x80 nc) (>= 0xBF nc))
-          (let [lz7 (bit-and 0x3FFF (bit-or (bit-shift-left nc 8) (nth cs 1)))
-                distance (bit-shift-right lz7 3)
-                length (+ 3 (bit-and 7 lz7))]
-            (recur (drop 2 cs) (into us (take length (drop (- (count us) distance) us)))))
+          (try
+            (let [lz7 (bit-and 0x3FFF (bit-or (bit-shift-left nc 8) (nth cs 1)))
+                  distance (bit-shift-right lz7 3)
+                  length (+ 3 (bit-and 7 lz7))]
+              (recur (drop 2 cs) (into us (take length (drop (- (count us) distance) us)))))
+            (catch java.lang.IndexOutOfBoundsException e (prn "Died at cs: " (count cs) "Us: " (count us))))
         (and (<= 0xC0 nc) (>= 0xFF nc)) (recur (rest cs) (into us [32 (bit-xor nc 0x80)]))))))
 
 (defn palmdoc-string [coll]
