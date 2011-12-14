@@ -22,7 +22,7 @@
     (with-location (:data-offset record) input-stream
       (palmdoc-string (read-bytes input-stream read-size nil)))))
 
-(defn decode-mobi [input-stream]
+(defn decode-headers [input-stream]
   (let [pdb-header (decode-attributes pdb-attributes input-stream)
         record-count (:record-count pdb-header)
         record-list (decode-record-info record-attributes record-count input-stream)

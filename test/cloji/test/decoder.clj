@@ -4,9 +4,9 @@
   (:use [clojure.test]))
 
 (def f (mobi-fixture "no_images.mobi"))
-(def no-images (decode-mobi f))
+(def no-images (decode-headers f))
 
-(deftest decode-mobi-impl
+(deftest decode-headers-impl
   (testing "palmdoc header"
     (is (= "The_Adventur-herlock_Holmes" (:name no-images))))
   (testing "attributes"
