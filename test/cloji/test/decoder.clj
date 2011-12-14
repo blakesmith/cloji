@@ -3,7 +3,8 @@
   (:use [cloji.test.helper])
   (:use [clojure.test]))
 
-(def no-images (decode-mobi (mobi-fixture "no_images.mobi")))
+(def f (mobi-fixture "no_images.mobi"))
+(def no-images (decode-mobi f))
 
 (deftest decode-mobi-impl
   (testing "palmdoc header"
@@ -52,7 +53,9 @@
     (is (= 0 (:current-position (:palmdoc-header no-images)))))
   (testing "mobi header"
     (is (= 232 (:header-length (:mobi-header no-images))))
-    (is (= :mobi-book (:mobi-type (:mobi-header no-images)))))
-  (testing "body"
-    (is (= "<html>" (apply str (take 6 (:body no-images)))))))
+    (is (= :mobi-book (:mobi-type (:mobi-header no-images))))))
+
+(deftest decode-record-impl
+  (testing "decoding record n"
+    (is (= "<html>" (apply str (take 6 (decode-record no-images f 1)))))))
 
