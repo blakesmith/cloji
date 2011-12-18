@@ -51,5 +51,5 @@
         (and (<= 0xC0 nc) (>= 0xFF nc)) (recur (rest cs) (into us [32 (bit-xor nc 0x80)]))))))
 
 (defn palmdoc-string [coll]
-  (apply str (map char (decomp-palmdoc coll))))
+  (as-string (decomp-palmdoc coll)))
 
