@@ -61,5 +61,5 @@
   (testing "decoding a record with out of bounds errors"
     (is (= "after" (apply str (take 5 (decode-record no-images f 8))))))
   (testing "decoding the last text record record"
-    (is (= "ectro" (apply str (take 5 (decode-record no-images f 179)))))))
+    (is (= "old, " (apply str (take 5 (decode-record no-images f 178)))))))
 
