@@ -4,6 +4,11 @@
 (defn type-lookup [types coll]
   (get types (byte-array-int coll)))
 
+(defn encoding-type [coll]
+  (type-lookup
+    {65001 :utf-8
+     1252 :cp1252} coll))
+
 (defn mobi-type [coll]
   (type-lookup
     {2 :mobi-book
@@ -66,5 +71,6 @@
 
 (def mobi-attributes
   [[:header-length byte-array-int 4 4]
-   [:mobi-type mobi-type 4]])
+   [:mobi-type mobi-type 4]
+   [:encoding encoding-type 4]])
 

@@ -53,7 +53,8 @@
     (is (= 0 (:current-position (:palmdoc-header no-images)))))
   (testing "mobi header"
     (is (= 232 (:header-length (:mobi-header no-images))))
-    (is (= :mobi-book (:mobi-type (:mobi-header no-images))))))
+    (is (= :mobi-book (:mobi-type (:mobi-header no-images))))
+    (is (= :utf-8 (:encoding (:mobi-header no-images))))))
 
 (deftest decode-record-impl
   (testing "decoding record n"
