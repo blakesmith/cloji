@@ -2,6 +2,10 @@
   (:use [cloji.core])
   (:use [cloji.attributes]))
 
+(def encoding-string
+  {:utf-8 "UTF-8"
+   :cp1252 "CP1252"})
+
 (defn decode-attributes [attrs input-stream]
   (into {}
     (for [[attr-name f len skip] attrs]
@@ -18,9 +22,10 @@
 (defn decode-record [headers input-stream n]
   (let [record (nth (:record-list headers) n)
         next-record (nth (:record-list headers) (inc n))
-        read-size (- (:data-offset next-record) (:data-offset record))]
+        read-size (- (:data-offset next-record) (:data-offset record))
+        encoding (encoding-string (:encoding (:mobi-header headers)))]
     (with-location (:data-offset record) input-stream
-      (palmdoc-string (read-bytes input-stream read-size nil)))))
+      (palmdoc-string (read-bytes input-stream read-size nil) encoding))))
 
 (defn decode-headers [input-stream]
   (let [pdb-header (decode-attributes pdb-attributes input-stream)

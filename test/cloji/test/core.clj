@@ -17,8 +17,8 @@
 
 (deftest palmdoc-decompression
   (testing "Literals and space compression"
-    (is (= "<html><head><guide><reference title=" (palmdoc-string (take 35 pbytes)))))
+    (is (= "<html><head><guide><reference title=" (palmdoc-string (take 35 pbytes) "UTF-8"))))
   (testing "Distance pairs"
-    (is (= "<html><head><guide><reference title=\"CONTENTS\" type=\"toc\"  filepos=0000001117 />" (palmdoc-string (take 74 pbytes))))
-    (is (= 7246 (count (palmdoc-string (take 4096 pbytes)))))))
+    (is (= "<html><head><guide><reference title=\"CONTENTS\" type=\"toc\"  filepos=0000001117 />" (palmdoc-string (take 74 pbytes) "UTF-8")))
+    (is (= 7246 (count (palmdoc-string (take 4096 pbytes) "UTF-8"))))))
 

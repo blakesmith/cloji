@@ -22,8 +22,9 @@
             coll
             (conj coll next-byte))) (inc bytes-read)))))
 
-(defn as-string [coll]
-  (String. (into-array Byte/TYPE (map #(.byteValue %) (filter #(not (= 0 %)) coll))) "UTF-8"))
+(defn as-string [coll & [encoding]]
+  (let [encoding (if encoding encoding "UTF-8")]
+    (String. (into-array Byte/TYPE (map #(.byteValue %) (filter #(not (= 0 %)) coll))) encoding)))
 
 (defn as-date [coll]
   (let [t (byte-array-int coll)]
@@ -54,6 +55,6 @@
               (recur (drop 2 cs) (lz7-decode))))
         (and (<= 0xC0 nc) (>= 0xFF nc)) (recur (rest cs) (into us [32 (bit-xor nc 0x80)]))))))
 
-(defn palmdoc-string [coll]
-  (as-string (decomp-palmdoc coll)))
+(defn palmdoc-string [coll encoding]
+  (as-string (decomp-palmdoc coll) encoding))
 
