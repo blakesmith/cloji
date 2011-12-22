@@ -62,5 +62,7 @@
   (testing "decoding a record with out of bounds errors"
     (is (= "after" (apply str (take 5 (decode-record no-images f 8))))))
   (testing "decoding the last text record record"
-    (is (= "old, " (apply str (take 5 (decode-record no-images f 178)))))))
+    (is (= "old, " (apply str (take 5 (decode-record no-images f 178))))))
+  (testing "the last character in the record"
+    (is (not= 65533 (int (last (decode-record no-images f 1)))))))
 
