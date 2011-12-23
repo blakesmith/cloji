@@ -63,6 +63,8 @@
     (is (= "after" (apply str (take 5 (decode-record no-images f 8))))))
   (testing "decoding the last text record record"
     (is (= "old, " (apply str (take 5 (decode-record no-images f 178))))))
+  (testing "end of record"
+    (is (= "and" (apply str (take-last 3 (decode-record no-images f 8))))))
   (testing "the last character in the record"
     (is (not= 65533 (int (last (decode-record no-images f 1)))))))
 
