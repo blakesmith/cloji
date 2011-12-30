@@ -22,7 +22,7 @@
 (defn decode-record [headers input-stream n]
   (let [record (nth (:record-list headers) n)
         next-record (nth (:record-list headers) (inc n))
-        read-size (- (- (:data-offset next-record) (:data-offset record)) 6)
+        read-size (+ (- (:data-offset next-record) (:data-offset record) 1))
         encoding (encoding-string (:encoding (:mobi-header headers)))]
     (with-location (:data-offset record) input-stream
       (palmdoc-string (read-bytes input-stream read-size nil) encoding))))
