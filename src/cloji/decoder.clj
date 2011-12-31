@@ -17,9 +17,6 @@
 
 (defn decode-trail-size [flags data]
   0)
-;  (let [flags (if (or (= 0xE4 header-length) (= 0xE8 header-length))
-;                (byte-array-int (subvec data 0xF2 0xF4))
-;                0)])
 
 (defn decode-record-info [attrs x input-stream]
   (doall (map (fn [_]
@@ -48,7 +45,10 @@
           (read-attributes palmdoc-attributes input-stream first-offset)
         mobi-header (decode-attributes mobi-attributes input-stream)
         extra-flags
-          (read-attributes extra-flag-attributes input-stream (+ first-offset 0xF2))]
+          (if (or (= 0xE4 (:header-length mobi-header))
+                  (= 0xE8 (:header-length mobi-header)))
+            (read-attributes extra-flag-attributes input-stream (+ first-offset 0xF2))
+            0)]
     (-> pdb-header
       (assoc :record-list record-list)
       (assoc :palmdoc-header palmdoc-header)
