@@ -25,6 +25,10 @@
   (doall (map (fn [_]
     (decode-attributes attrs input-stream)) (range x))))
 
+(defn read-attributes [attrs input-stream offset]
+  (with-location offset input-stream
+    (decode-attributes attrs input-stream)))
+
 (defn decode-record [headers input-stream n]
   (let [record (nth (:record-list headers) n)
         next-record (nth (:record-list headers) (inc n))
@@ -41,12 +45,10 @@
         record-list (decode-record-info record-attributes record-count input-stream)
         first-offset (:data-offset (first record-list))
         palmdoc-header
-          (with-location first-offset input-stream
-             (decode-attributes palmdoc-attributes input-stream))
+          (read-attributes palmdoc-attributes input-stream first-offset)
         mobi-header (decode-attributes mobi-attributes input-stream)
         extra-flags
-          (with-location (+ first-offset 0xF2) input-stream
-            (decode-attributes [[:extra-flags byte-array-int 2]] input-stream))]
+          (read-attributes extra-flag-attributes input-stream (+ first-offset 0xF2))]
     (-> pdb-header
       (assoc :record-list record-list)
       (assoc :palmdoc-header palmdoc-header)

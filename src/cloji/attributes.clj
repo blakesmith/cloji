@@ -74,3 +74,5 @@
    [:mobi-type mobi-type 4]
    [:encoding encoding-type 4]])
 
+(def extra-flag-attributes
+  [[:extra-flags byte-array-int 2]])
