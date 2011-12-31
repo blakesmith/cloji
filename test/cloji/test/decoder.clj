@@ -61,6 +61,8 @@
     (is (= "<html>" (apply str (take 6 (decode-record no-images f 1))))))
   (testing "decoding a record with out of bounds errors"
     (is (= "after" (apply str (take 5 (decode-record no-images f 8))))))
+  (testing "reading the correct length given trailing entries"
+    (is (= "and" (apply str (take-last 3 (decode-record no-images f 8))))))
   (testing "decoding the last text record record"
     (is (= "old, " (apply str (take 5 (decode-record no-images f 178)))))))
 

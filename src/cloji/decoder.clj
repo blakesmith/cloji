@@ -15,6 +15,9 @@
   `(do (.seek ~input-stream ~l)
     ~body))
 
+(defn decode-trail-size [flags data]
+  0)
+
 (defn decode-record-info [attrs x input-stream]
   (doall (map (fn [_]
     (decode-attributes attrs input-stream)) (range x))))
@@ -23,9 +26,11 @@
   (let [record (nth (:record-list headers) n)
         next-record (nth (:record-list headers) (inc n))
         read-size (- (:data-offset next-record) (:data-offset record))
-        encoding (encoding-string (:encoding (:mobi-header headers)))]
-    (with-location (:data-offset record) input-stream
-      (palmdoc-string (read-bytes input-stream read-size nil) encoding))))
+        encoding (encoding-string (:encoding (:mobi-header headers)))
+        data (with-location (:data-offset record) input-stream
+              (read-bytes input-stream read-size nil))
+        trail-size (decode-trail-size (:extra-flags headers) data)]
+    (palmdoc-string (drop-last trail-size data) encoding)))
 
 (defn decode-headers [input-stream]
   (let [pdb-header (decode-attributes pdb-attributes input-stream)
