@@ -54,7 +54,9 @@
   (testing "mobi header"
     (is (= 232 (:header-length (:mobi-header no-images))))
     (is (= :mobi-book (:mobi-type (:mobi-header no-images))))
-    (is (= :utf-8 (:encoding (:mobi-header no-images))))))
+    (is (= :utf-8 (:encoding (:mobi-header no-images)))))
+  (testing "extra flags"
+    (is (= 3 (:extra-flags (:mobi-header no-images))))))
 
 (deftest decode-record-impl
   (testing "decoding record n"
