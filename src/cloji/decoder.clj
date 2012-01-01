@@ -16,7 +16,12 @@
     ~body))
 
 (defn decode-trail-size [flags data]
-  0)
+  (loop [f (bitset flags) size 0]
+    (let [flag (first f)]
+      (if (nil? flag)
+        size
+        (recur (rest f) (if flag
+                          (+ size (vw-int (drop-last size data))) size))))))
 
 (defn decode-record-info [attrs x input-stream]
   (doall (map (fn [_]

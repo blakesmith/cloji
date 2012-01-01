@@ -7,6 +7,9 @@
            (bit-shift-left b (* i 8)))
          coll (iterate dec (- (count coll) 1)))))
 
+(defn vw-int [data]
+  0)
+
 (defn bitfield [value mappings]
   (map first
     (filter #(< 0 (bit-and (last %) value)) mappings)))
