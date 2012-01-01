@@ -7,8 +7,17 @@
            (bit-shift-left b (* i 8)))
          coll (iterate dec (- (count coll) 1)))))
 
-(defn vw-int [data]
-  0)
+(defn bvw-int [data]
+  "Backwards encoded variable width integer"
+  (loop [d data bit-pos 0 result 0]
+    (let [v (last d)
+          r (bit-or result (bit-shift-left (bit-and v 0x7F) bit-pos))]
+      (if (or (not= (bit-and v 0x80) 0)
+              (>= bit-pos 28)
+              (nil? v))
+        r
+        (recur (drop-last d) (+ bit-pos 7) r)))))
+
 
 (defn bitfield [value mappings]
   (map first

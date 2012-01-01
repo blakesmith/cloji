@@ -27,3 +27,7 @@
     (is (= [true true false false false] (bitset 3 5))))
   (testing "with the default max size"
     (is (= [true true false false false false false false false false false false false false false false] (bitset 3)))))
+
+(deftest bvw-int-impl
+  (testing "backwards variable width integer encoding"
+    (is (= 0x11111 (bvw-int [0x84 0x22 0x11])))))

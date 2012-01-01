@@ -16,12 +16,12 @@
     ~body))
 
 (defn decode-trail-size [flags data]
-  (loop [f (bitset flags) size 0]
-    (let [flag (first f)]
-      (if (nil? flag)
-        size
-        (recur (rest f) (if flag
-                          (+ size (vw-int (drop-last size data))) size))))))
+  (loop [f flags size 0]
+    (let [flag (last f)]
+      (if (= (count f) 1)
+        (if flag (+ (bit-and (last data) 0x3) size) size)
+        (recur (drop-last f) (if flag
+                          (+ size (bvw-int (drop-last size data))) size))))))
 
 (defn decode-record-info [attrs x input-stream]
   (doall (map (fn [_]
@@ -38,7 +38,7 @@
         encoding (encoding-string (:encoding (:mobi-header headers)))
         data (with-location (:data-offset record) input-stream
               (read-bytes input-stream read-size nil))
-        trail-size (decode-trail-size (:extra-flags (:mobi-header headers)) data)]
+        trail-size (decode-trail-size (bitset (:extra-flags (:mobi-header headers))) data)]
     (palmdoc-string (drop-last trail-size data) encoding)))
 
 (defn decode-headers [input-stream]
