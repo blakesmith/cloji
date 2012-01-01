@@ -11,6 +11,11 @@
   (map first
     (filter #(< 0 (bit-and (last %) value)) mappings)))
 
+(defn bitset [value & [max-count]]
+  (map (fn [i]
+    (= (bit-and (bit-shift-right value i) 1) 1))
+    (range (or max-count 16))))
+
 (defn read-bytes [input-stream n skip]
   (when skip (.skipBytes input-stream skip))
   (loop [coll [] bytes-read 0]

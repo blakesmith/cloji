@@ -22,3 +22,8 @@
     (is (= "<html><head><guide><reference title=\"CONTENTS\" type=\"toc\"  filepos=0000001117 />" (palmdoc-string (take 74 pbytes) "UTF-8")))
     (is (= 7246 (count (palmdoc-string (take 4096 pbytes) "UTF-8"))))))
 
+(deftest bitset-impl
+  (testing "with a small max size"
+    (is (= [true true false false false] (bitset 3 5))))
+  (testing "with the default max size"
+    (is (= [true true false false false false false false false false false false false false false false] (bitset 3)))))
