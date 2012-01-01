@@ -28,8 +28,8 @@
             (conj coll next-byte))) (inc bytes-read)))))
 
 (defn as-string [coll & [encoding]]
-  (let [encoding (if encoding encoding "UTF-8")]
-    (String. (into-array Byte/TYPE (map #(.byteValue %) (filter #(not (= 0 %)) coll))) encoding)))
+  (let [e (or encoding "UTF-8")]
+    (String. (into-array Byte/TYPE (map #(.byteValue %) (filter #(not (= 0 %)) coll))) e)))
 
 (defn as-date [coll]
   (let [t (byte-array-int coll)]
