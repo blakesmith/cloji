@@ -65,5 +65,5 @@
     (let [headers (decode-headers input-stream)]
       (reduce str
         (map #(decode-record headers input-stream %)
-             (range 1 (:record-count (:palmdoc-header headers))))))))
+             (range 1 (inc (:record-count (:palmdoc-header headers)))))))))
 
