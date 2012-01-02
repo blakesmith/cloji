@@ -42,22 +42,23 @@
     (palmdoc-string (drop-last trail-size data) encoding)))
 
 (defn decode-headers [input-stream]
-  (let [pdb-header (decode-attributes pdb-attributes input-stream)
-        record-count (:record-count pdb-header)
-        record-list (decode-record-info record-attributes record-count input-stream)
-        first-offset (:data-offset (first record-list))
-        palmdoc-header
-          (read-attributes palmdoc-attributes input-stream first-offset)
-        mobi-header (decode-attributes mobi-attributes input-stream)
-        extra-flags
-          (if (or (= 0xE4 (:header-length mobi-header))
-                  (= 0xE8 (:header-length mobi-header)))
-            (read-attributes extra-flag-attributes input-stream (+ first-offset 0xF2))
-            0)]
-    (-> pdb-header
-      (assoc :record-list record-list)
-      (assoc :palmdoc-header palmdoc-header)
-      (assoc :mobi-header (conj extra-flags mobi-header)))))
+  (with-location 0 input-stream
+    (let [pdb-header (decode-attributes pdb-attributes input-stream)
+          record-count (:record-count pdb-header)
+          record-list (decode-record-info record-attributes record-count input-stream)
+          first-offset (:data-offset (first record-list))
+          palmdoc-header
+            (read-attributes palmdoc-attributes input-stream first-offset)
+          mobi-header (decode-attributes mobi-attributes input-stream)
+          extra-flags
+            (if (or (= 0xE4 (:header-length mobi-header))
+                    (= 0xE8 (:header-length mobi-header)))
+              (read-attributes extra-flag-attributes input-stream (+ first-offset 0xF2))
+              0)]
+      (-> pdb-header
+        (assoc :record-list record-list)
+        (assoc :palmdoc-header palmdoc-header)
+        (assoc :mobi-header (conj extra-flags mobi-header))))))
 
 (defn decode-body [input-stream]
   (with-location 0 input-stream
