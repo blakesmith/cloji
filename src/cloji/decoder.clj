@@ -59,3 +59,10 @@
       (assoc :palmdoc-header palmdoc-header)
       (assoc :mobi-header (conj extra-flags mobi-header)))))
 
+(defn decode-body [input-stream]
+  (with-location 0 input-stream
+    (let [headers (decode-headers input-stream)]
+      (reduce str
+        (map #(decode-record headers input-stream %)
+             (range 1 (:record-count (:palmdoc-header headers))))))))
+
