@@ -19,7 +19,7 @@
   (loop [f flags size 0]
     (let [flag (last f)]
       (if (= (count f) 1)
-        (if flag (+ (bit-and (last data) 0x3) size) size)
+        (if flag (+ (bit-and (last (drop-last size data)) 0x3) size) size)
         (recur (drop-last f) (if flag
                           (+ size (bvw-int (drop-last size data))) size))))))
 
