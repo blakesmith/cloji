@@ -31,15 +31,16 @@
   (with-location offset input-stream
     (decode-attributes attrs input-stream)))
 
-(defn decode-record [headers input-stream n]
+(defn decode-record [headers input-stream n & [decomp-f]]
   (let [record (nth (:record-list headers) n)
         next-record (nth (:record-list headers) (inc n))
+        f (or decomp-f palmdoc-string)
         read-size (- (:data-offset next-record) (:data-offset record))
         encoding (encoding-string (:encoding (:mobi-header headers)))
         data (with-location (:data-offset record) input-stream
               (read-bytes input-stream read-size nil))
         trail-size (decode-trail-size (bitset (:extra-flags (:mobi-header headers))) data)]
-    (palmdoc-string (drop-last trail-size data) encoding)))
+    (f (drop-last trail-size data) encoding)))
 
 (defn decode-headers [input-stream]
   (with-location 0 input-stream
