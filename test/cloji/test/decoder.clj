@@ -3,8 +3,11 @@
   (:use [cloji.test.helper])
   (:use [clojure.test]))
 
-(def f (mobi-fixture "no_images.mobi"))
-(def no-images (decode-headers f))
+(def ni (mobi-fixture "no_images.mobi"))
+(def im (mobi-fixture "images2.mobi"))
+
+(def no-images (decode-headers ni))
+(def with-images (decode-headers im))
 
 (deftest decode-headers-impl
   (testing "palmdoc header"
@@ -54,17 +57,18 @@
   (testing "mobi header"
     (is (= 232 (:header-length (:mobi-header no-images))))
     (is (= :mobi-book (:mobi-type (:mobi-header no-images))))
-    (is (= :utf-8 (:encoding (:mobi-header no-images)))))
+    (is (= :utf-8 (:encoding (:mobi-header no-images))))
+    (is (= 313 (:first-image-offset (:mobi-header with-images)))))
   (testing "extra flags"
     (is (= 3 (:extra-flags (:mobi-header no-images))))))
 
 (deftest decode-record-impl
   (testing "decoding record n"
-    (is (= "<html>" (apply str (take 6 (decode-record no-images f 1))))))
+    (is (= "<html>" (apply str (take 6 (decode-record no-images ni 1))))))
   (testing "decoding a record with out of bounds errors"
-    (is (= "after" (apply str (take 5 (decode-record no-images f 8))))))
+    (is (= "after" (apply str (take 5 (decode-record no-images ni 8))))))
   (testing "reading the correct length given trailing entries"
-    (is (= "and" (apply str (take-last 3 (decode-record no-images f 8))))))
+    (is (= "and" (apply str (take-last 3 (decode-record no-images ni 8))))))
   (testing "decoding the last text record record"
-    (is (= "old, " (apply str (take 5 (decode-record no-images f 178)))))))
+    (is (= "old, " (apply str (take 5 (decode-record no-images ni 178)))))))
 

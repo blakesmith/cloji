@@ -72,7 +72,8 @@
 (def mobi-attributes
   [[:header-length byte-array-int 4 4]
    [:mobi-type mobi-type 4]
-   [:encoding encoding-type 4]])
+   [:encoding encoding-type 4]
+   [:first-image-offset byte-array-int 4 76]])
 
 (def extra-flag-attributes
   [[:extra-flags byte-array-int 2]])
