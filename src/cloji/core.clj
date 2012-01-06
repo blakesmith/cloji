@@ -28,13 +28,13 @@
     (= (bit-and (bit-shift-right value i) 1) 1))
     (range (or max-count 16))))
 
-(defn read-bytes [input-stream n skip]
-  (when skip (.skipBytes input-stream skip))
+(defn read-bytes [is n skip]
+  (when skip (.skipBytes is skip))
   (loop [coll [] bytes-read 0]
     (if (= bytes-read n)
       coll
       (recur
-        (let [next-byte (.read input-stream)]
+        (let [next-byte (.read is)]
           (if (= -1 next-byte)
             coll
             (conj coll next-byte))) (inc bytes-read)))))
