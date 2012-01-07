@@ -2,4 +2,4 @@
   :description "FIXME: write description"
   :dependencies [[org.clojure/clojure "1.2.1"]
                  [org.clojure/clojure-contrib "1.2.0"]]
-  :aot [cloji.core])
+  :jvm-opts ["-Djava.awt.headless=true" "-Dfile.encoding=utf8"])
