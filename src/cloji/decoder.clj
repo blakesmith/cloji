@@ -62,21 +62,18 @@
         (assoc :palmdoc-header palmdoc-header)
         (assoc :mobi-header (conj extra-flags mobi-header))))))
 
-(defn decode-images [headers is]
+(defn decode-image [headers is n]
   "Returns a collection of functions that can be lazily executed
   to return a BufferedImage from the mobi image records"
-  (map (fn [ir c]
-         (fn []
-            (let [index (+ c (:first-image-offset (:mobi-header headers)))
-                  record (nth (:record-list headers) index)
-                  next-record (nth (:record-list headers) (inc index))
-                  read-size (- (:data-offset next-record) (:data-offset record))
-                  b (byte-array read-size)]
-              (with-location (:data-offset record) is
-                (do
-                  (.read is b 0 read-size)
-                  (ImageIO/read (clojure.java.io/input-stream b)))))))
-       (:record-list headers) (range 1)))
+  (let [index (+ n (:first-image-offset (:mobi-header headers)))
+        record (nth (:record-list headers) index)
+        next-record (nth (:record-list headers) (inc index))
+        read-size (- (:data-offset next-record) (:data-offset record))
+        b (byte-array read-size)]
+    (with-location (:data-offset record) is
+      (do
+        (.read is b 0 read-size)
+        (ImageIO/read (clojure.java.io/input-stream b))))))
 
 (defn decode-body [is]
   (with-location 0 is

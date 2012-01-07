@@ -72,3 +72,7 @@
   (testing "decoding the last text record record"
     (is (= "old, " (apply str (take 5 (decode-record no-images ni 178)))))))
 
+(deftest decode-image-impl
+  (testing "returns a BufferedImage"
+    (is (instance? java.awt.image.BufferedImage (decode-image with-images im 0)))))
+
