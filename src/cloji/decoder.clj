@@ -51,8 +51,7 @@
 (defn decode-headers [is]
   (with-location 0 is
     (let [pdb-header (decode-attributes pdb-attributes is)
-          record-count (:record-count pdb-header)
-          record-list (decode-record-info record-attributes record-count is)
+          record-list (decode-record-info record-attributes (:record-count pdb-header) is)
           first-offset (:data-offset (first record-list))
           palmdoc-header
             (read-attributes palmdoc-attributes is first-offset)
