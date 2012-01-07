@@ -63,8 +63,7 @@
         (assoc :mobi-header (conj extra-flags mobi-header))))))
 
 (defn decode-image [headers is n]
-  "Returns a collection of functions that can be lazily executed
-  to return a BufferedImage from the mobi image records"
+  "Returns a BufferedImage from the mobi image record at offset n"
   (let [index (+ n (:first-image-offset (:mobi-header headers)))
         record (nth (:record-list headers) index)
         next-record (nth (:record-list headers) (inc index))
