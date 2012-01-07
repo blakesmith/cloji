@@ -7,6 +7,11 @@
   {:utf-8 "UTF-8"
    :cp1252 "CP1252"})
 
+(def compression-fn
+  {1 (fn [coll encoding] (as-string coll encoding))
+   2 palmdoc-string
+   17480 huffman-string})
+
 (defn decode-attributes [attrs is]
   (into {}
     (for [[attr-name f len skip] attrs]
@@ -41,11 +46,11 @@
      :seek (:data-offset record)}))
 
 
-(defn decode-record [headers is n & [decomp-f]]
+(defn decode-record [headers is n]
   "Decodes a text record"
   (let [ri (record-info headers n)
-        f (or decomp-f palmdoc-string)
         encoding (encoding-string (:encoding (:mobi-header headers)))
+        f (get compression-fn (:compression (:palmdoc-header headers)))
         data (with-location (:seek ri) is
               (read-bytes is (:read-size ri) nil))
         trail-size (decode-trail-size (bitset (:extra-flags (:mobi-header headers))) data)]

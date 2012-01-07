@@ -75,3 +75,5 @@
 (defn palmdoc-string [coll encoding]
   (as-string (decomp-palmdoc coll) encoding))
 
+(defn huffman-string [coll encoding])
+
