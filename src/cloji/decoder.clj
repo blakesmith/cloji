@@ -17,6 +17,7 @@
     ~body))
 
 (defn decode-trail-size [flags data]
+  "Detects the trailing entry size for a record"
   (loop [f flags size 0]
     (let [flag (last f)]
       (if (= (count f) 1)
@@ -33,6 +34,7 @@
     (decode-attributes attrs is)))
 
 (defn record-info [headers n]
+  "Helper function to retrieve the position offset in the file and read size for a record at index n"
   (let [record (nth (:record-list headers) n)
         next-record (nth (:record-list headers) (inc n))]
     {:read-size (- (:data-offset next-record) (:data-offset record))
@@ -40,6 +42,7 @@
 
 
 (defn decode-record [headers is n & [decomp-f]]
+  "Decodes a text record"
   (let [ri (record-info headers n)
         f (or decomp-f palmdoc-string)
         encoding (encoding-string (:encoding (:mobi-header headers)))
@@ -49,6 +52,7 @@
     (f (drop-last trail-size data) encoding)))
 
 (defn decode-headers [is]
+  "Takes a mobipocket RandomAccessFile and decodes the mobipocket headers, returns a map of header attributes that are necessary for decoding the body and extracting images"
   (with-location 0 is
     (let [pdb-header (decode-attributes pdb-attributes is)
           record-list (decode-record-info record-attributes (:record-count pdb-header) is)
@@ -76,6 +80,7 @@
         (ImageIO/read (clojure.java.io/input-stream b))))))
 
 (defn decode-body [is]
+  "Top level function to decode all text records and concatenate them together"
   (with-location 0 is
     (let [headers (decode-headers is)]
       (reduce str
