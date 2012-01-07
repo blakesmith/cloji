@@ -28,7 +28,7 @@
     (= (bit-and (bit-shift-right value i) 1) 1))
     (range (or max-count 16))))
 
-(defn read-bytes [is n skip]
+(defn read-bytes [is n & [skip]]
   (when skip (.skipBytes is skip))
   (loop [coll [] bytes-read 0]
     (if (= bytes-read n)

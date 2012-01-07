@@ -52,7 +52,7 @@
         encoding (encoding-string (:encoding (:mobi-header headers)))
         f (get compression-fn (:compression (:palmdoc-header headers)))
         data (with-location (:seek ri) is
-              (read-bytes is (:read-size ri) nil))
+              (read-bytes is (:read-size ri)))
         trail-size (decode-trail-size (bitset (:extra-flags (:mobi-header headers))) data)]
     (f (drop-last trail-size data) encoding)))
 
