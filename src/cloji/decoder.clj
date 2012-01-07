@@ -32,14 +32,19 @@
   (with-location offset is
     (decode-attributes attrs is)))
 
-(defn decode-record [headers is n & [decomp-f]]
+(defn record-info [headers n]
   (let [record (nth (:record-list headers) n)
-        next-record (nth (:record-list headers) (inc n))
+        next-record (nth (:record-list headers) (inc n))]
+    {:read-size (- (:data-offset next-record) (:data-offset record))
+     :seek (:data-offset record)}))
+
+
+(defn decode-record [headers is n & [decomp-f]]
+  (let [ri (record-info headers n)
         f (or decomp-f palmdoc-string)
-        read-size (- (:data-offset next-record) (:data-offset record))
         encoding (encoding-string (:encoding (:mobi-header headers)))
-        data (with-location (:data-offset record) is
-              (read-bytes is read-size nil))
+        data (with-location (:seek ri) is
+              (read-bytes is (:read-size ri) nil))
         trail-size (decode-trail-size (bitset (:extra-flags (:mobi-header headers))) data)]
     (f (drop-last trail-size data) encoding)))
 
@@ -65,13 +70,11 @@
 (defn decode-image [headers is n]
   "Returns a BufferedImage from the mobi image record at offset n"
   (let [index (+ n (:first-image-offset (:mobi-header headers)))
-        record (nth (:record-list headers) index)
-        next-record (nth (:record-list headers) (inc index))
-        read-size (- (:data-offset next-record) (:data-offset record))
-        b (byte-array read-size)]
-    (with-location (:data-offset record) is
+        ri (record-info headers index)
+        b (byte-array (:read-size ri))]
+    (with-location (:seek ri) is
       (do
-        (.read is b 0 read-size)
+        (.read is b 0 (:read-size ri))
         (ImageIO/read (clojure.java.io/input-stream b))))))
 
 (defn decode-body [is]
