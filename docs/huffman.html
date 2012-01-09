@@ -1,0 +1,817 @@
+<!DOCTYPE html PUBLIC "-//IETF//DTD HTML//EN">
+<!-- saved from url=(0043)http://www.cs.duke.edu/csed/poop/huff/info/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <title>Huffman Coding: A CS2 Assignment</title>
+  </head>
+
+  <body bgcolor="white">
+    <h1>Huffman Coding: A CS2 Assignment</h1>
+
+<a name="huffcode">
+<h2>From ASCII Coding to Huffman Coding</h2>
+</a>
+
+<p>
+Many programming languages use ASCII coding for characters (ASCII stands
+for American Standard Code for Information Interchange).  Some recent
+languages, e.g., Java, use UNICODE which, because it can encode a bigger
+set of characters, is more useful for languages like Japanese and
+Chinese which have a larger set of characters than are used in English.
+</p>
+
+<p>
+We'll use ASCII encoding of characters as an example.  In ASCII, every
+character is encoded with the same number of bits: 8 bits per character.
+Since there are 256 different values that can be encoded with 8 bits,
+there are potentially 256 different characters in the ASCII character
+set.  The common characters, e.g., alphanumeric characters, punctuation,
+control characters, etc., use only 7 bits; there are 128 different
+characters that can be encoded with 7 bits.  In C++ for example, the
+type <em>char</em> is divided into subtypes unsigned-char and (the
+default signed) char.  As we'll see, Huffman coding compresses data by
+using fewer bits to encode more frequently occurring characters so that
+not all characters are encoded with 8 bits. In Java there are no
+unsigned types and <em>char</em> values use 16 bits (Unicode compared to
+ASCII). Substantial compression results regardless of the
+character-encoding used by a language or platform.
+</p>
+
+<h3>A Simple Coding Example</h3>
+
+<p>
+We'll look at how the string "go go gophers" is encoded in ASCII, how we
+might save bits using a simpler coding scheme, and how Huffman coding is
+used to compress the data resulting in still more savings.
+</p>
+
+<p>
+With an ASCII encoding (8 bits per character) the 13 character string
+"go go gophers" requires 104 bits. The table below on the left shows how
+the coding works.
+</p>
+
+<a name="codetable">
+<table align="center">
+<caption><strong>coding a message</strong></caption><caption>
+</caption><tbody><tr>
+<th> ASCII coding </th> <th> &nbsp; </th> <th> 3-bit coding </th> </tr>
+<tr>
+
+<td align="left" width="40%">
+<table>
+<tbody><tr>
+<th>char</th><th> ASCII </th><th> binary</th></tr>
+<tr>
+<td align="right">g</td> <td align="right"> 103 </td> <td align="right">
+1100111</td>  </tr>
+<tr>
+<td align="right">o</td><td align="right"> 111 </td><td align="right"> 1101111
+</td> </tr>
+<tr>
+<td align="right">p</td><td align="right"> 112 </td><td align="right"> 1110000
+</td> </tr>
+<tr>
+<td align="right">h</td><td align="right"> 104 </td><td align="right"> 1101000
+</td> </tr>
+<tr>
+<td align="right">e</td><td align="right"> 101 </td><td align="right"> 1100101
+</td> </tr>
+<tr>
+<td align="right">r</td><td align="right"> 114 </td><td align="right"> 1110010
+</td> </tr>
+<tr>
+<td align="right">s</td><td align="right"> 115 </td><td align="right"> 1110011
+</td> </tr>
+<tr>
+<td align="right">space</td><td align="right"> 32 </td><td align="right">
+1000000 </td> </tr>
+</tbody></table>
+</td>
+<td width="20%">
+<!-- central column, just fill -->
+</td>
+<td align="right">
+<table>
+<tbody><tr>
+<th>char</th><th> code </th><th> binary</th></tr>
+<tr>
+<td align="right">  g</td><td align="right"> 0 </td><td align="right"> 000 </td></tr>
+<tr>
+<td align="right">o</td><td align="right"> 1 </td><td align="right"> 001 </td></tr>
+<tr>
+<td align="right">p</td><td align="right"> 2 </td><td align="right"> 010 </td></tr>
+<tr>
+<td align="right">h</td><td align="right"> 3 </td><td align="right"> 011 </td></tr>
+<tr>
+<td align="right">e</td><td align="right"> 4 </td><td align="right"> 100 </td></tr>
+<tr>
+<td align="right">r</td><td align="right"> 5 </td><td align="right"> 101 </td></tr>
+<tr>
+<td align="right">s</td><td align="right"> 6 </td><td align="right"> 110 </td></tr>
+<tr>
+<td align="right">space</td><td align="right"> 7 </td><td align="right"> 111 </td></tr>
+</tbody></table>
+</td>
+
+</tr>
+</tbody></table>
+</a>
+<p>
+
+The string "go go gophers" would be written (coded numerically) as 103
+111 32 103 111 32 103 111 112 104 101 114 115. Although not easily
+readable by humans, this would be written as the following
+stream of bits (the spaces would not be written, just the 0's and 1's)
+</p>
+<p>
+<font size="-1">
+1100111 1101111 1100000 1100111 1101111 1000000 1100111 1101111 1110000
+1101000 1100101 1110010 1110011
+</font>
+</p>
+
+<p>Since there are only eight different characters in "go go gophers",
+it's possible to use only 3 bits to encode the different characters.  We
+might, for example, use the encoding in the table on the right above,
+though other 3-bit encodings are possible.
+</p>
+
+<a name="3bit">
+<p>
+Now the string "go go gophers" would be encoded as 0 1 7 0 1 7 0 1 2 3 4
+5 6 or, as bits:
+</p>
+</a><p><a name="3bit">
+<font size="-1">
+000 001 111 000 001 111 000 001 010 011 100 101 110 111
+</font>
+</a>
+</p>
+
+<p>
+By using three bits per character, the string "go go gophers" uses a
+total of 39 bits instead of 104 bits.  More bits can be saved if we use
+fewer than three bits to encode characters like g, o, and space that
+occur frequently and more than three bits to encode characters like e,
+p, h, r, and s that occur less frequently in "go go gophers".  This is
+the basic idea behind Huffman coding: to use fewer bits for more
+frequently occurring characters.  We'll see how this is done using a
+tree that stores characters at the leaves, and whose root-to-leaf paths
+provide the bit sequence used to encode the characters.
+</p>
+
+<h3>Towards a Coding Tree</h3>
+
+<table align="CENTER">
+<caption><strong>A tree view of the ASCII character set</strong></caption>
+<tbody><tr><td width="55%">
+<p>
+Using a tree (actually a binary trie, more on that later) all characters
+are stored at the leaves of a complete tree.  In the diagram to the
+right, the tree has eight levels meaning that the root-to-leaf path
+always has seven edges.  A left-edge (black in the diagram) is numbered
+0, a right-edge (blue in the diagram) is numbered 1.  The ASCII code for
+any character/leaf is obtained by following the root-to-leaf path and
+catening the 0's and 1's.  For example, the character 'a', which has
+ASCII value 97 (1100001 in binary), is shown with root-to-leaf path of
+<em>right-right-left-left-left-left-right</em>.
+</p>
+
+</td><td valign="TOP">
+<img src="./huffman_files/asciitree.jpg" alt="*">
+
+</td></tr></tbody></table>
+
+<p>
+The structure of the tree can be used to determine the coding of any
+leaf by using the 0/1 edge convention described.  If we use a different
+tree, we get a different coding.  As an example, the tree below on the
+right yields the coding shown on the left.
+</p>
+
+
+<a name="hufftree">
+</a><table>
+<tbody><tr>
+<td align="LEFT" width="40%">
+<table>
+<tbody><tr>
+<th>char</th><th> binary</th></tr>
+<tr>
+<td align="left">'g'</td><td align="right"> 10 </td></tr>
+<tr>
+<td align="left">'o'</td><td align="right"> 11 </td></tr>
+<tr>
+<td align="left">'p'</td><td align="right"> 0100 </td></tr>
+<tr>
+<td align="left">'h'</td><td align="right"> 0101 </td></tr>
+<tr>
+<td align="left">'e'</td><td align="right"> 0110 </td></tr>
+<tr>
+<td align="left">'r'</td><td align="right"> 0111 </td></tr>
+<tr>
+<td align="left">'s'</td><td align="right"> 000 </td></tr>
+<tr>
+<td align="left">'&nbsp;&nbsp;'</td><td align="right"> 001 </td></tr>
+</tbody></table>
+</td>
+<td align="right">
+<img src="./huffman_files/gohuff.jpg" alt="*">
+</td>
+
+</tr>
+</tbody></table>
+
+
+<a name="gogoencode">
+<p>
+Using this coding, "go go gophers" is encoded (spaces wouldn't appear in
+the bitstream) as:
+</p>
+</a>
+<p>
+
+10 11 001 10 11 001 10 11 0100 0101 0110 0111 000
+
+</p>
+<p>
+This is a total of 37 bits, which saves two bits from the encoding in
+which each of the 8 characters has a 3-bit encoding 
+that is <a href="http://www.cs.duke.edu/csed/poop/huff/info/#3bit">shown above</a>!  The bits are saved by coding
+frequently occurring characters like 'g' and 'o' with fewer bits (here
+two bits) than characters that occur less frequently like 'p', 'h', 'e',
+and 'r'.
+</p>
+
+<p>
+The character-encoding induced by the tree can be used to decode a
+stream of bits as well as encode a string into a stream of bits.  You 
+can try to decode the following bitstream; the answer with an
+explanation follows:
+</p>
+
+<p>
+01010110011100100001000101011001110110001101101100000010101
+011001110110
+</p>
+
+<p>
+To decode the stream, start at the root of the encoding tree, and follow
+a left-branch for a 0, a right branch for a 1.  When you reach a leaf,
+write the character stored at the leaf, and start again at the top of
+the tree.  To start, the bits are 010101100111.  This yields
+<em>left-right-left-right</em> to the letter 'h', followed (starting
+again at the root) with <em>left-right-right-left</em> to the letter
+'e', followed by <em>left-right-right-right</em> to the letter 'r'.
+Continuing until all the bits are processed yields
+</p>
+<center>
+her sphere goes here
+</center>
+
+<h3>Prefix codes and Huffman Codes</h3>
+<p>
+When all characters are stored in leaves, and every interior/(non-leaf)
+node has two children, the coding induced by the 0/1 convention outlined
+above has what is called the <em>prefix property</em>: no bit-sequence
+encoding of a character is the prefix of any other bit-sequence encoding.
+This makes it possible to decode a bitstream using the coding
+tree by following root-to-leaf paths.  The tree shown above for "go go
+gophers" is an optimal tree: there are no other trees with the same
+characters that use fewer bits to encode the string "go go gophers".
+There are other trees that use 37 bits; for example you can simply swap
+any sibling nodes and get a different encoding that uses the same number
+of bits.  We need an algorithm for constructing an optimal tree which in
+turn yields a minimal per-character encoding/compression.  This
+algorithm is called Huffman coding, and was invented by D. Huffman in
+1952.  It is an example of a greedy algorithm.
+</p>
+
+<h2> Huffman Coding </h2>
+
+<p>
+We'll use Huffman's algorithm to construct a tree that is used for data
+compression.  In the <a href="http://www.cs.duke.edu/csed/poop/huff/info/#huffcode">previous section</a> we saw
+examples of how a stream of bits can be generated from an encoding,
+e.g., how <a href="http://www.cs.duke.edu/csed/poop/huff/info/#gogoencode">"go go gophers" was written as 
+1011001101100110110100010101100111000.</a>  We also saw how the tree can
+be used to decode a stream of bits.  We'll discuss how to construct the
+tree here.
+</p>
+
+<p>
+We'll assume that each character has an associated weight equal to the
+number of times the character occurs in a file, for example.  In the "go
+go gophers" example, the characters 'g' and 'o' have weight 3, the space
+has weight 2, and the other characters have weight 1.  When compressing
+a file we'll need to calculate these weights, we'll ignore this step for
+now and assume that all character weights have been calculated.
+Huffman's algorithm assumes that we're building a single tree from a
+group (or forest) of trees.  Initially, all the trees have a single node
+with a character and the character's weight.  Trees are combined by
+picking two trees, and making a new tree from the two trees.  This
+decreases the number of trees by one at each step since two trees are
+combined into one tree.  The algorithm is as follows:
+</p>
+
+<p>
+</p><ol>
+<p>
+</p><li> Begin with a forest of trees.  All trees are one node, with the
+weight of the tree equal to the weight of the character in the node.
+Characters that occur most frequently have the highest weights.
+Characters that occur least frequently have the smallest weights.
+<p>
+
+</p><p>
+</p></li><li> <p>Repeat this step until there is only one tree:</p>
+Choose two trees with the smallest weights, call these trees
+T<sub>1</sub> and T<sub>2</sub>.  Create a new tree whose root has a
+weight equal to the sum of the weights T<sub>1</sub> + T<sub>2</sub> and
+whose left subtree is T<sub>1</sub> and whose right subtree is
+T<sub>2</sub>.
+<p></p>
+
+</li><li> The single tree left after the previous step is an optimal encoding tree.
+</li></ol>
+<p></p>
+
+<a name="forest"><p>
+</p><p>
+We'll use the string "go go gophers" as an example.  Initially we have
+the forest shown below.  The nodes are shown with a weight/count that
+represents the number of times the node's character occurs.
+</p>
+
+
+<center>
+<img src="./huffman_files/gopher1.jpg" alt="*">
+</center>
+<p></p>
+</a>
+
+<p>
+We pick two minimal nodes.  There are five nodes with the minimal weight
+of one, it doesn't matter which two we pick.  In a program, the
+deterministic aspects of the program will dictate which two are chosen,
+e.g., the first two in an array, or the elements returned by a priority
+queue implementation.  We create a new tree whose root is weighted by
+the sum of the weights chosen.  We now have a forest of seven trees as
+shown here:
+</p>
+
+<p>
+</p><center>
+<img src="./huffman_files/gopher2.jpg" alt="*">
+</center>
+<p></p>
+
+<p>
+Choosing two minimal trees yields another tree with weight two as shown
+below.  There are now six trees in the forest of trees that will
+eventually build an encoding tree.
+</p>
+
+<p>
+</p><center>
+<img src="./huffman_files/gopher3.jpg" alt="*">
+</center>
+<p></p>
+
+<p>
+Again we must choose the two trees of minimal weight.  The lowest weight
+is the 'e'-node/tree with weight equal to one.  There are three trees
+with weight two, we can choose any of these to create a new tree whose
+weight will be three.
+</p>
+
+<p>
+</p><center>
+<img src="./huffman_files/gopher4.jpg" alt="*">
+</center>
+<p></p>
+
+<p>
+Now there are two trees with weight equal to two.  These are joined into
+a new tree whose weight is four.  There are four trees left, one whose
+weight is four and three with a weight of three.
+</p>
+
+<p>
+</p><center>
+<img src="./huffman_files/gopher5.jpg" alt="*">
+</center>
+<p></p>
+
+<p>
+Two minimal (three weight) trees are joined into a tree whose weight is
+six.  In the diagram below we choose the 'g' and 'o' trees (we could
+have chosen the 'g' tree and the space-'e' tree or the 'o' tree and the
+space-'e' tree.)  There are three trees left.
+</p>
+
+<p>
+</p><center>
+<img src="./huffman_files/gopher6.jpg" alt="*">
+</center>
+<p></p>
+
+<p>
+The minimal trees have weights of three and four, these are joined into
+a tree whose weight is seven leaving two trees.
+</p>
+
+<p>
+</p><center>
+<img src="./huffman_files/gopher7.jpg" alt="*">
+</center>
+<p></p>
+
+<p>
+Finally, the last two trees are joined into a final tree whose weight is
+thirteen, the sum of the two weights six and seven.  Note that this tree
+is different from the <a href="http://www.cs.duke.edu/csed/poop/huff/info/#hufftree">tree we used to illustrate
+Huffman coding above</a>, and the bit patterns for each character are
+different, but the total number of bits used to encode "go go gophers"
+is the same.
+</p>
+
+<p>
+</p><center>
+<img src="./huffman_files/gopher8.jpg" alt="*">
+</center>
+<p></p>
+<p>
+
+</p><p>
+The character encoding induced by the last tree is shown below where
+again, 0 is used for left edges and 1 for right edges.
+
+</p><center>
+<table>
+<tbody><tr>
+<th>char</th><th> binary</th></tr>
+<tr>
+<td align="left">'g'</td><td align="right"> 00 </td></tr>
+<tr>
+<td align="left">'o'</td><td align="right"> 01 </td></tr>
+<tr>
+<td align="left">'p'</td><td align="right"> 1110 </td></tr>
+<tr>
+<td align="left">'h'</td><td align="right"> 1101 </td></tr>
+<tr>
+<td align="left">'e'</td><td align="right"> 101 </td></tr>
+<tr>
+<td align="left">'r'</td><td align="right"> 1111 </td></tr>
+<tr>
+<td align="left">'s'</td><td align="right"> 1100 </td></tr>
+<tr>
+<td align="left">'&nbsp;&nbsp;'</td><td align="right"> 100 </td></tr>
+</tbody></table>
+</center>
+<p></p>
+
+<p>
+The string "go go gophers" would be encoded as shown (with spaces used
+for easier reading, the spaces wouldn't appear in the real encoding).
+</p>
+
+<p>
+00 01 100 00 01 100 00 01 1110 1101 101 1111 1100
+</p>
+
+<p>
+Once again, 37 bits are used to encode "go go gophers".  There
+are several trees that yield an optimal 37-bit encoding of "go go
+gophers".  The tree that actually results from a programmed
+implementation of Huffman's algorithm will be the same each time the
+program is run for the same weights (assuming no randomness is used in
+creating the tree).
+</p>
+
+<h3>Why is Huffman Coding Greedy?</h3>
+
+<p>
+Huffman's algorithm is an example of a <strong>greedy
+algorithm</strong>.
+It's called greedy because the two smallest nodes are chosen at each
+step, and this local decision results in a globally optimal encoding
+tree.  In general, greedy algorithms use small-grained, or local
+minimal/maximal choices to result in a global minimum/maximum.  Making
+change using U.S. money is another example of a greedy algorithm.
+</p>
+
+<ul>
+<li><p>
+Problem: give change in U.S. coins for any amount (say under $1.00)
+using the minimal number of coins.
+</p>
+
+</li><li><p>Solution (assuming coin denominations of $0.25, $0.10, $0.05, and
+$0.01, called quarters, dimes, nickels, and pennies, respectively): use
+the highest-value coin that you can, and give as many of these as you
+can.  Repeat the process until the correct change is given.</p>
+
+</li><li><p>Example: make change for $0.91.  Use 3 quarters (the highest coin we
+can use, and as many as we can use).  This leaves $0.16.  To make change
+use a dime (leaving $0.06), a nickel (leaving $0.01), and a penny.  The
+total change for $0.91 is three quarters, a dime, a nickel, and a
+penny.  This is a total of six coins, it is not possible to make change
+for $0.91 using fewer coins.
+</p><p>
+</p></li></ul>
+
+<p>
+The solution/algorithm is greedy because the largest denomination coin
+is chosen to use at each step, and as many are used as possible.  This
+locally optimal step leads to a globally optimal solution.  Note that
+the algorithm <strong>does not work with different
+denominations</strong>.  For example, if there are no nickels, the
+algorithm will make change for $0.31 using one quarter and six pennies,
+a total of seven coins.  However, it's possible to use three dimes and one
+penny, a total of four coins.  This shows that greedy algorithms are not
+always optimal algorithms.
+</p>
+
+<h2>Implementing/Programming Huffman Coding</h2>
+
+<p>
+In this section we'll see the basic programming steps in implementing
+huffman coding.  More details can be found in the language specific
+descriptions.
+</p>
+
+<p>
+There are two parts to an implementation: a compression program and an
+uncompression/decompression program.  You need both to have a useful
+compression utility.  We'll assume these are separate programs, but they
+share many classes, functions, modules, code or whatever
+unit-of-programming you're using.  We'll call the program that reads a
+regular file and produces a compressed file the <em>compression</em> or
+<em>huffing</em> program.  The program that does the reverse, producing
+a regular file from a compressed file, will be called the
+<em>uncompression</em> or <em>unhuffing</em> program.
+</p>
+
+<h3>The Compression or Huffing Program</h3>
+
+<p>
+To compress a file (sequence of characters) you need a
+<a href="http://www.cs.duke.edu/csed/poop/huff/info/#codetable">table of bit encodings</a>, e.g., an
+ASCII table, or a table giving a sequence of bits that's used to encode
+each character.  This table is constructed from <a href="http://www.cs.duke.edu/csed/poop/huff/info/#hufftree">a
+coding tree</a> using root-to-leaf paths to generate the bit sequence
+that encodes each character.
+</p>
+
+<p>
+Assuming you can write a specific number of bits at a time to a file, a
+compressed file is made using the following top-level steps.  These
+steps will be developed further into sub-steps, and you'll eventually
+implement a program based on these ideas and sub-steps.
+</p>
+
+<ol>
+<li> <p>Build a table of per-character encodings.  The table may be given
+to you, e.g., an ASCII table, or you may build the table from a Huffman
+coding tree.</p>
+
+</li><li> <p>Read the file to be compressed (the plain file) and process one
+character at a time.  To process each character find the bit sequence
+that encodes the character using the table built in the previous step
+and write this bit sequence to the compressed file.
+</p>
+</li></ol>
+
+<p>
+As an example, we'll use the table below on the left, which is generated
+from the tree on the right.  Ignore the weights on the nodes, we'll use
+those when we discuss how the tree is created.
+</p>
+<a name="hufftree">
+</a><table>
+<caption><strong>Another Huffman Tree/Table Example</strong></caption>
+<tbody><tr>
+<td align="LEFT" width="40%">
+<table>
+<tbody><tr>
+<th>char</th><th> binary</th></tr>
+<tr>
+<td align="left">'a'</td><td align="right"> 100 </td></tr>
+<tr>
+<td align="left">'r'</td><td align="right"> 101 </td></tr>
+<tr>
+<td align="left">'e'</td><td align="right"> 11 </td></tr>
+<tr>
+<td align="left">'n'</td><td align="right"> 0001 </td></tr>
+<tr>
+<td align="left">'t'</td><td align="right"> 011 </td></tr>
+<tr>
+<td align="left">'s'</td><td align="right"> 010 </td></tr>
+<tr>
+<td align="left">'o'</td><td align="right"> 0000 </td></tr>
+<tr>
+<td align="left">'&nbsp;&nbsp;'</td><td align="right"> 001 </td></tr>
+</tbody></table>
+</td>
+<td align="right">
+<img src="./huffman_files/startree.jpg" alt="*">
+</td>
+
+</tr>
+</tbody></table>
+
+<p>
+To compress the string/file "streets are stone stars are not", we read
+one character at a time and write the sequence of bits that encodes each
+character.  To encode "streets are" we would write the following bits:
+</p>
+<p>
+&nbsp;&nbsp;     010011101111101101000110010111
+</p>
+
+<p>
+The bits would be written in the order <em>010</em>, <em>011</em>,
+<em>101</em>, <em>11</em>, <em>11</em>, <em>011</em>, <em>010</em>,
+<em>001</em>, <em>100</em>, <em>101</em>, <em>11</em>.
+</p>
+
+<p>
+That's the compression program.  Two things are missing from the
+compressed file: (1) some information (called the header) must be written at
+the beginning of the compressed file that will allow it to be
+uncompressed; (2) some information must be written at the end of the file
+that will be used by the uncompression program to tell when the
+compressed bit sequence is over (this is the bit sequence for
+the <a href="http://www.cs.duke.edu/csed/poop/huff/info/#pseudo-eof">pseudo-eof</a> character described later).
+</p>
+
+<h3>Building the Table for Compression/Huffing</h3>
+
+<p>
+To build a table of optimal per-character bit sequences you'll need to
+build a Huffman coding tree using the greedy Huffman algorithm.  The
+table is generated by following every root-to-leaf path and recording
+the left/right 0/1 edges followed.  These paths make the optimal
+encoding bit sequences for each character.
+</p>
+
+<p>
+There are three steps in creating the table:
+</p><ol>
+<li><p>Count the number of times every character occurs.  Use these
+counts to create an initial forest of one-node trees.  Each node has a
+character and a weight equal to the number of times the character
+occurs. An <a href="http://www.cs.duke.edu/csed/poop/huff/info/#forest">example of one node trees</a> shows what the
+initial forest looks like.</p>
+
+</li><li><p>Use the greedy Huffman algorithm to build a single tree.  The
+final tree will be used in the next step.</p>
+
+</li><li><p>Follow every root-to-leaf path creating a table of bit sequence
+encodings for every character/leaf.</p>
+</li></ol>
+<p></p>
+
+
+<a name="header"><h3>Header Information</h3></a>
+
+<p>
+You must store some initial information in the compressed file that will
+be used by the uncompression/unhuffing program.  Basically you must
+store the tree used to compress the original file.  This tree is used by
+the uncompression program.
+</p>
+
+<p>
+There are several alternatives for storing the tree.  Some are outlined
+here, you may explore others as part of the specifications of your
+assignment.
+</p>
+
+<ul>
+<li><p>Store the character counts at the beginning of the file.  You can
+store counts for every character, or counts for the non-zero
+characters.  If you do the latter, you must include some method for
+indicating the character, e.g., store character/count pairs.
+</p>
+</li><li><p>
+You could use a "standard" character frequency, e.g., for any English
+language text you could assume weights/frequencies for every character
+and use these in constructing the tree for both compression and
+uncompression.  
+</p>
+</li><li><p> You can store the tree at the beginning of the file.  One method
+for doing this is to do a pre-order traversal, writing each node
+visited.  You must differentiate leaf nodes from internal/non-leaf
+nodes.  One way to do this is write a single bit for each node, say 1
+for leaf and 0 for non-leaf.  For leaf nodes, you will also need to
+write the character stored.  For non-leaf nodes there's no information
+that needs to be written, just the bit that indicates there's an
+internal node.
+</p>
+
+</li></ul>
+
+<a name="pseudo-eof"><h3>The pseudo-eof character</h3></a>
+
+When you write output the operating system typically buffers the output
+for efficiency.  This means output is actually written to disk when some
+internal buffer is full, not every time you write to a stream in a
+program.  Operating systems also typically require that disk files 
+have sizes that are multiples of some architecture/operating system
+specific unit, e.g., a byte or word.  On many systems all file sizes are
+multiples of 8 or 16 bits so that it isn't possible to have a 122 bit
+file.  
+<p>
+
+In particular, it is not possible to write just one single bit to a
+file, all output is actually done in "chunks", e.g., it might be done in
+eight-bit chunks. In any case, when you write 3 bits, then 2 bits, then
+10 bits, all the bits are eventually written, but you cannot be sure
+precisely when they're written during the execution of your
+program. Also, because of buffering, if all output is done in eight-bit
+chunks and your program writes exactly 61 bits explicitly, then 3 extra
+bits will be written so that the number of bits written is a multiple of
+eight.  Your decompressing/unhuff program must have some mechanism to
+account for these extra or "padding" bits since these bits do not
+represent compressed information.
+</p><p>
+
+Your decompression/unhuff program cannot simply read bits until there
+are no more left since your program might then read the extra padding bits
+written due to buffering. This means that when reading a compressed
+file, you <strong>CANNOT</strong> use code like this.
+</p><xmp>
+        int bits;
+        while ((bits = input.readbits(1)) != -1)
+        {
+            // process bits
+        }
+</xmp>
+To avoid this problem, you can use a pseudo-EOF character and write a
+loop that stops when the pseudo-EOF character is read in (in compressed
+form).  The code below illustrates how reading a compressed file
+works using a pseudo-EOF character:
+<xmp>
+       int bits;
+       while (true)
+       {
+           if ((bits = input.readbits(1)) == -1)
+           {
+               System.err.println("should not happen! trouble reading bits");
+           }
+           else
+           { 
+               // use the zero/one value of the bit read
+               // to traverse Huffman coding tree
+               // if a leaf is reached, decode the character and print UNLESS
+               // the character is pseudo-EOF, then decompression done
+
+               if ( (bits & 1) == 0) // read a 0, go left  in tree
+               else                  // read a 1, go right in tree
+
+               if (at leaf-node in tree)
+               {
+                   if (leaf-node stores pseudo-eof char) 
+                       break;   // out of loop
+                   else
+                       write character stored in leaf-node
+               }
+           }
+       }
+</xmp>
+
+When a compressed file is written the last bits written should be the
+bits that correspond to the pseudo-EOF char. You will have to write
+these bits explicitly. These bits will be recognized by the program
+unhuff and used in the decompression process. This means that your
+decompression program will never actually run out of bits if it's
+processing a properly compressed file (you may need to think about this
+to really believe it). In other words, when decompressing you will read
+bits, traverse a tree, and eventually find a leaf-node representing some
+character. When the pseudo-EOF leaf is found, the program can terminate
+because all decompression is done. If reading a bit fails because there
+are no more bits (the bit reading function returns false) the compressed
+file is not well formed.
+<p>
+
+Every time a file is compressed the count of the the number of times the
+pseudo-EOF character occurs should be one --- this should be done
+explicitly in the code that determines frequency counts. In other words,
+a pseudo-char EOF with number of occurrences (count) of 1 must be
+explicitly created and used in creating the tree used for compression.
+</p><p>
+
+
+
+
+    </p><hr>
+    <address><a href="mailto:ola@cs.duke.edu">Owen L. Astrachan</a></address>
+<!-- Created: Thu Feb 04 13:45:35 PST 1999 -->
+<!-- hhmts start -->
+Last modified: Wed Feb  4 20:36:33 EST 2004
+<!-- hhmts end -->
+  
+
+</body></html>
