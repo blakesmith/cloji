@@ -73,7 +73,11 @@
   [[:header-length byte-array-int 4 4]
    [:mobi-type mobi-type 4]
    [:encoding encoding-type 4]
-   [:first-image-offset byte-array-int 4 76]])
+   [:first-image-offset byte-array-int 4 76]
+   [:first-huff-rec byte-array-int 4]
+   [:huff-rec-count byte-array-int 4]
+   [:huff-table-offset byte-array-int 4]
+   [:huff-table-length byte-array-int 4]])
 
 (def extra-flag-attributes
   [[:extra-flags byte-array-int 2]])

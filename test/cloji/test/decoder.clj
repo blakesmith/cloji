@@ -5,9 +5,11 @@
 
 (def ni (mobi-fixture "no_images.mobi"))
 (def im (mobi-fixture "images2.mobi"))
+(def hf (mobi-fixture "huff.mobi"))
 
 (def no-images (decode-headers ni))
 (def with-images (decode-headers im))
+(def huff (decode-headers hf))
 
 (deftest decode-headers-impl
   (testing "palmdoc header"
@@ -58,7 +60,12 @@
     (is (= 232 (:header-length (:mobi-header no-images))))
     (is (= :mobi-book (:mobi-type (:mobi-header no-images))))
     (is (= :utf-8 (:encoding (:mobi-header no-images))))
-    (is (= 313 (:first-image-offset (:mobi-header with-images)))))
+    (is (= 313 (:first-image-offset (:mobi-header with-images))))
+    (is (= 63 (:first-huff-rec (:mobi-header huff))))
+    (is (= 3 (:huff-rec-count (:mobi-header huff))))
+    (is (= 3 (:huff-rec-count (:mobi-header huff))))
+    (is (= 70 (:huff-table-offset (:mobi-header huff))))
+    (is (= 1 (:huff-table-length (:mobi-header huff)))))
   (testing "extra flags"
     (is (= 3 (:extra-flags (:mobi-header no-images))))))
 
