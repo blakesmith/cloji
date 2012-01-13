@@ -1,0 +1,25 @@
+1. Unpack the First Huffman record offset (record number)
+2. Load the huffman table
+    - Fetch two 4 byte offset lengths, right after the HUFF header
+    - At offset 1, read 256 4 byte integers, map each int over "Build dict1"
+    - Build dict 1:
+        Get code length (huff code len), term, maxcode (byte & 0x1F, byte & 0x70, byte >> 8) 
+    - At offset 2, read 64 4 byte integers
+        - Get the mincode (dict):
+            - First 3 values, (value << (32 - i)) 
+        - Get the maxcode (dict):
+            - Values 1, 2 ((value + 1) << (32 - i) - 1)
+
+3. For each huff record (from Huffman Record Count), run the record through CDIC, adding to the dict
+    - Check that the CDIC header is valid
+    - At offset 8 (from start of CDIC header), get number of phrases, number of phrases per record (power of 2)
+    - Calculate the number of phrases for this record, either the max phrase length per record, or remaining phrase count
+        (min max-phrases, (- (count dict) number-of-phrases))
+    - Get the slice
+        - Number of bytes in the slice: offset + 16 bytes (16 bytes = total header length)
+        - Range slice the bytes from [18 + offset:18 + offset + (Number of bytes & 0x7FFF)]
+        - Return the slice and whether the top bit of the number of bytes in the slice is set (blen & 0x8000)
+    - For the number of phrases in this record, Get the slice of each and add it to the dictionary
+
+3. Unpack
+    - Total bits to read = (* 8 (count data))
