@@ -23,3 +23,19 @@
 
 3. Unpack
     - Total bits to read = (* 8 (count data))
+    - While there are still bits to read (bitsleft - bitsread) > 0:
+    	- Read a 4 byte integer (64 bits in length) into x
+	- Read the n (starts at 32) bits from x into code
+	- Using the first 8 bits of code, lookup the codelen, term, maxcode in dict 1
+	- If term == 0
+		- Increment codelen 1, seeking that offset forward in mincode (which sorts descending) until we hit a length less than code
+		- Set maxcode using our codelen looked up in the maxcode dict
+    	- Decrement n, bitsleft by codelen
+	- Lookup index for CDIC dictionary (r) found by reading (codelen) bits from (- maxcode code)
+	- Slice, flag looked up in CDIC dictionary
+	- If flag == 0
+		- Run the slice through unpack again recursively, setting the CDIC dictionary at (r) index to returned value
+	- Else
+		- Add the slice to the string
+		
+	- Return the final string
