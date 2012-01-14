@@ -17,10 +17,6 @@
     (for [[attr-name f len skip] attrs]
       [attr-name (f (read-bytes is len skip))])))
 
-(defmacro with-location [l is body]
-  `(do (.seek ~is ~l)
-    ~body))
-
 (defn decode-trail-size [flags data]
   "Detects the trailing entry size for a record"
   (loop [f flags size 0]
@@ -38,21 +34,11 @@
   (with-location offset is
     (decode-attributes attrs is)))
 
-(defn record-info [headers n]
-  "Helper function to retrieve the position offset in the file and read size for a record at index n"
-  (let [record (nth (:record-list headers) n)
-        next-record (nth (:record-list headers) (inc n))]
-    {:read-size (- (:data-offset next-record) (:data-offset record))
-     :seek (:data-offset record)}))
-
-
 (defn decode-record [headers is n]
   "Decodes a text record"
-  (let [ri (record-info headers n)
-        encoding (encoding-string (:encoding (:mobi-header headers)))
+  (let [encoding (encoding-string (:encoding (:mobi-header headers)))
         f (get compression-fn (:compression (:palmdoc-header headers)))
-        data (with-location (:seek ri) is
-              (read-bytes is (:read-size ri)))
+        data (read-record headers is n)
         trail-size (decode-trail-size (bitset (:extra-flags (:mobi-header headers))) data)]
     (f (drop-last trail-size data) encoding)))
 

@@ -1,6 +1,10 @@
 (ns cloji.core
   (:import [java.util Date]))
 
+(defmacro with-location [l is body]
+  `(do (.seek ~is ~l)
+    ~body))
+
 (defn byte-array-int [coll]
   (reduce +
     (map (fn [b i]
@@ -38,6 +42,19 @@
           (if (= -1 next-byte)
             coll
             (conj coll next-byte))) (inc bytes-read)))))
+
+(defn record-info [headers n]
+  "Helper function to retrieve the position offset in the file and read size for a record at index n"
+  (let [record (nth (:record-list headers) n)
+        next-record (nth (:record-list headers) (inc n))]
+    {:read-size (- (:data-offset next-record) (:data-offset record))
+     :seek (:data-offset record)}))
+
+(defn read-record [headers is n]
+  "Read the raw data in a record"
+  (let [ri (record-info headers n)]
+    (with-location (:seek ri) is
+      (read-bytes is (:read-size ri)))))
 
 (defn as-string [coll & [encoding]]
   (let [e (or encoding "UTF-8")]
