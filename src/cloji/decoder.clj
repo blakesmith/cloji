@@ -14,15 +14,33 @@
 
 (defn load-huff [table]
   (let [meta-offset (unpack-type table byte-array-int 4 8)
-        dict-offset (unpack-type table byte-array-int 4 12)
+        limit-offset (unpack-type table byte-array-int 4 12)
+        limit-coll (unpack-series table byte-array-int 64 4 limit-offset)
         meta-unpack
           (fn [x]
             (let [codelen (bit-and x 0x1F)
                   term (bit-and x 0x80)
                   maxcode (dec (bit-shift-left (inc (bit-shift-right x 8)) (- 32 codelen)))]
-              [codelen, term, maxcode]))]
-    {:meta-info (map meta-unpack
-      (unpack-series table byte-array-int 256 4 meta-offset))}))
+              [codelen, term, maxcode]))
+        limit-unpack
+          (fn [coll]
+            (loop [in (vec (concat [0 0] coll))
+                   pos 0
+                   mincode []
+                   maxcode []]
+              (let [x (first in)]
+                (if (nil? x)
+                  {:mincode mincode :maxcode maxcode}
+                  (cond
+                    (even? pos)
+                      (recur
+                        (rest in) (inc pos) (conj mincode (bit-shift-left x (- 32 (count mincode)))) maxcode)
+                    (odd? pos)
+                      (recur
+                        (rest in) (inc pos) mincode (conj maxcode (dec (bit-shift-left (inc x) (- 32 (count maxcode)))))))))))]
+
+    (merge (limit-unpack limit-coll) {:meta-info (map meta-unpack
+      (unpack-series table byte-array-int 256 4 meta-offset))})))
 
 (defn decode-attributes [attrs is]
   (into {}

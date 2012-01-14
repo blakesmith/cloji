@@ -88,7 +88,14 @@
     (is (instance? java.awt.image.BufferedImage (decode-image with-images im 0)))))
 
 (deftest load-huff-impl
-  (testing "meta-info dictionary, first and last item"
+  (testing "meta-info collection, first and last item"
     (is (= [14 0 262143] (first (:meta-info (load-huff huff-table)))))
-    (is (= [5 128 4294967295] (last (:meta-info (load-huff huff-table)))))))
-
+    (is (= [5 128 4294967295] (last (:meta-info (load-huff huff-table))))))
+  (testing "mincode collection"
+    (is (= 0 (first (:mincode (load-huff huff-table)))))
+    (is (= 4026531840 (nth (:mincode (load-huff huff-table)) 5)))
+    (is (= 989855744 (nth (:mincode (load-huff huff-table)) 9))))
+  (testing "maxcode collection"
+    (is (= 4294967295 (first (:maxcode (load-huff huff-table)))))
+    (is (= 4160749567 (nth (:maxcode (load-huff huff-table)) 6)))
+    (is (= 661651455 (nth (:maxcode (load-huff huff-table)) 12)))))
