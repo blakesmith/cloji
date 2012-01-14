@@ -12,6 +12,18 @@
    2 palmdoc-string
    17480 huffman-string})
 
+(defn load-huff [table]
+  (let [meta-offset (unpack-type table byte-array-int 4 8)
+        dict-offset (unpack-type table byte-array-int 4 12)
+        meta-unpack
+          (fn [x]
+            (let [codelen (bit-and x 0x1F)
+                  term (bit-and x 0x80)
+                  maxcode (dec (bit-shift-left (inc (bit-shift-right x 8)) (- 32 codelen)))]
+              [codelen, term, maxcode]))]
+    {:meta-info (map meta-unpack
+      (unpack-series table byte-array-int 256 4 meta-offset))}))
+
 (defn decode-attributes [attrs is]
   (into {}
     (for [[attr-name f len skip] attrs]

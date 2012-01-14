@@ -5,6 +5,12 @@
   `(do (.seek ~is ~l)
     ~body))
 
+(defn unpack-type [coll f size & [offset]]
+  (f (take size (if offset (drop offset coll) coll))))
+
+(defn unpack-series [coll f n size & [offset]]
+  (map #(unpack-type coll f size (+ offset (* size %))) (range n)))
+
 (defn byte-array-int [coll]
   (reduce +
     (map (fn [b i]

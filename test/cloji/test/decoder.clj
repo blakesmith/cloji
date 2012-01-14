@@ -1,7 +1,9 @@
 (ns cloji.test.decoder
-  (:use [cloji.decoder])
-  (:use [cloji.test.helper])
-  (:use [clojure.test]))
+  (:use
+    [cloji.decoder]
+    [cloji.core]
+    [cloji.test.helper]
+    [clojure.test]))
 
 (def ni (mobi-fixture "no_images.mobi"))
 (def im (mobi-fixture "images2.mobi"))
@@ -10,6 +12,9 @@
 (def no-images (decode-headers ni))
 (def with-images (decode-headers im))
 (def huff (decode-headers hf))
+
+(def huff-table
+  (read-record huff hf (:first-huff-rec (:mobi-header huff))))
 
 (deftest decode-headers-impl
   (testing "palmdoc header"
@@ -81,4 +86,9 @@
 (deftest decode-image-impl
   (testing "returns a BufferedImage"
     (is (instance? java.awt.image.BufferedImage (decode-image with-images im 0)))))
+
+(deftest load-huff-impl
+  (testing "meta-info dictionary, first and last item"
+    (is (= [14 0 262143] (first (:meta-info (load-huff huff-table)))))
+    (is (= [5 128 4294967295] (last (:meta-info (load-huff huff-table)))))))
 
