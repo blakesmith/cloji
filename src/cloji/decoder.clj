@@ -24,7 +24,7 @@
               [codelen, term, maxcode]))
         limit-unpack
           (fn [coll]
-            (loop [in (vec (concat [0 0] coll))
+            (loop [in (into [0 0] coll)
                    pos 0
                    mincode []
                    maxcode []]
