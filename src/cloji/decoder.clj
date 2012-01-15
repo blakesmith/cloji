@@ -30,7 +30,7 @@
                    maxcode []]
               (let [x (first in)]
                 (if (nil? x)
-                  {:mincode mincode :maxcode maxcode}
+                  {:limits (map vector mincode maxcode)}
                   (cond
                     (even? pos)
                       (recur

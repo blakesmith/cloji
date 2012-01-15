@@ -92,10 +92,10 @@
     (is (= [14 0 262143] (first (:meta-info (load-huff huff-table)))))
     (is (= [5 128 4294967295] (last (:meta-info (load-huff huff-table))))))
   (testing "mincode collection"
-    (is (= 0 (first (:mincode (load-huff huff-table)))))
-    (is (= 4026531840 (nth (:mincode (load-huff huff-table)) 5)))
-    (is (= 989855744 (nth (:mincode (load-huff huff-table)) 9))))
+    (is (= 0 (first (first (:limits (load-huff huff-table))))))
+    (is (= 4026531840 (first (nth (:limits (load-huff huff-table)) 5))))
+    (is (= 989855744 (first (nth (:limits (load-huff huff-table)) 9)))))
   (testing "maxcode collection"
-    (is (= 4294967295 (first (:maxcode (load-huff huff-table)))))
-    (is (= 4160749567 (nth (:maxcode (load-huff huff-table)) 6)))
-    (is (= 661651455 (nth (:maxcode (load-huff huff-table)) 12)))))
+    (is (= 4294967295 (last (first (:limits (load-huff huff-table))))))
+    (is (= 4160749567 (last (nth (:limits (load-huff huff-table)) 6))))
+    (is (= 661651455 (last (nth (:limits (load-huff huff-table)) 12))))))
