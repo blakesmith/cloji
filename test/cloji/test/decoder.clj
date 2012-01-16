@@ -13,7 +13,7 @@
 (def with-images (decode-headers im))
 (def huff (decode-headers hf))
 
-(def huff-table
+(def huff-record
   (read-record huff hf (:first-huff-rec (:mobi-header huff))))
 
 (deftest decode-headers-impl
@@ -87,15 +87,15 @@
   (testing "returns a BufferedImage"
     (is (instance? java.awt.image.BufferedImage (decode-image with-images im 0)))))
 
-(deftest load-huff-impl
+(deftest huff-table-impl
   (testing "meta-info collection, first and last item"
-    (is (= [14 0 262143] (first (:meta-info (load-huff huff-table)))))
-    (is (= [5 128 4294967295] (last (:meta-info (load-huff huff-table))))))
+    (is (= [14 0 262143] (first (:meta-info (huff-table huff-record)))))
+    (is (= [5 128 4294967295] (last (:meta-info (huff-table huff-record))))))
   (testing "mincode collection"
-    (is (= 0 (first (first (:limits (load-huff huff-table))))))
-    (is (= 4026531840 (first (nth (:limits (load-huff huff-table)) 5))))
-    (is (= 989855744 (first (nth (:limits (load-huff huff-table)) 9)))))
+    (is (= 0 (first (first (:limits (huff-table huff-record))))))
+    (is (= 4026531840 (first (nth (:limits (huff-table huff-record)) 5))))
+    (is (= 989855744 (first (nth (:limits (huff-table huff-record)) 9)))))
   (testing "maxcode collection"
-    (is (= 4294967295 (last (first (:limits (load-huff huff-table))))))
-    (is (= 4160749567 (last (nth (:limits (load-huff huff-table)) 6))))
-    (is (= 661651455 (last (nth (:limits (load-huff huff-table)) 12))))))
+    (is (= 4294967295 (last (first (:limits (huff-table huff-record))))))
+    (is (= 4160749567 (last (nth (:limits (huff-table huff-record)) 6))))
+    (is (= 661651455 (last (nth (:limits (huff-table huff-record)) 12))))))

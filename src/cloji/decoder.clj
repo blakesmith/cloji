@@ -12,7 +12,7 @@
    2 palmdoc-string
    17480 huffman-string})
 
-(defn load-huff [table]
+(defn huff-table [table]
   (let [meta-offset (unpack-type table byte-array-int 4 8)
         limit-offset (unpack-type table byte-array-int 4 12)
         limit-coll (unpack-series table byte-array-int 64 4 limit-offset)
