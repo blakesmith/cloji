@@ -99,3 +99,7 @@
     (is (= 4294967295 (last (first (:limits (huff-table huff-record))))))
     (is (= 4160749567 (last (nth (:limits (huff-table huff-record)) 6))))
     (is (= 661651455 (last (nth (:limits (huff-table huff-record)) 12))))))
+
+(deftest cdic-table-impl
+  (testing "entries in the cdic table"
+    (is (= ["e ", 32768] (cdic-table huff hf)))))
