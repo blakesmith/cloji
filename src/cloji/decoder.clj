@@ -42,13 +42,13 @@
     (merge (limit-unpack limit-coll) {:meta-info (map meta-unpack
       (unpack-series table byte-array-int 256 4 meta-offset))})))
 
-(defn cdic-table [headers is]
+(defn cdic-table [headers is encoding]
   (let [first-rec (:first-huff-rec (:mobi-header headers))
         last-rec (+ first-rec (:huff-rec-count (:mobi-header headers)))
         get-slice
           (fn [rec off]
            (let [blen (unpack-type rec byte-array-int 2 (+ 16 off))]
-             [(as-string (subvec (vec rec) (+ 18 off) (+ 18 off (bit-and blen 0x7FFF))) "UTF-8") (bit-and blen 0x8000)]))]
+             [(as-string (subvec (vec rec) (+ 18 off) (+ 18 off (bit-and blen 0x7FFF))) encoding) (bit-and blen 0x8000)]))]
     (loop [out []
            records (range (inc first-rec) last-rec)]
       (if-let [i (first records)]
