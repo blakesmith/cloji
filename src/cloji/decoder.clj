@@ -15,9 +15,10 @@
 (defn palmdoc-string [_ _ coll encoding]
   (as-string (palmdoc/unpack coll) encoding))
 
-(defn huffman-string [headers is coll encoding])
-;  (let [table huff/huff-table
-;  (as-string (huff/unpack coll table cdic) encoding))
+(defn huffman-string [headers is coll encoding]
+  (let [table (huff/huff-table (read-record headers is (:first-huff-rec (:mobi-header headers))))
+        cdic (huff/cdic-table headers is encoding)]
+    (as-string (huff/unpack coll table cdic) encoding)))
 
 (def compression-fn
   {1 (fn [coll encoding] (as-string coll encoding))
