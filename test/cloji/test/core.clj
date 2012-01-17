@@ -15,13 +15,6 @@
   (testing "Multi values"
     (is (= [:read-only :app-info-dirty] (bitfield 6 {:read-only 0x0002 :app-info-dirty 0x0004})))))
 
-(deftest palmdoc-decompression
-  (testing "Literals and space compression"
-    (is (= "<html><head><guide><reference title=" (palmdoc-string (take 35 pbytes) "UTF-8"))))
-  (testing "Distance pairs"
-    (is (= "<html><head><guide><reference title=\"CONTENTS\" type=\"toc\"  filepos=0000001117 />" (palmdoc-string (take 74 pbytes) "UTF-8")))
-    (is (= 7246 (count (palmdoc-string (take 4096 pbytes) "UTF-8"))))))
-
 (deftest bitset-impl
   (testing "with a small max size"
     (is (= [true true false false false] (bitset 3 5))))

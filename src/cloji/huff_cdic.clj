@@ -2,6 +2,9 @@
   (:use
     [cloji.core]))
 
+(defn unpack [coll huff cdic]
+  coll)
+
 (defn huff-table [table]
   (let [meta-offset (unpack-type table byte-array-int 4 8)
         limit-offset (unpack-type table byte-array-int 4 12)

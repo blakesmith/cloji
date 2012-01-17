@@ -1,6 +1,4 @@
 (ns cloji.core
-  (:require
-    [cloji.palmdoc :as palmdoc])
   (:import
     [java.util Date]))
 
@@ -74,8 +72,5 @@
     (when (not (= 0 t))
       (doto (new Date) (.setTime (* 1000 t))))))
 
-(defn palmdoc-string [coll encoding]
-  (as-string (palmdoc/unpack coll) encoding))
 
-(defn huffman-string [coll encoding])
 

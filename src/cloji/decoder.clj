@@ -1,14 +1,23 @@
 (ns cloji.decoder
   (:use
     [cloji.core]
-    [cloji.attributes]
-    [cloji.huff-cdic])
+    [cloji.attributes])
+  (:require
+    [cloji.huff-cdic :as huff]
+    [cloji.palmdoc :as palmdoc])
   (:import
     [javax.imageio ImageIO]))
 
 (def encoding-string
   {:utf-8 "UTF-8"
    :cp1252 "CP1252"})
+
+(defn palmdoc-string [_ _ coll encoding]
+  (as-string (palmdoc/unpack coll) encoding))
+
+(defn huffman-string [headers is coll encoding])
+;  (let [table huff/huff-table
+;  (as-string (huff/unpack coll table cdic) encoding))
 
 (def compression-fn
   {1 (fn [coll encoding] (as-string coll encoding))
@@ -43,7 +52,7 @@
         f (get compression-fn (:compression (:palmdoc-header headers)))
         data (read-record headers is n)
         trail-size (decode-trail-size (bitset (:extra-flags (:mobi-header headers))) data)]
-    (f (drop-last trail-size data) encoding)))
+    (f headers is (drop-last trail-size data) encoding)))
 
 (defn decode-headers [is]
   "Takes a mobipocket RandomAccessFile and decodes the mobipocket headers, returns a map of header attributes that are necessary for decoding the body and extracting images"

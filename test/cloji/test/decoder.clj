@@ -70,6 +70,13 @@
   (testing "extra flags"
     (is (= 3 (:extra-flags (:mobi-header no-images))))))
 
+(deftest palmdoc-decompression
+  (testing "Literals and space compression"
+    (is (= "<html><head><guide><reference title=" (palmdoc-string nil nil (take 35 pbytes) "UTF-8"))))
+  (testing "Distance pairs"
+    (is (= "<html><head><guide><reference title=\"CONTENTS\" type=\"toc\"  filepos=0000001117 />" (palmdoc-string nil nil (take 74 pbytes) "UTF-8")))
+    (is (= 7246 (count (palmdoc-string nil nil (take 4096 pbytes) "UTF-8"))))))
+
 (deftest decode-record-impl
   (testing "decoding record n"
     (is (= "<html>" (apply str (take 6 (decode-record no-images ni 1))))))
@@ -79,6 +86,10 @@
     (is (= "and" (apply str (take-last 3 (decode-record no-images ni 8))))))
   (testing "decoding the last text record record"
     (is (= "old, " (apply str (take 5 (decode-record no-images ni 178)))))))
+
+(deftest decode-record-huff
+  (testing "decoding the first record"
+    (is (= "<html>" (take 6 (decode-record huff hf 1))))))
 
 (deftest decode-image-impl
   (testing "returns a BufferedImage"
