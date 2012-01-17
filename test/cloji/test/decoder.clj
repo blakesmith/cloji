@@ -102,4 +102,7 @@
 
 (deftest cdic-table-impl
   (testing "entries in the cdic table"
-    (is (= ["e ", 32768] (cdic-table huff hf)))))
+    (is (= ["e ", 32768] (first (cdic-table huff hf))))
+    (is (= ["q", 32768] (last (cdic-table huff hf)))))
+  (testing "cdic phrase count"
+    (is (= 786 (count (cdic-table huff hf))))))

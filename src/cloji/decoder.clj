@@ -48,17 +48,16 @@
         get-slice
           (fn [rec off]
            (let [blen (unpack-type rec byte-array-int 2 (+ 16 off))]
-             [(subvec (vec rec) (+ 18 off) (+ 18 off (bit-and blen 0x7FFF))) (bit-and blen 0x8000)]))]
-    (reduce into
-      (loop [out []
-             records (range (inc first-rec) last-rec)]
-        (if-let [i (first records)]
-          (let [cdic (read-record headers is i)
-                phrases (unpack-type cdic byte-array-int 4 8)
-                bits (unpack-type cdic byte-array-int 4 12)
-                n (min (bit-shift-left i bits) (- phrases (count out)))]
-            (recur (conj out (map #(get-slice cdic %) (unpack-series cdic byte-array-int n 4 16))) (rest records)))
-          out)))))
+             [(as-string (subvec (vec rec) (+ 18 off) (+ 18 off (bit-and blen 0x7FFF))) "UTF-8") (bit-and blen 0x8000)]))]
+    (loop [out []
+           records (range (inc first-rec) last-rec)]
+      (if-let [i (first records)]
+        (let [cdic (read-record headers is i)
+              phrases (unpack-type cdic byte-array-int 4 8)
+              bits (unpack-type cdic byte-array-int 4 12)
+              n (min (bit-shift-left 1 bits) (- phrases (count out)))]
+          (recur (into out (map #(get-slice cdic %) (unpack-series cdic byte-array-int n 2 16))) (rest records)))
+        out))))
 
 (defn decode-attributes [attrs is]
   (into {}
