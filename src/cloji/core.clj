@@ -75,7 +75,7 @@
       (doto (new Date) (.setTime (* 1000 t))))))
 
 (defn palmdoc-string [coll encoding]
-  (as-string (palmdoc/decomp-palmdoc coll) encoding))
+  (as-string (palmdoc/unpack coll) encoding))
 
 (defn huffman-string [coll encoding])
 

@@ -1,6 +1,6 @@
 (ns cloji.palmdoc)
 
-(defn decomp-palmdoc
+(defn unpack
   "Takes a stream of bytes compressed using the Palmdoc compression algorithm
   and returns a sequence of decompressed bytes"
   [c]
