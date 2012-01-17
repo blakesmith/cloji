@@ -28,16 +28,16 @@
                    pos 0
                    mincode []
                    maxcode []]
-              (let [x (first in)]
-                (if (nil? x)
-                  {:limits (map vector mincode maxcode)}
-                  (cond
-                    (even? pos)
-                      (recur
-                        (rest in) (inc pos) (conj mincode (bit-shift-left x (- 32 (count mincode)))) maxcode)
-                    (odd? pos)
-                      (recur
-                        (rest in) (inc pos) mincode (conj maxcode (dec (bit-shift-left (inc x) (- 32 (count maxcode)))))))))))]
+              (if-let [x (first in)]
+                (cond
+                  (even? pos)
+                    (recur
+                      (rest in) (inc pos) (conj mincode (bit-shift-left x (- 32 (count mincode)))) maxcode)
+                  (odd? pos)
+                    (recur
+                      (rest in) (inc pos) mincode (conj maxcode (dec (bit-shift-left (inc x) (- 32 (count maxcode)))))))
+                {:limits (map vector mincode maxcode)}
+                )))]
 
     (merge (limit-unpack limit-coll) {:meta-info (map meta-unpack
       (unpack-series table byte-array-int 256 4 meta-offset))})))
