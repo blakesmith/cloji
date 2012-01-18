@@ -18,7 +18,7 @@
         (odd? pos)
           (recur
             (rest in) (inc pos) mincode (conj maxcode (dec (bit-shift-left (inc x) (- 32 (count maxcode)))))))
-      {:limits (map vector mincode maxcode)})))
+      (map vector mincode maxcode))))
 
 (defn- meta-unpack [x]
   (let [codelen (bit-and x 0x1F)
@@ -30,7 +30,7 @@
   (let [meta-offset (unpack-type table byte-array-int 4 8)
         limit-offset (unpack-type table byte-array-int 4 12)
         limit-coll (unpack-series table byte-array-int 64 4 limit-offset)]
-    (merge (limit-unpack limit-coll) {:meta-info (map meta-unpack
+    (merge {:limits (limit-unpack limit-coll)} {:meta-info (map meta-unpack
       (unpack-series table byte-array-int 256 4 meta-offset))})))
 
 (defn cdic-table [headers is encoding]
