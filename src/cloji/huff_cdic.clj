@@ -3,7 +3,27 @@
     [cloji.core]))
 
 (defn unpack [coll huff cdic]
-  coll)
+  (loop [out (str)
+         bitsleft (* (count coll) 8)
+         n 32
+         pos 0]
+    (if (= bitsleft 0)
+      out
+      (let [x (unpack-type coll byte-array-int 8 pos)
+            code (bit-and (bit-shift-right x n) (- (bit-shift-left 1 32) 1))
+            [codelen term maxcode] (nth (:meta-info huff) (bit-shift-right code 24))
+            r (bit-shift-right (- maxcode code) (- 32 codelen))
+            [slice flag] (nth cdic r)]
+        (prn slice)
+        (recur
+          (str out slice)
+          (- bitsleft codelen)
+          (if (<= n 0)
+            (+ n 32)
+            (- n codelen))
+          (if (<= n 0)
+            (+ pos 4)
+            pos))))))
 
 (defn- limit-unpack [coll]
   (loop [in (into [0 0] coll)
