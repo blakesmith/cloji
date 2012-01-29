@@ -7,7 +7,7 @@
          bitsleft (* (count coll) 8)
          n 32
          pos 0]
-    (if (< bitsleft 0)
+    (if (<= bitsleft 0)
       out
       (let [x (unpack-type coll byte-array-int 8 pos)
             code (bit-and (bit-shift-right x n) (- (bit-shift-left 1 32) 1))
