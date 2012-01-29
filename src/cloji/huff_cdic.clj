@@ -25,7 +25,7 @@
           (str out slice)
           (- bitsleft len)
           (if (<= n 0)
-            (+ n 32)
+            (- (+ n 32) len)
             (- n len))
           (if (<= n 0)
             (+ pos 4)

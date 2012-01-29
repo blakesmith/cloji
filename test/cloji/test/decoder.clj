@@ -89,7 +89,9 @@
 
 (deftest decode-record-huff
   (testing "decoding the first record"
-    (is (= "<html>" (apply str (take 6 (decode-record huff hf 1)))))))
+    (is (= "<html>" (apply str (take 6 (decode-record huff hf 1))))))
+  (testing "reading with double entries"
+    (is (= "<head>" (apply str (take 6 (drop 6 (decode-record huff hf 1))))))))
 
 (deftest decode-image-impl
   (testing "returns a BufferedImage"
