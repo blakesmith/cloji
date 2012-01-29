@@ -7,20 +7,26 @@
          bitsleft (* (count coll) 8)
          n 32
          pos 0]
-    (if (= bitsleft 0)
+    (if (< bitsleft 0)
       out
       (let [x (unpack-type coll byte-array-int 8 pos)
             code (bit-and (bit-shift-right x n) (- (bit-shift-left 1 32) 1))
             [codelen term maxcode] (nth (:meta-info huff) (bit-shift-right code 24))
-            r (bit-shift-right (- maxcode code) (- 32 codelen))
-            [slice flag] (nth cdic r)]
-        (prn slice)
+            len (if (= 0 term)
+                  (+ codelen (count (take-while
+                           #(< code (nth (map first (:limits huff)) %))
+                           (iterate inc codelen))))
+                  codelen)
+            new-max (if (= 0 term)
+                      (nth (map second (:limits huff)) len)
+                      maxcode)
+            [slice flag] (nth cdic (bit-shift-right (- new-max code) (- 32 codelen)))]
         (recur
           (str out slice)
-          (- bitsleft codelen)
+          (- bitsleft len)
           (if (<= n 0)
             (+ n 32)
-            (- n codelen))
+            (- n len))
           (if (<= n 0)
             (+ pos 4)
             pos))))))
