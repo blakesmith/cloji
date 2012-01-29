@@ -17,7 +17,7 @@
 
 (defn huffman-string [headers is coll encoding]
   (let [table (huff/huff-table (read-record headers is (:first-huff-rec (:mobi-header headers))))
-        cdic (huff/cdic-table headers is encoding)]
+        cdic (huff/clean-cdic table (huff/cdic-table headers is encoding) encoding)]
     (huff/unpack coll table cdic)))
 
 (def compression-fn

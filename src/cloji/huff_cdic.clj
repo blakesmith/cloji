@@ -76,3 +76,10 @@
           (recur (into out (map #(get-slice cdic %) (unpack-series cdic byte-array-int n 2 16))) (rest records)))
         out))))
 
+(defn clean-cdic [huff cdic encoding]
+  (map (fn [v]
+         (let [[slice flag] v]
+           (if (= 0 flag)
+             [(unpack (map #(bit-and 0xff %) (.getBytes slice encoding)) huff cdic) 1]
+             [slice flag])))
+       cdic))
