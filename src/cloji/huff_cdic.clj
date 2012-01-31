@@ -3,33 +3,40 @@
     [cloji.core]))
 
 (defn unpack [coll huff cdic]
-  (loop [out (str)
-         bitsleft (* (count coll) 8)
-         n 32
-         pos 0]
-    (if (<= bitsleft 0)
-      out
-      (let [x (unpack-type coll byte-array-int 8 pos)
-            code (bit-and (bit-shift-right x n) (- (bit-shift-left 1 32) 1))
-            [codelen term maxcode] (nth (:meta-info huff) (bit-shift-right code 24))
-            len (if (= 0 term)
-                  (+ codelen (count (take-while
-                           #(< code (nth (map first (:limits huff)) %))
-                           (iterate inc codelen))))
-                  codelen)
-            new-max (if (= 0 term)
-                      (nth (map second (:limits huff)) len)
-                      maxcode)
-            [slice flag] (nth cdic (bit-shift-right (- new-max code) (- 32 codelen)))]
-        (recur
-          (str out slice)
-          (- bitsleft len)
-          (if (<= n 0)
-            (- (+ n 32) len)
-            (- n len))
-          (if (<= n 0)
-            (+ pos 4)
-            pos))))))
+  (let [bl (* (count coll) 8)
+        data (into (vec coll) (take 8 (repeat 0)))]
+    (loop [out (str)
+           bitsleft bl
+           n 32
+           pos 0
+           dictionary cdic]
+      (if (<= bitsleft 0)
+        out
+        (let [x (unpack-type data byte-array-int 8 pos)
+              code (bit-and (bit-shift-right x n) (- (bit-shift-left 1 32) 1))
+              [codelen term maxcode] (nth (:meta-info huff) (bit-shift-right code 24))
+              len (if (= 0 term)
+                    (+ codelen (count (take-while
+                             #(< code (nth (map first (:limits huff)) %))
+                             (iterate inc codelen))))
+                    codelen)
+              new-max (if (= 0 term)
+                        (nth (map second (:limits huff)) len)
+                        maxcode)
+              r (bit-shift-right (- new-max code) (- 32 codelen))
+              [slice flag] (nth dictionary r)]
+          (recur
+            (str out slice)
+            (- bitsleft len)
+            (if (<= n 0)
+              (- (+ n 32) len)
+              (- n len))
+            (if (<= n 0)
+              (+ pos 4)
+              pos)
+            (if (= 0 flag)
+              (assoc dictionary r [(unpack (map #(bit-and 0xff %) (.getBytes slice "CP1252")) huff dictionary) 1])
+              dictionary)))))))
 
 (defn- limit-unpack [coll]
   (loop [in (into [0 0] coll)
