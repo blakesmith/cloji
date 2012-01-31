@@ -10,21 +10,21 @@
            n 32
            pos 0
            dictionary cdic]
-      (if (<= bitsleft 0)
-        out
-        (let [x (unpack-type data byte-array-int 8 pos)
-              code (bit-and (bit-shift-right x n) (- (bit-shift-left 1 32) 1))
-              [codelen term maxcode] (nth (:meta-info huff) (bit-shift-right code 24))
-              len (if (= 0 term)
-                    (+ codelen (count (take-while
-                             #(< code (nth (map first (:limits huff)) %))
-                             (iterate inc codelen))))
-                    codelen)
-              new-max (if (= 0 term)
-                        (nth (map second (:limits huff)) len)
-                        maxcode)
-              r (bit-shift-right (- new-max code) (- 32 codelen))
-              [slice flag] (nth dictionary r)]
+      (let [x (unpack-type data byte-array-int 8 pos)
+            code (bit-and (bit-shift-right x n) (- (bit-shift-left 1 32) 1))
+            [codelen term maxcode] (nth (:meta-info huff) (bit-shift-right code 24))
+            len (if (= 0 term)
+                  (+ codelen (count (take-while
+                           #(< code (nth (map first (:limits huff)) %))
+                           (iterate inc codelen))))
+                  codelen)
+            new-max (if (= 0 term)
+                      (nth (map second (:limits huff)) len)
+                      maxcode)
+            r (bit-shift-right (- new-max code) (- 32 len))
+            [slice flag] (nth dictionary r)]
+        (if (< bitsleft 0)
+          out
           (recur
             (str out slice)
             (- bitsleft len)
