@@ -84,11 +84,19 @@
         (.read is b 0 (:read-size ri))
         (ImageIO/read (io/input-stream b))))))
 
-(defn decode-body [is out]
+(defn decode-to-file [is out]
   "Top level function to decode all text records and write them to a file"
   (with-location 0 is
     (let [headers (decode-headers is)]
       (with-open [os (io/writer out)]
         (doseq [n (range 1 (inc (:record-count (:palmdoc-header headers))))]
           (.write os (decode-record headers is n)))))))
+
+(defn decode-body [is]
+  "Top level function to decode all text records and concatenate them together"
+  (with-location 0 is
+    (let [headers (decode-headers is)]
+      (reduce str
+        (map #(decode-record headers is %)
+             (range 1 (inc (:record-count (:palmdoc-header headers)))))))))
 
