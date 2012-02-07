@@ -92,11 +92,12 @@
         (doseq [n (range 1 (inc (:record-count (:palmdoc-header headers))))]
           (.write os (decode-record headers is n)))))))
 
-(defn decode-body [is]
+(defn decode-mobi [is]
   "Top level function to decode all text records and concatenate them together"
   (with-location 0 is
     (let [headers (decode-headers is)]
-      (reduce str
+      {:headers headers
+      :body (reduce str
         (map #(decode-record headers is %)
-             (range 1 (inc (:record-count (:palmdoc-header headers)))))))))
+             (range 1 (inc (:record-count (:palmdoc-header headers))))))})))
 
