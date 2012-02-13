@@ -4,5 +4,5 @@
 
 (deftest compressed-palmdoc-impl
   (testing "exception raising with string sizes > 4096 bytes"
-    (is (thrown? IllegalArgumentException (encoder/compressed-palmdoc (apply str (take 4097 (repeat \a))))))))
+    (is (thrown? java.lang.AssertionError (encoder/compressed-palmdoc (apply str (take 4097 (repeat \a))))))))
 
