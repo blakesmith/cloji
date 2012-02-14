@@ -12,6 +12,14 @@
 (defn unpack-series [coll f n size & [offset]]
   (map #(unpack-type coll f size (+ offset (* size %))) (range n)))
 
+(defn packed-int [v n]
+  (String.
+   (into-array Byte/TYPE
+               (map (fn [i]
+                      (.byteValue (bit-and (bit-shift-right v i) 0xff)))
+                    (range (* (dec n) 8) -8 -8)))
+   "ASCII"))
+
 (defn byte-array-int [coll]
   (reduce +
     (map (fn [b i]

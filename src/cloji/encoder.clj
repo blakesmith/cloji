@@ -18,9 +18,9 @@
           m (- offset distance)]
       (when (and (<= chunk-size 10) (>= chunk-size 3))
         (vec chunk-size
-             (+ 0x8000 (bit-and (bit-shift-left m 3) 0x3ff8) (- chunk-size 3)))))))
-
-; Still needs proper string packing ^
+             (packed-int
+              (+ 0x8000 (bit-and (bit-shift-left m 3) 0x3ff8) (- chunk-size 3))
+              2))))))
 
 (defn- type-c-compress [text offset]
   (bit-xor (int (nth text offset)) 0x80))
