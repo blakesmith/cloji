@@ -46,7 +46,7 @@
           (if-let [exp# (and (next clauses) (second clauses))]
             exp#
             (throw (IllegalArgumentException. "Requires an even number of forms")))
-          (cons fall-through-chain (next (next clauses))))))
+          (cons 'fall-through-chain (next (next clauses))))))
             
                              
 (defn- compression-chain [text us offset textlength]
