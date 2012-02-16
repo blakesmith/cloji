@@ -28,12 +28,12 @@
 (defn- pass-through [text offset]
   (vector 1 [(int (nth text offset))]))
 
-(defn- compression-chain [text us offset textlength]
+(defn- compression-chain [text offset textlength]
   (when (and (> offset 10) (> (- textlength offset) 10))
     (when-let [comp (type-b-compress (take offset text) offset)]
       comp))
   (when (and (< (inc offset) textlength) (= \space (nth text (inc offset))))
-    (when-let [comp (type-c-compress us offset)]
+    (when-let [comp (type-c-compress text offset)]
       comp))
   (let [ch (int (nth text offset))]
     (when (or (= ch 0) (and (>= ch 9) (< ch 0x80)))
@@ -43,9 +43,9 @@
 (defn compressed-palmdoc [s charset]
   {:pre [(<= (count s) 4096)]}
   (let [textlength (count s)]
-    (loop [us s cs [] offset 0]
-      (if-let [next-char (first us)]
-        (let [[n chunk] (compression-chain s us offset textlength)]
-          (recur (drop n us) (into cs chunk) (+ offset n)))
+    (loop [cs [] offset 0]
+      (if-let [next-char (nth s offset nil)]
+        (let [[n chunk] (compression-chain s offset textlength)]
+          (recur (into cs chunk) (+ offset n)))
         cs))))
           
