@@ -23,10 +23,10 @@
                  2))))))
 
 (defn- type-c-compress [text offset]
-  (vector 2 [(bit-xor (int (nth text offset)) 0x80)]))
+  (vector 2 [(bit-xor (-> (nth text offset) int byte) 0x80)]))
 
 (defn- pass-through [text offset]
-  (vector 1 [(int (nth text offset))]))
+  (vector 1 [(-> (nth text offset) int byte)]))
 
 (defn- compression-chain [text offset textlength]
   (when (and (> offset 10) (> (- textlength offset) 10))
