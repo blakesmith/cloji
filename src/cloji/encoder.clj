@@ -4,17 +4,20 @@
         [clojure.contrib.seq-utils :only [find-first]])
   (:require [cloji.palmdoc :as palmdoc]))
 
-(defmacro condf [& forms]
+(defmacro condf [& clauses]
+  "Takes a set of test/expr pairs. If both expressions in
+a pair don't evaluate to false or nil, return the result of the
+second expression. If either fail, continue down the chain until
+one does. Otherwise return the :else expression or nil"
+  {:pre [(even? (count clauses))]}
   `(or
     ~@(map
        (fn [f#]
-         (let [[pred# exp#] f#]
-           (if (= :else pred#)
+         (let [[guard# exp#] f#]
+           (if (= :else guard#)
              exp#
-             `(and
-               ~(first f#)
-               ~(second f#)))))
-       (partition 2 forms)) nil))
+             `(and ~guard# ~exp#))))
+       (partition 2 clauses)) nil))
 
 (defn- char-bytes [s offset charset]
   (map #(bit-and 0xff %) (seq (.getBytes (subs s offset (inc offset)) charset))))
