@@ -5,7 +5,24 @@
   (:require [cloji.palmdoc :as palmdoc]))
 
 (defn- char-bytes [s offset charset]
-  (seq (.getBytes (subs s offset (inc offset)) charset)))
+  (map #(bit-and 0xff %) (seq (.getBytes (subs s offset (inc offset)) charset))))
+
+(defn- count-duplicate-bytes [bytes offset]
+  (count (take-while #(= (nth bytes offset) %) bytes)))
+
+(defn- type-a-compress [text offset charset]
+  (let [cb (char-bytes text offset charset)
+        out-bytes
+        (reduce
+         (fn [compressed b]
+           (let [nb (count-duplicate-bytes cb offset)]
+             (into compressed
+                   (if (= 1 nb)
+                     (vector b)
+                     (vector nb b)))))
+         []
+         cb)]
+    (vector (count cb) out-bytes)))
 
 (defn- type-b-compress [text offset]
   (if-let [matched-data (find-first
@@ -46,7 +63,8 @@ should return nil from this function"
   (let [ch (int (nth text offset))]
     (when (or (= ch 0) (and (>= ch 9) (< ch 0x80)))
       (when-let [comp (pass-through text offset charset)]
-        comp))))
+        comp)))
+  (type-a-compress text offset charset))
 
 (defn compressed-palmdoc [s charset]
   {:pre [(<= (count s) 4096)]}

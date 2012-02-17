@@ -8,5 +8,5 @@
   (testing "pass through compression of simple strings"
     (is (= [121 111 121 111 121 111] (encoder/compressed-palmdoc "yoyoyo" "UTF-8"))))
   (testing "encoding UTF8 characters"
-    (is (= [-30 -128 -104] (encoder/compressed-palmdoc "\u2018" "UTF-8")))))
+    (is (= [226 128 152] (encoder/compressed-palmdoc "\u2018" "UTF-8")))))
 
