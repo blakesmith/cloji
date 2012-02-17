@@ -7,10 +7,13 @@
 (defmacro condf [& forms]
   `(or
     ~@(map
-       (fn [f]
-         `(and
-           ~(first f)
-           ~(second f)))
+       (fn [f#]
+         (let [[pred# exp#] f#]
+           (if (= :else pred#)
+             exp#
+             `(and
+               ~(first f#)
+               ~(second f#)))))
        (partition 2 forms)) nil))
 
 (defn- char-bytes [s offset charset]
@@ -63,7 +66,6 @@ should return nil from this function"
   (vector 1 (char-bytes text offset charset)))
 
 (defn- compression-chain [text offset textlength charset]
-  (or
    (condf
     (and (> offset 10) (> (- textlength offset) 10))
     (type-b-compress (take offset text) offset)
@@ -71,8 +73,8 @@ should return nil from this function"
     (type-c-compress text offset charset)
     (let [ch (int (nth text offset))]
       (or (= ch 0) (and (>= ch 9) (< ch 0x80))))
-    (pass-through text offset charset))
-   (type-a-compress text offset charset)))
+    (pass-through text offset charset)
+    :else (type-a-compress text offset charset)))
 
 (defn compressed-palmdoc [s charset]
   {:pre [(<= (count s) 4096)]}
