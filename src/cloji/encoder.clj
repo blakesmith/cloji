@@ -4,6 +4,15 @@
         [clojure.contrib.seq-utils :only [find-first]])
   (:require [cloji.palmdoc :as palmdoc]))
 
+(defmacro condf [& forms]
+  `(or
+    ~@(map
+       (fn [f]
+         `(and
+           ~(first f)
+           ~(second f)))
+       (partition 2 forms)) nil))
+
 (defn- char-bytes [s offset charset]
   (map #(bit-and 0xff %) (seq (.getBytes (subs s offset (inc offset)) charset))))
 
@@ -55,13 +64,11 @@ should return nil from this function"
 
 (defn- compression-chain [text offset textlength charset]
   (or
-   (and
+   (condf
     (and (> offset 10) (> (- textlength offset) 10))
-    (type-b-compress (take offset text) offset))
-   (and
+    (type-b-compress (take offset text) offset)
     (and (< (inc offset) textlength) (= \space (nth text (inc offset))))
-    (type-c-compress text offset charset))
-   (and
+    (type-c-compress text offset charset)
     (let [ch (int (nth text offset))]
       (or (= ch 0) (and (>= ch 9) (< ch 0x80))))
     (pass-through text offset charset))
