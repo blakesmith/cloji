@@ -12,11 +12,11 @@ one does. Otherwise return the :else expression or nil"
   {:pre [(even? (count clauses))]}
   `(or
     ~@(map
-       (fn [f#]
-         (let [[guard# exp#] f#]
-           (if (= :else guard#)
-             exp#
-             `(and ~guard# ~exp#))))
+       (fn [f]
+         (let [[guard exp] f]
+           (if (= :else guard)
+             exp
+             `(and ~guard ~exp))))
        (partition 2 clauses)) nil))
 
 (defn- char-bytes [s offset charset]
