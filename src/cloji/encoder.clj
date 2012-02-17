@@ -54,17 +54,18 @@ should return nil from this function"
   (vector 1 (char-bytes text offset charset)))
 
 (defn- compression-chain [text offset textlength charset]
-  (when (and (> offset 10) (> (- textlength offset) 10))
-    (when-let [comp (type-b-compress (take offset text) offset)]
-      comp))
-  (when (and (< (inc offset) textlength) (= \space (nth text (inc offset))))
-    (when-let [comp (type-c-compress text offset charset)]
-      comp))
-  (let [ch (int (nth text offset))]
-    (when (or (= ch 0) (and (>= ch 9) (< ch 0x80)))
-      (when-let [comp (pass-through text offset charset)]
-        comp)))
-  (type-a-compress text offset charset))
+  (or
+   (and
+    (and (> offset 10) (> (- textlength offset) 10))
+    (type-b-compress (take offset text) offset))
+   (and
+    (and (< (inc offset) textlength) (= \space (nth text (inc offset))))
+    (type-c-compress text offset charset))
+   (and
+    (let [ch (int (nth text offset))]
+      (or (= ch 0) (and (>= ch 9) (< ch 0x80))))
+    (pass-through text offset charset))
+   (type-a-compress text offset charset)))
 
 (defn compressed-palmdoc [s charset]
   {:pre [(<= (count s) 4096)]}
