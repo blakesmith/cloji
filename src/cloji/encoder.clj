@@ -70,13 +70,10 @@ should return nil from this function"
 
 (defn- compression-chain [text offset textlength charset]
    (condf
-    (and (> offset 10) (> (- textlength offset) 10))
-    (type-b-compress (take offset text) offset)
-    (and (< (inc offset) textlength) (= \space (nth text (inc offset))))
-    (type-c-compress text offset charset)
+    (and (> offset 10) (> (- textlength offset) 10)) (type-b-compress (take offset text) offset)
+    (and (< (inc offset) textlength) (= \space (nth text (inc offset)))) (type-c-compress text offset charset)
     (let [ch (int (nth text offset))]
-      (or (= ch 0) (and (>= ch 9) (< ch 0x80))))
-    (pass-through text offset charset)
+      (or (= ch 0) (and (>= ch 9) (< ch 0x80)))) (pass-through text offset charset)
     :else (type-a-compress text offset charset)))
 
 (defn compressed-palmdoc [s charset]
