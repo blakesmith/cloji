@@ -8,8 +8,8 @@
   (testing "pass through compression of simple strings"
     (is (= [121 111 121 111 121 111] (encoder/compressed-palmdoc "yoyoyo" "UTF-8"))))
   (testing "encoding UTF8 characters"
-    (is (= [226 128 152] (encoder/compressed-palmdoc "\u2018" "UTF-8"))))
-  (testing "type a compression with repeated characters"
-    (is (= [8 97] (encoder/compressed-palmdoc "aaaaaaaa" "UTF-8")))))
+    (is (= [3 226 128 152] (encoder/compressed-palmdoc "\u2018" "UTF-8"))))
+  (testing "type c encoding, character followed by a space"
+    (is (= [244] (encoder/compressed-palmdoc " t" "UTF-8")))))
     
 

@@ -19,22 +19,22 @@ one does. Otherwise return the :else expression or nil"
              `(and ~guard ~exp))))
        (partition 2 clauses)) nil))
 
-(defn- char-bytes [s length offset charset]
+(defn- char-bytes [s charset]
+  (map #(bit-and 0xff %) (seq (.getBytes s charset))))
+
+(defn- count-duplicate-chars [chars]
+  (count (take-while #(= (first chars) %) chars)))
+
+(defn- get-subs [s length offset]
   (let [strlen (count s)
         requested-len (+ offset length)
         l (if (> requested-len strlen) strlen requested-len)]
-    (map #(bit-and 0xff %) (seq (.getBytes (subs s offset l) charset)))))
-
-(defn- count-duplicate-bytes [bytes offset]
-  (dec (count (take-while #(= (nth bytes offset) %) bytes))))
+    (subs s offset l)))
 
 (defn- type-a-compress [text offset charset]
-  (let [cb (char-bytes text 8 offset charset)
-        db (count-duplicate-bytes cb 0)]
-    (prn cb)
-    (if (= 0 db)
-      (vector 1 [(first cb)])
-      (vector db [db (first cb)]))))
+  (let [ss (get-subs text 1 offset)
+        cb (char-bytes ss charset)]
+    (vector 1 (into [(count cb)] cb))))
 
 (defn- type-b-compress [text offset]
   (if-let [matched-data (find-first
@@ -57,17 +57,17 @@ one does. Otherwise return the :else expression or nil"
 (defn- type-c-compress [text offset charset]
   "Type C Compression - an ascii character followed by a space. Multibyte characters
 should return nil from this function"
-  (let [cb (char-bytes text 1 offset charset)]
+  (let [cb (char-bytes (get-subs text 1 offset) charset)]
     (vector 2 [(bit-xor (first cb) 0x80)])))
 
 (defn- pass-through [text offset charset]
   "Pass through, write the bytes straight to the compression stream"
-  (vector 1 (char-bytes text 1 offset charset)))
+  (vector 1 (char-bytes (get-subs text 1 offset) charset)))
 
 (defn- compression-chain [text offset textlength charset]
    (condf
     (and (> offset 10) (> (- textlength offset) 10)) (type-b-compress (take offset text) offset)
-    (and (< (inc offset) textlength) (= \space (nth text (inc offset)))) (type-c-compress text offset charset)
+    (and (< (inc offset) textlength) (= \space (nth text offset))) (type-c-compress text (inc offset) charset)
     (let [ch (int (nth text offset))]
       (or (= ch 0) (and (>= ch 9) (< ch 0x80)))) (pass-through text offset charset)
     :else (type-a-compress text offset charset)))
