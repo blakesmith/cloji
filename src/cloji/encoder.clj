@@ -19,25 +19,22 @@ one does. Otherwise return the :else expression or nil"
              `(and ~guard ~exp))))
        (partition 2 clauses)) nil))
 
-(defn- char-bytes [s offset charset]
-  (map #(bit-and 0xff %) (seq (.getBytes (subs s offset (inc offset)) charset))))
+(defn- char-bytes [s length offset charset]
+  (let [strlen (count s)
+        requested-len (+ offset length)
+        l (if (> requested-len strlen) strlen requested-len)]
+    (map #(bit-and 0xff %) (seq (.getBytes (subs s offset l) charset)))))
 
 (defn- count-duplicate-bytes [bytes offset]
-  (count (take-while #(= (nth bytes offset) %) bytes)))
+  (dec (count (take-while #(= (nth bytes offset) %) bytes))))
 
 (defn- type-a-compress [text offset charset]
-  (let [cb (char-bytes text offset charset)
-        out-bytes
-        (reduce
-         (fn [compressed b]
-           (let [nb (count-duplicate-bytes cb offset)]
-             (into compressed
-                   (if (= 1 nb)
-                     (vector b)
-                     (vector nb b)))))
-         []
-         cb)]
-    (vector (count cb) out-bytes)))
+  (let [cb (char-bytes text 8 offset charset)
+        db (count-duplicate-bytes cb 0)]
+    (prn cb)
+    (if (= 0 db)
+      (vector 1 [(first cb)])
+      (vector db [db (first cb)]))))
 
 (defn- type-b-compress [text offset]
   (if-let [matched-data (find-first
@@ -60,13 +57,12 @@ one does. Otherwise return the :else expression or nil"
 (defn- type-c-compress [text offset charset]
   "Type C Compression - an ascii character followed by a space. Multibyte characters
 should return nil from this function"
-  (let [cb (char-bytes text offset charset)]
-    (when (= (count cb) 1)
-      (vector 2 (map #(bit-xor % 0x80) cb)))))
+  (let [cb (char-bytes text 1 offset charset)]
+    (vector 2 [(bit-xor (first cb) 0x80)])))
 
 (defn- pass-through [text offset charset]
   "Pass through, write the bytes straight to the compression stream"
-  (vector 1 (char-bytes text offset charset)))
+  (vector 1 (char-bytes text 1 offset charset)))
 
 (defn- compression-chain [text offset textlength charset]
    (condf
