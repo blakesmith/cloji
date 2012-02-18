@@ -10,6 +10,7 @@
   (testing "encoding UTF8 characters"
     (is (= [3 226 128 152] (encoder/compressed-palmdoc "\u2018" "UTF-8"))))
   (testing "type c encoding, character followed by a space"
-    (is (= [244] (encoder/compressed-palmdoc " t" "UTF-8")))))
+    (is (= [244] (encoder/compressed-palmdoc " t" "UTF-8")))
+    (is (= [32 3 226 128 152] (encoder/compressed-palmdoc " \u2018" "UTF-8")))))
     
 
