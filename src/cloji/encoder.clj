@@ -41,13 +41,10 @@ one does. Otherwise return the :else expression or nil"
                          (map
                           (fn [i]
                             (let [chunk (get-subs text i offset)]
-;                              (prn preamble)
-;                              (prn chunk)
                               (vector (.indexOf preamble chunk) (count chunk))))
                           (range 10 2 -1)))]
     (let [[distance chunk-size] matched-data
           m (- offset distance)]
-;      (prn matched-data)
       (when (and (<= chunk-size 10) (>= chunk-size 3))
         (vector chunk-size
                 (packed-int

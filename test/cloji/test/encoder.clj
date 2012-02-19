@@ -24,8 +24,6 @@
           sliding-window "<html><head><guide><reference title=\"CONTENTS\" type=\"toc\"  filepos=0000001117"
           enc (encoder/compressed-palmdoc test-string "UTF-8")
           expected (take 54 (core/read-record no-images ni 1))]
-      (prn enc)
-      (prn expected)
       (is (= test-string (decoder/palmdoc-string nil nil enc "UTF-8")))
       (is (= [128 128] (subvec enc 48 50))))))
     
