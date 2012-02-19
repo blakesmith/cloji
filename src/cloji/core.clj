@@ -14,7 +14,7 @@
 
 (defn packed-int [v n]
   (map (fn [i]
-         (.byteValue (bit-and (bit-shift-right v i) 0xff)))
+         (bit-and 0xff (.byteValue (bit-and (bit-shift-right v i) 0xff))))
        (range (* (dec n) 8) -8 -8)))
 
 (defn byte-array-int [coll]

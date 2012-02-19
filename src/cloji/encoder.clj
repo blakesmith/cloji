@@ -24,16 +24,16 @@ one does. Otherwise return the :else expression or nil"
 
 (defn- get-subs [s length offset]
   (let [strlen (count s)
-        requested-len (+ offset length)
-        l (if (> requested-len strlen) strlen requested-len)]
-    (subs s offset l)))
+        rend (+ offset length)
+        roff (if (> rend strlen) strlen rend)]
+    (subs s offset roff)))
 
 (defn- type-a-compress [text offset charset]
   (let [ss (get-subs text 1 offset)
         cb (char-bytes ss charset)]
     (vector 1 (into [(count cb)] cb))))
 
-(defn- type-b-compress [text offset]
+(defn- type-b-compress [text preamble offset]
   (if-let [matched-data (find-first
                          (fn [match-chunk]
                            (let [[match chunk] match-chunk]
@@ -41,10 +41,13 @@ one does. Otherwise return the :else expression or nil"
                          (map
                           (fn [i]
                             (let [chunk (get-subs text i offset)]
-                              (vector (.indexOf text chunk) (count chunk))))
+;                              (prn preamble)
+;                              (prn chunk)
+                              (vector (.indexOf preamble chunk) (count chunk))))
                           (range 10 2 -1)))]
     (let [[distance chunk-size] matched-data
           m (- offset distance)]
+;      (prn matched-data)
       (when (and (<= chunk-size 10) (>= chunk-size 3))
         (vector chunk-size
                 (packed-int
@@ -64,7 +67,7 @@ should return nil from this function"
 
 (defn- compression-chain [text offset textlength charset]
    (condf
-    (and (> offset 10) (> (- textlength offset) 10)) (type-b-compress (get-subs text (inc offset) 0) offset)
+    (and (> offset 10) (> (- textlength offset) 10)) (type-b-compress text (get-subs text (inc offset) 0) offset)
     (and (< (inc offset) textlength) (= \space (nth text offset))) (type-c-compress text (inc offset) charset)
     (let [ch (int (nth text offset))]
       (or (= ch 0) (and (>= ch 9) (< ch 0x80)))) (pass-through text offset charset)

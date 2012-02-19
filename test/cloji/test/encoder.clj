@@ -1,7 +1,12 @@
 (ns cloji.test.encoder
-  (:use [clojure.test])
+  (:use [clojure.test]
+        [cloji.test.helper])
   (:require [cloji.encoder :as encoder]
-            [cloji.decoder :as decoder]))
+            [cloji.decoder :as decoder]
+            [cloji.core :as core]))
+
+(def ni (mobi-fixture "no_images.mobi"))
+(def no-images (decoder/decode-headers ni))
 
 (deftest compressed-palmdoc-impl
   (testing "exception raising with string sizes > 4096 bytes"
@@ -15,10 +20,13 @@
     (is (= [244] (encoder/compressed-palmdoc " t" "UTF-8")))
     (is (= [32 3 226 128 152] (encoder/compressed-palmdoc " \u2018" "UTF-8"))))
   (testing "type b encoding"
-    (let [test-string "<html><head><guide><reference title=\"CONTENTS\" type=\"toc\""
-          enc (encoder/compressed-palmdoc test-string "UTF-8")]
+    (let [test-string "<html><head><guide><reference title=\"CONTENTS\" type=\"toc\"aaaa"
+          sliding-window "<html><head><guide><reference title=\"CONTENTS\" type=\"toc\"  filepos=0000001117"
+          enc (encoder/compressed-palmdoc test-string "UTF-8")
+          expected (take 54 (core/read-record no-images ni 1))]
       (prn enc)
+      (prn expected)
       (is (= test-string (decoder/palmdoc-string nil nil enc "UTF-8")))
-      (is (= 54 (count enc))))))
+      (is (= [128 128] (subvec enc 48 50))))))
     
 
