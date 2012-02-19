@@ -1,6 +1,7 @@
 (ns cloji.test.encoder
   (:use [clojure.test])
-  (:require [cloji.encoder :as encoder]))
+  (:require [cloji.encoder :as encoder]
+            [cloji.decoder :as decoder]))
 
 (deftest compressed-palmdoc-impl
   (testing "exception raising with string sizes > 4096 bytes"
@@ -12,6 +13,12 @@
     (is (= [3 226 128 152] (encoder/compressed-palmdoc "\u2018" "UTF-8"))))
   (testing "type c encoding, character followed by a space"
     (is (= [244] (encoder/compressed-palmdoc " t" "UTF-8")))
-    (is (= [32 3 226 128 152] (encoder/compressed-palmdoc " \u2018" "UTF-8")))))
+    (is (= [32 3 226 128 152] (encoder/compressed-palmdoc " \u2018" "UTF-8"))))
+  (testing "type b encoding"
+    (let [test-string "<html><head><guide><reference title=\"CONTENTS\" type=\"toc\""
+          enc (encoder/compressed-palmdoc test-string "UTF-8")]
+      (prn enc)
+      (is (= test-string (decoder/palmdoc-string nil nil enc "UTF-8")))
+      (is (= 54 (count enc))))))
     
 

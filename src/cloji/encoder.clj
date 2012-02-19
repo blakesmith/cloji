@@ -22,9 +22,6 @@ one does. Otherwise return the :else expression or nil"
 (defn- char-bytes [s charset]
   (map #(bit-and 0xff %) (seq (.getBytes s charset))))
 
-(defn- count-duplicate-chars [chars]
-  (count (take-while #(= (first chars) %) chars)))
-
 (defn- get-subs [s length offset]
   (let [strlen (count s)
         requested-len (+ offset length)
@@ -43,8 +40,8 @@ one does. Otherwise return the :else expression or nil"
                              (and (>= match 0) (<= (- offset match) 2047))))
                          (map
                           (fn [i]
-                            (let [chunk (subs text offset (+ i offset))]
-                              (vec (.indexOf text chunk) (count chunk))))
+                            (let [chunk (get-subs text i offset)]
+                              (vector (.indexOf text chunk) (count chunk))))
                           (range 10 2 -1)))]
     (let [[distance chunk-size] matched-data
           m (- offset distance)]
@@ -67,7 +64,7 @@ should return nil from this function"
 
 (defn- compression-chain [text offset textlength charset]
    (condf
-    (and (> offset 10) (> (- textlength offset) 10)) (type-b-compress (take offset text) offset)
+    (and (> offset 10) (> (- textlength offset) 10)) (type-b-compress (get-subs text (inc offset) 0) offset)
     (and (< (inc offset) textlength) (= \space (nth text offset))) (type-c-compress text (inc offset) charset)
     (let [ch (int (nth text offset))]
       (or (= ch 0) (and (>= ch 9) (< ch 0x80)))) (pass-through text offset charset)
