@@ -19,7 +19,7 @@
   (testing "type c encoding, character followed by a space"
     (is (= [244] (encoder/compressed-palmdoc " t" "UTF-8")))
     (is (= [32 3 226 128 152] (encoder/compressed-palmdoc " \u2018" "UTF-8")))
-    (is (= [160 102] (encoder/compressed-palmdoc "  f" "UTF-8"))))
+    (is (= [32 230] (encoder/compressed-palmdoc "  f" "UTF-8"))))
   (testing "type b encoding"
     (let [test-string "<html><head><guide><reference title=\"CONTENTS\" type=\"toc\"aaaa"
           enc (encoder/compressed-palmdoc test-string "UTF-8")

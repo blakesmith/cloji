@@ -55,7 +55,7 @@ one does. Otherwise return the :else expression or nil"
   "Type C Compression - an ascii character followed by a space. Multibyte characters
 should return nil from this function"
   (let [cb (char-bytes (get-subs text 1 offset) charset)]
-    (when (= 1 (count cb))
+    (when (and (= 1 (count cb)) (and (>= (first cb) 0x40) (< (first cb) 0x80)))
       (vector 2 [(bit-xor (first cb) 0x80)]))))
 
 (defn- pass-through [text offset charset]
