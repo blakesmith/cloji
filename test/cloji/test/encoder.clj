@@ -18,13 +18,17 @@
     (is (= [3 226 128 152] (encoder/compressed-palmdoc "\u2018" "UTF-8"))))
   (testing "type c encoding, character followed by a space"
     (is (= [244] (encoder/compressed-palmdoc " t" "UTF-8")))
-    (is (= [32 3 226 128 152] (encoder/compressed-palmdoc " \u2018" "UTF-8"))))
+    (is (= [32 3 226 128 152] (encoder/compressed-palmdoc " \u2018" "UTF-8")))
+    (is (= [160 102] (encoder/compressed-palmdoc "  f" "UTF-8"))))
   (testing "type b encoding"
     (let [test-string "<html><head><guide><reference title=\"CONTENTS\" type=\"toc\"aaaa"
-          sliding-window "<html><head><guide><reference title=\"CONTENTS\" type=\"toc\"  filepos=0000001117"
           enc (encoder/compressed-palmdoc test-string "UTF-8")
           expected (take 54 (core/read-record no-images ni 1))]
       (is (= test-string (decoder/palmdoc-string nil nil enc "UTF-8")))
-      (is (= [112 128 128 116] (subvec enc 47 51))))))
+      (is (= [112 128 128 116] (subvec enc 47 51)))))
+  (testing "sliding window type b encoding"
+    (let [sliding-window "<html><head><guide><reference title=\"CONTENTS\" type=\"toc\"  filepos=0000001117"
+          enc (encoder/compressed-palmdoc sliding-window "UTF-8")]
+      (is (= sliding-window (decoder/palmdoc-string nil nil enc "UTF-8"))))))
     
 
