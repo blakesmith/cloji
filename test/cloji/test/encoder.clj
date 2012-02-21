@@ -29,6 +29,11 @@
   (testing "sliding window type b encoding"
     (let [sliding-window "<html><head><guide><reference title=\"CONTENTS\" type=\"toc\"  filepos=0000001117"
           enc (encoder/compressed-palmdoc sliding-window "UTF-8")]
-      (is (= sliding-window (decoder/palmdoc-string nil nil enc "UTF-8"))))))
+      (is (= sliding-window (decoder/palmdoc-string nil nil enc "UTF-8")))))
+  (testing "record parity from encode and decode"
+    (let [r1 (decoder/decode-record no-images ni 1)
+          enc (encoder/compressed-palmdoc r1 "UTF-8")
+          r2 (decoder/palmdoc-string nil nil enc "UTF-8")]
+      (is (= (subs r1 0 2058) (subs r2 0 2058))))))
     
 
