@@ -4,6 +4,17 @@
         [clojure.contrib.seq-utils :only [find-first]])
   (:require [cloji.palmdoc :as palmdoc]))
 
+(defn- index-of [coll val]
+  (let [s (count val)
+        vs (count coll)]
+    (loop [pos 0]
+      (if (< vs (+ pos s))
+        -1
+        (let [search (subvec coll pos (+ pos s))]
+          (if (= search val)
+            pos
+            (recur (inc pos))))))))
+
 (defmacro condf [& clauses]
   "Takes a set of test/expr pairs. If both expressions in
 a pair don't evaluate to false or nil, return the result of the
