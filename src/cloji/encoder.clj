@@ -4,6 +4,11 @@
         [clojure.contrib.seq-utils :only [find-first]])
   (:require [cloji.palmdoc :as palmdoc]))
 
+(defn- vec-slice [coll start end]
+  (if (< (count coll) end)
+    (subvec coll start)
+    (subvec coll start end)))
+
 (defn- index-of [coll val]
   (let [s (count val)
         vs (count coll)]
@@ -33,20 +38,12 @@ one does. Otherwise return the :else expression or nil"
 (defn- char-bytes [s charset]
   (vec (map #(bit-and 0xff %) (.getBytes s charset))))
 
-(defn- get-subs [s length offset]
-  (let [strlen (count s)
-        rend (+ offset length)
-        roff (if (> rend strlen) strlen rend)]
-    (subs s offset roff)))
-
 (defn- type-a-compress [byte-sequence offset]
   (let [cb (take-while
             #(or
               (and (<= 0x01 %) (>= 0x08 %))
               (and (<= 0x80 %) (>= 0xff %)))
-            (if (< (count byte-sequence) (+ offset 8))
-              (subvec byte-sequence offset)
-              (subvec byte-sequence offset (+ offset 8))))]
+            (vec-slice byte-sequence offset (+ offset 8)))]
         (vector (count cb) (into [(count cb)] cb))))
 
 (defn- type-b-compress [byte-sequence preamble offset]
@@ -56,7 +53,7 @@ one does. Otherwise return the :else expression or nil"
                              (and (>= match 0) (<= (- offset match) 2047))))
                          (map
                           (fn [i]
-                            (let [chunk (subvec byte-sequence offset (+ i offset))]
+                            (let [chunk (vec-slice byte-sequence offset (+ i offset))]
                               (vector (index-of preamble chunk) (count chunk))))
                           (range 10 2 -1)))]
     (let [[distance chunk-size] matched-data
