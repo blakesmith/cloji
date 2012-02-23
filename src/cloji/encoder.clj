@@ -76,7 +76,7 @@ should return nil from this function"
   "Pass through, write the bytes straight to the compression stream"
   (vector 1 [(nth byte-sequence offset)]))
 
-(defn- compression-chain [byte-sequence offset length charset]
+(defn- compression-chain [byte-sequence offset length]
    (condf
     (and (> offset 10) (> (- length offset) 10)) (type-b-compress byte-sequence (subvec byte-sequence 0 offset) offset)
     (and (< (inc offset) length) (= \space (char (nth byte-sequence offset)))) (type-c-compress byte-sequence (inc offset))
@@ -90,6 +90,6 @@ should return nil from this function"
     (loop [cs [] offset 0]
       (if (< length (inc offset))
         cs
-        (let [[n chunk] (compression-chain byte-sequence offset length charset)]
+        (let [[n chunk] (compression-chain byte-sequence offset length)]
           (recur (into cs chunk) (+ offset n)))))))
 
