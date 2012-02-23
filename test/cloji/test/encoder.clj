@@ -35,5 +35,4 @@
           enc (encoder/compressed-palmdoc r1 "UTF-8")
           r2 (decoder/palmdoc-string nil nil enc "UTF-8")]
       (is (= (subs r1 0 2058) (subs r2 0 2058))))))
-    
 

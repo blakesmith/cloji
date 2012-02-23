@@ -31,7 +31,7 @@ one does. Otherwise return the :else expression or nil"
        (partition 2 clauses)) nil))
 
 (defn- char-bytes [s charset]
-  (map #(bit-and 0xff %) (seq (.getBytes s charset))))
+  (vec (map #(bit-and 0xff %) (.getBytes s charset))))
 
 (defn- get-subs [s length offset]
   (let [strlen (count s)
@@ -44,23 +44,26 @@ one does. Otherwise return the :else expression or nil"
         cb (char-bytes ss charset)]
     (vector 1 (into [(count cb)] cb))))
 
-(defn- type-b-compress [text preamble offset]
-  (if-let [matched-data (find-first
-                         (fn [match-chunk]
-                           (let [[match chunk] match-chunk]
-                             (and (>= match 0) (<= (- offset match) 2047))))
-                         (map
-                          (fn [i]
-                            (let [chunk (get-subs text i offset)]
-                              (vector (.indexOf preamble chunk) (count chunk))))
-                          (range 10 2 -1)))]
-    (let [[distance chunk-size] matched-data
-          m (- offset distance)]
-      (when (and (<= chunk-size 10) (>= chunk-size 3))
-        (vector chunk-size
-                (packed-int
-                 (+ 0x8000 (bit-and (bit-shift-left m 3) 0x3ff8) (- chunk-size 3))
-                 2))))))
+(defn- type-b-compress [text preamble offset charset]
+  (let [byte-sequence (char-bytes preamble charset)]
+    (when (= offset 2057) (prn (count preamble) (count byte-sequence)))
+    (if-let [matched-data (find-first
+                           (fn [match-chunk]
+                             (let [[match chunk] match-chunk]
+                               (and (>= match 0) (<= (- offset match) 2047))))
+                           (map
+                            (fn [i]
+                              (let [chunk (char-bytes (get-subs text i offset) charset)]
+                                (vector (index-of byte-sequence chunk) (count chunk))))
+                            (range 10 2 -1)))]
+      (let [[distance chunk-size] matched-data
+            m (- offset distance)]
+        (when (and (<= chunk-size 10) (>= chunk-size 3))
+          (when (= offset 2057) (prn matched-data))
+          (vector chunk-size
+                  (packed-int
+                   (+ 0x8000 (bit-and (bit-shift-left m 3) 0x3ff8) (- chunk-size 3))
+                   2)))))))
 
 (defn- type-c-compress [text offset charset]
   "Type C Compression - an ascii character followed by a space. Multibyte characters
@@ -75,7 +78,7 @@ should return nil from this function"
 
 (defn- compression-chain [text offset textlength charset]
    (condf
-    (and (> offset 10) (> (- textlength offset) 10)) (type-b-compress text (get-subs text (inc offset) 0) offset)
+    (and (> offset 10) (> (- textlength offset) 10)) (type-b-compress text (get-subs text (inc offset) 0) offset charset)
     (and (< (inc offset) textlength) (= \space (nth text offset))) (type-c-compress text (inc offset) charset)
     (let [ch (int (nth text offset))]
       (or (= ch 0) (and (>= ch 9) (< ch 0x80)))) (pass-through text offset charset)
