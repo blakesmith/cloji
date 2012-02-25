@@ -11,7 +11,7 @@
    :cp1252 "CP1252"})
 
 (defn palmdoc-string [_ _ coll encoding]
-  (as-string (palmdoc/unpack coll) encoding))
+  ((:decode as-string) (palmdoc/unpack coll) encoding))
 
 (defn huffman-string [headers is coll encoding]
   (let [table (huff/huff-table (read-record headers is (:first-huff-rec (:mobi-header headers))))
@@ -26,7 +26,7 @@
 (defn decode-attributes [attrs is]
   (into {}
     (for [[attr-name f len skip] attrs]
-      [attr-name (f (read-bytes is len skip))])))
+      [attr-name ((:decode f) (read-bytes is len skip))])))
 
 (defn decode-trail-size [flags data]
   "Detects the trailing entry size for a record"

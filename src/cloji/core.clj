@@ -6,7 +6,7 @@
     ~body))
 
 (defn unpack-type [coll f size & [offset]]
-  (f (take size (if offset (drop offset coll) coll))))
+  ((:decode f) (take size (if offset (drop offset coll) coll))))
 
 (defn unpack-series [coll f n size & [offset]]
   (map #(unpack-type coll f size (+ offset (* size %))) (range n)))
@@ -16,11 +16,13 @@
          (bit-and 0xff (.byteValue (bit-and (bit-shift-right v i) 0xff))))
        (range (* (dec n) 8) -8 -8)))
 
-(defn byte-array-int [coll]
-  (reduce +
-    (map (fn [b i]
-           (bit-shift-left b (* i 8)))
-         coll (iterate dec (- (count coll) 1)))))
+(def byte-array-int
+  {:decode (fn [coll]
+             (reduce +
+                     (map (fn [b i]
+                            (bit-shift-left b (* i 8)))
+                          coll (iterate dec (- (count coll) 1)))))
+   :encode (fn [int])})
 
 (defn bvw-int [data]
   "Backwards encoded variable width integer"
@@ -34,9 +36,11 @@
         (recur (drop-last d) (+ bit-pos 7) r)))))
 
 
-(defn bitfield [value mappings]
-  (map first
-    (filter #(< 0 (bit-and (last %) value)) mappings)))
+(def bitfield
+  {:decode (fn [value mappings]
+             (map first
+                  (filter #(< 0 (bit-and (last %) value)) mappings)))
+   :encode (fn [values mappings])})
 
 (defn bitset [value & [max-count]]
   (map (fn [i]
@@ -67,14 +71,18 @@
     (with-location (:seek ri) is
       (read-bytes is (:read-size ri)))))
 
-(defn as-string [coll & [encoding]]
-  (let [e (or encoding "UTF-8")]
-    (String. (into-array Byte/TYPE (map #(.byteValue %) (filter #(not (= 0 %)) coll))) e)))
+(def as-string
+  {:decode (fn [coll & [encoding]]
+             (let [e (or encoding "UTF-8")]
+               (String. (into-array Byte/TYPE (map #(.byteValue %) (filter #(not (= 0 %)) coll))) e)))
+   :encode (fn [s])})
 
-(defn as-date [coll]
-  (let [t (byte-array-int coll)]
-    (when (not (= 0 t))
-      (doto (new Date) (.setTime (* 1000 t))))))
+(def as-date
+  {:decode (fn [coll]
+             (let [t ((:decode byte-array-int) coll)]
+               (when (not (= 0 t))
+                 (doto (new Date) (.setTime (* 1000 t))))))
+   :encode (fn [date])})
 
 
 

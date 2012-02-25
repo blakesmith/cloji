@@ -71,7 +71,7 @@
         get-slice
           (fn [rec off]
            (let [blen (unpack-type rec byte-array-int 2 (+ 16 off))]
-             [(as-string (subvec (vec rec) (+ 18 off) (+ 18 off (bit-and blen 0x7FFF))) encoding) (bit-and blen 0x8000)]))]
+             [((:decode as-string) (subvec (vec rec) (+ 18 off) (+ 18 off (bit-and blen 0x7FFF))) encoding) (bit-and blen 0x8000)]))]
     (loop [out []
            records (range (inc first-rec) last-rec)]
       (if-let [i (first records)]
