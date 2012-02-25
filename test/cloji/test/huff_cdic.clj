@@ -1,10 +1,9 @@
 (ns cloji.test.huff-cdic
-  (:use
-    [cloji.huff-cdic]
-    [cloji.core]
-    [cloji.decoder]
-    [cloji.test.helper]
-    [clojure.test]))
+  (:use [cloji.huff-cdic]
+        [cloji.core]
+        [cloji.decoder]
+        [cloji.test.helper]
+        [clojure.test]))
 
 (def hf (mobi-fixture "huff.mobi"))
 

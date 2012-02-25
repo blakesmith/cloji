@@ -1,7 +1,7 @@
 (ns cloji.test.core
-  (:use [cloji.core])
-  (:use [cloji.test.helper])
-  (:use [clojure.test]))
+  (:use [cloji.core]
+        [cloji.test.helper]
+        [clojure.test]))
 
 (deftest single-byte-array-int-test
   (testing "Single byte array"

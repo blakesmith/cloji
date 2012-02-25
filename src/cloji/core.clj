@@ -1,6 +1,5 @@
 (ns cloji.core
-  (:import
-    [java.util Date]))
+  (:import [java.util Date]))
 
 (defmacro with-location [l is body]
   `(do (.seek ~is ~l)

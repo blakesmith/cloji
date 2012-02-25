@@ -1,6 +1,5 @@
 (ns cloji.huff-cdic
-  (:use
-    [cloji.core]))
+  (:use [cloji.core]))
 
 (defn unpack [coll huff cdic]
   (let [bl (* (count coll) 8)

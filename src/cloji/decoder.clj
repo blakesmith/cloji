@@ -1,13 +1,10 @@
 (ns cloji.decoder
-  (:use
-    [cloji.core]
-    [cloji.attributes])
-  (:require
-    [clojure.java.io :as io]
-    [cloji.huff-cdic :as huff]
-    [cloji.palmdoc :as palmdoc])
-  (:import
-    [javax.imageio ImageIO]))
+  (:use [cloji.core]
+        [cloji.attributes])
+  (:require [clojure.java.io :as io]
+            [cloji.huff-cdic :as huff]
+            [cloji.palmdoc :as palmdoc])
+  (:import [javax.imageio ImageIO]))
 
 (def encoding-string
   {:utf-8 "UTF-8"
