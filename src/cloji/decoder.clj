@@ -29,7 +29,7 @@
 (defn decode-record [headers is n]
   "Decodes a text record"
   (let [encoding (encoding-string (:encoding (:mobi-header headers)))
-        f (get compression-fn (:compression (:palmdoc-header headers)))
+        f (:decode (get compression-fn (:compression (:palmdoc-header headers))))
         data (read-record headers is n)
         trail-size (decode-trail-size (bitset (:extra-flags (:mobi-header headers))) data)]
     (f headers is (drop-last trail-size data) encoding)))
