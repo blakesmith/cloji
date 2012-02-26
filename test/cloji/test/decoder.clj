@@ -1,9 +1,8 @@
 (ns cloji.test.decoder
-  (:use
-    [cloji.decoder]
-    [cloji.core]
-    [cloji.test.helper]
-    [clojure.test]))
+  (:use [cloji.decoder]
+        [cloji.core]
+        [cloji.test.helper]
+        [clojure.test]))
 
 (def ni (mobi-fixture "no_images.mobi"))
 (def im (mobi-fixture "images2.mobi"))
