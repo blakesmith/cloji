@@ -1,6 +1,5 @@
 (ns cloji.palmdoc
   (:use [cloji.core]
-        [cloji.attributes]
         [clojure.contrib.seq-utils :only [find-first]]))
 
 (defmacro condf [& clauses]

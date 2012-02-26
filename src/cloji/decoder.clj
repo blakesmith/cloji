@@ -1,27 +1,8 @@
 (ns cloji.decoder
   (:use [cloji.core]
         [cloji.attributes])
-  (:require [clojure.java.io :as io]
-            [cloji.huff-cdic :as huff]
-            [cloji.palmdoc :as palmdoc])
+  (:require [clojure.java.io :as io])
   (:import [javax.imageio ImageIO]))
-
-(def encoding-string
-  {:utf-8 "UTF-8"
-   :cp1252 "CP1252"})
-
-(defn palmdoc-string [_ _ coll encoding]
-  ((:decode as-string) (palmdoc/unpack coll) encoding))
-
-(defn huffman-string [headers is coll encoding]
-  (let [table (huff/huff-table (read-record headers is (:first-huff-rec (:mobi-header headers))))
-        cdic (huff/clean-cdic table (huff/cdic-table headers is encoding) encoding)]
-    (huff/unpack coll table cdic)))
-
-(def compression-fn
-  {1 (fn [coll encoding] (as-string coll encoding))
-   2 palmdoc-string
-   17480 huffman-string})
 
 (defn decode-attributes [attrs is]
   (into {}
