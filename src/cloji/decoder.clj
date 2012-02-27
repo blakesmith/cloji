@@ -6,8 +6,8 @@
 
 (defn decode-attributes [attrs is]
   (into {}
-    (for [[attr-name f len skip] attrs]
-      [attr-name ((:decode f) (read-bytes is len skip))])))
+    (for [{:keys [field type len skip]} attrs]
+      [field ((:decode type) (read-bytes is len skip))])))
 
 (defn decode-trail-size [flags data]
   "Detects the trailing entry size for a record"

@@ -73,42 +73,42 @@
    :encode (fn [attrs])})
 
 (def pdb-attributes
-  [[:name as-string 32]
-   [:attributes palmdoc-attributes 2]
-   [:version byte-array-int 2]
-   [:creation-date as-date 4]
-   [:modification-date as-date 4]
-   [:backup-date as-date 4]
-   [:modification-number byte-array-int 4]
-   [:appinfo-offset byte-array-int 4]
-   [:sortinfo-offset byte-array-int 4]
-   [:type as-string 4]
-   [:creator as-string 4]
-   [:seed-id byte-array-int 4]
-   [:next-record-id byte-array-int 4]
-   [:record-count byte-array-int 2]])
+  [{:field :name :type as-string :len 32}
+   {:field :attributes :type palmdoc-attributes :len 2}
+   {:field :version :type byte-array-int :len 2}
+   {:field :creation-date :type as-date :len 4}
+   {:field :modification-date :type as-date :len 4}
+   {:field :backup-date :type as-date :len 4}
+   {:field :modification-number :type byte-array-int :len 4}
+   {:field :appinfo-offset :type byte-array-int :len 4}
+   {:field :sortinfo-offset :type byte-array-int :len 4}
+   {:field :type :type as-string :len 4}
+   {:field :creator :type as-string :len 4}
+   {:field :seed-id :type byte-array-int :len 4}
+   {:field :next-record-id :type byte-array-int :len 4}
+   {:field :record-count :type byte-array-int :len 2}])
 
 (def record-attributes
-  [[:data-offset byte-array-int 4]
-   [:attributes record-attrs 1]
-   [:id byte-array-int 3]])
+  [{:field :data-offset :type byte-array-int :len 4}
+   {:field :attributes :type record-attrs :len 1}
+   {:field :id :type byte-array-int :len 3}])
 
 (def palmdoc-attributes
-  [[:compression byte-array-int 2]
-   [:text-length byte-array-int 4 2]
-   [:record-count byte-array-int 2]
-   [:record-size byte-array-int 2]
-   [:current-position byte-array-int 4]])
+  [{:field :compression :type byte-array-int :len 2}
+   {:field :text-length :type byte-array-int :len 4 :skip 2}
+   {:field :record-count :type byte-array-int :len 2}
+   {:field :record-size :type byte-array-int :len 2}
+   {:field :current-position :type byte-array-int :len 4}])
 
 (def mobi-attributes
-  [[:header-length byte-array-int 4 4]
-   [:mobi-type mobi-type 4]
-   [:encoding encoding-type 4]
-   [:first-image-offset byte-array-int 4 76]
-   [:first-huff-rec byte-array-int 4]
-   [:huff-rec-count byte-array-int 4]
-   [:huff-table-offset byte-array-int 4]
-   [:huff-table-length byte-array-int 4]])
+  [{:field :header-length :type byte-array-int :len 4 :skip 4}
+   {:field :mobi-type :type mobi-type :len 4}
+   {:field :encoding :type encoding-type :len 4}
+   {:field :first-image-offset :type byte-array-int :len 4 :skip 76}
+   {:field :first-huff-rec :type byte-array-int :len 4}
+   {:field :huff-rec-count :type byte-array-int :len 4}
+   {:field :huff-table-offset :type byte-array-int :len 4}
+   {:field :huff-table-length :type byte-array-int :len 4}])
 
 (def extra-flag-attributes
-  [[:extra-flags byte-array-int 2]])
+  [{:field :extra-flags :type byte-array-int :len 2}])
