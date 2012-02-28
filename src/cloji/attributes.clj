@@ -52,16 +52,16 @@
    :encode (fn [type])})
 
 (def palmdoc-attributes
-  {:decode (fn [coll]
-             ((:decode bitfield) ((:decode byte-array-int) coll)
-                       {:res-db 0x0001
-                        :read-only 0x0002
-                        :appinfo-dirty 0x0004
-                        :backup 0x0008
-                        :install-newer 0x0010
-                        :reset 0x0020
-                        :no-copy 0x0040}))
-   :encode (fn [attrs])})
+  (let [fields {:res-db 0x0001
+                :read-only 0x0002
+                :appinfo-dirty 0x0004
+                :backup 0x0008
+                :install-newer 0x0010
+                :reset 0x0020
+                :no-copy 0x0040}]
+    {:decode (fn [coll]
+               ((:decode bitfield) ((:decode byte-array-int) coll) fields))
+     :encode (fn [attrs])}))
 
 (def record-attrs
   {:decode (fn [coll]
