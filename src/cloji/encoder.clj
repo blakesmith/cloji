@@ -4,7 +4,6 @@
         [cloji.attributes]))
 
 (defn- encode-attributes [attrs values]
-  (prn attrs)
   (reduce into []
         (for [{:keys [field type len skip default]} attrs]
           (if-let [v (get values field)]
