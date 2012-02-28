@@ -73,7 +73,7 @@
    :encode (fn [attrs])})
 
 (def pdb-attributes
-  [{:field :name :type as-string :len 32}
+  [{:field :name :type as-string :len 32 :default "My eBook"}
    {:field :attributes :type palmdoc-attributes :len 2}
    {:field :version :type byte-array-int :len 2}
    {:field :creation-date :type as-date :len 4}

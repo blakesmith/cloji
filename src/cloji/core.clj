@@ -75,7 +75,7 @@
   {:decode (fn [coll & [encoding]]
              (let [e (or encoding "UTF-8")]
                (String. (into-array Byte/TYPE (map #(.byteValue %) (filter #(not (= 0 %)) coll))) e)))
-   :encode (fn [s])})
+   :encode (fn [v len] (take 32 (repeat 0)))})
 
 (def as-date
   {:decode (fn [coll]
