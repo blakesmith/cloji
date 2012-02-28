@@ -9,7 +9,7 @@
 
 (def palmdoc-string
   {:decode  (fn [_ _ coll encoding]
-              ((:decode as-string) (palmdoc/unpack coll) encoding))
+              ((:decode mobi-string) (palmdoc/unpack coll) encoding))
    :encode (fn [coll encoding])})
 
 (def huffman-string
@@ -20,7 +20,7 @@
    :encode (fn [coll encoding])})
 
 (def compression-fn
-  {1 (fn [coll encoding] (as-string coll encoding))
+  {1 (fn [coll encoding] (mobi-string coll encoding))
    2 palmdoc-string
    17480 huffman-string})
 
@@ -73,17 +73,17 @@
    :encode (fn [attrs])})
 
 (def pdb-attributes
-  [{:field :name :type as-string :len 32 :default "My eBook"}
+  [{:field :name :type mobi-string :len 32 :default "My eBook"}
    {:field :attributes :type palmdoc-attributes :len 2}
    {:field :version :type byte-array-int :len 2}
-   {:field :creation-date :type as-date :len 4}
-   {:field :modification-date :type as-date :len 4}
-   {:field :backup-date :type as-date :len 4}
+   {:field :creation-date :type mobi-date :len 4}
+   {:field :modification-date :type mobi-date :len 4}
+   {:field :backup-date :type mobi-date :len 4}
    {:field :modification-number :type byte-array-int :len 4}
    {:field :appinfo-offset :type byte-array-int :len 4}
    {:field :sortinfo-offset :type byte-array-int :len 4}
-   {:field :type :type as-string :len 4}
-   {:field :creator :type as-string :len 4}
+   {:field :type :type mobi-string :len 4}
+   {:field :creator :type mobi-string :len 4}
    {:field :seed-id :type byte-array-int :len 4}
    {:field :next-record-id :type byte-array-int :len 4}
    {:field :record-count :type byte-array-int :len 2}])

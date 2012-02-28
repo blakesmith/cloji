@@ -71,7 +71,7 @@
     (with-location (:seek ri) is
       (read-bytes is (:read-size ri)))))
 
-(def as-string
+(def mobi-string
   {:decode (fn [coll & [encoding]]
              (let [e (or encoding "UTF-8")]
                (String. (into-array Byte/TYPE (map #(.byteValue %) (filter #(not (= 0 %)) coll))) e)))
@@ -79,7 +79,7 @@
              (let [b (vec (.getBytes v (or encoding "UTF-8")))]
                (into b (take (- len (count b)) (repeat 0)))))})
 
-(def as-date
+(def mobi-date
   {:decode (fn [coll]
              (let [t ((:decode byte-array-int) coll)]
                (when (not (= 0 t))
