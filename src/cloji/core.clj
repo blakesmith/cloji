@@ -11,18 +11,19 @@
 (defn unpack-series [coll f n size & [offset]]
   (map #(unpack-type coll f size (+ offset (* size %))) (range n)))
 
-(defn packed-int [v n]
-  (map (fn [i]
-         (bit-and 0xff (.byteValue (bit-and (bit-shift-right v i) 0xff))))
-       (range (* (dec n) 8) -8 -8)))
-
 (def byte-array-int
   {:decode (fn [coll]
              (reduce +
                      (map (fn [b i]
                             (bit-shift-left b (* i 8)))
                           coll (iterate dec (- (count coll) 1)))))
-   :encode (fn [int])})
+   :encode (fn [v len]
+             (map (fn [i]
+                    (bit-and 0xff (.byteValue (bit-and (bit-shift-right v i) 0xff))))
+                  (range (* (dec len) 8) -8 -8)))})
+
+(defn packed-int [v n]
+  ((:encode byte-array-int) v n))
 
 (defn bvw-int [data]
   "Backwards encoded variable width integer"
