@@ -24,6 +24,16 @@
       (is (= (subvec headers 48 52) [0 0 0 0])))
     (testing "encoding the appinfo offset"
       (is (= (subvec headers 52 56) [0 0 0 0])))
-    (testing "ecnoding the sortinfo offset"
-      (is (= (subvec headers 56 60) [0 0 0 0])))))
+    (testing "encoding the sortinfo offset"
+      (is (= (subvec headers 56 60) [0 0 0 0])))
+    (testing "encoding the type"
+      (is (= (subvec headers 60 64) [0x42 0x4F 0x4F 0x4B])))
+    (testing "encoding the creator"
+      (is (= (subvec headers 64 68) [0x4D 0x4F 0x42 0x49])))
+    (testing "encoding the seed-id"
+      (is (= (subvec headers 68 72) [0x0 0x0 0x01 0x7B])))
+    (testing "encoding the next-record id"
+      (is (= (subvec headers 72 76) [0 0 0 0])))
+    (testing "encoding the record count"
+      (is (= (subvec headers 76 78) [0 0xBE])))))
     
