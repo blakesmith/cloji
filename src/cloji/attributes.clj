@@ -75,11 +75,11 @@
 
 (def pdb-attributes
   [{:field :name :type mobi-string :len 32 :default "My eBook"}
-   {:field :attributes :type palmdoc-attributes :len 2}
-   {:field :version :type byte-array-int :len 2}
-   {:field :creation-date :type mobi-date :len 4}
-   {:field :modification-date :type mobi-date :len 4}
-   {:field :backup-date :type mobi-date :len 4}
+   {:field :attributes :type palmdoc-attributes :len 2 :default []}
+   {:field :version :type byte-array-int :len 2 :default 0}
+   {:field :creation-date :type mobi-date :len 4 :default (new java.util.Date)}
+   {:field :modification-date :type mobi-date :len 4 :default (new java.util.Date)}
+   {:field :backup-date :type mobi-date :len 4 :default nil}
    {:field :modification-number :type byte-array-int :len 4}
    {:field :appinfo-offset :type byte-array-int :len 4}
    {:field :sortinfo-offset :type byte-array-int :len 4}
