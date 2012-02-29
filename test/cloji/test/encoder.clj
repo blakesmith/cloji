@@ -19,5 +19,11 @@
     (testing "encoding the creation date, modification date, backup date"
       (is (= (subvec headers 36 40) [0x4D 0xAC 0xD0 0x8C]))
       (is (= (subvec headers 40 44) [0x4D 0xAC 0xD0 0x8C]))
-      (is (= (subvec headers 44 48) [0 0 0 0])))))
+      (is (= (subvec headers 44 48) [0 0 0 0])))
+    (testing "encoding the modification number"
+      (is (= (subvec headers 48 52) [0 0 0 0])))
+    (testing "encoding the appinfo offset"
+      (is (= (subvec headers 52 56) [0 0 0 0])))
+    (testing "ecnoding the sortinfo offset"
+      (is (= (subvec headers 56 60) [0 0 0 0])))))
     
