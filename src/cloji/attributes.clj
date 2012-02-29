@@ -61,7 +61,8 @@
                 :no-copy 0x0040}]
     {:decode (fn [coll]
                ((:decode bitfield) ((:decode byte-array-int) coll) fields))
-     :encode (fn [attrs])}))
+     :encode (fn [v len]
+               ((:encode byte-array-int) ((:encode bitfield) v fields) len))}))
 
 (def record-attrs
   {:decode (fn [coll]

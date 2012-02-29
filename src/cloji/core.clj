@@ -41,7 +41,8 @@
   {:decode (fn [value mappings]
              (map first
                   (filter #(< 0 (bit-and (last %) value)) mappings)))
-   :encode (fn [values mappings])})
+   :encode (fn [values mappings]
+             (reduce bit-or 0 (map #(% mappings) values)))})
 
 (defn bitset [value & [max-count]]
   (map (fn [i]

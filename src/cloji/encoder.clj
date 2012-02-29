@@ -11,7 +11,7 @@
             ((:encode type) default len)))))
 
 (defn encode-headers [values]
-  (let [pdb-header (encode-attributes (subvec attributes/pdb-attributes 0 1) values)]
+  (let [pdb-header (encode-attributes (subvec attributes/pdb-attributes 0 2) values)]
     pdb-header))
 
 (defn encode-record [headers s n])
