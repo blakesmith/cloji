@@ -3,6 +3,12 @@
             [cloji.huff-cdic :as huff])
   (:use [cloji.core]))
 
+(defn- bitfield-funs [fields]
+  {:decode (fn [coll]
+             ((:decode bitfield) ((:decode byte-array-int) coll) fields))
+   :encode (fn [v len]
+               ((:encode byte-array-int) ((:encode bitfield) v fields) len))})
+
 (def encoding-string
   {:utf-8 "UTF-8"
    :cp1252 "CP1252"})
@@ -52,27 +58,19 @@
    :encode (fn [type])})
 
 (def palmdoc-attributes
-  (let [fields {:res-db 0x0001
-                :read-only 0x0002
-                :appinfo-dirty 0x0004
-                :backup 0x0008
-                :install-newer 0x0010
-                :reset 0x0020
-                :no-copy 0x0040}]
-    {:decode (fn [coll]
-               ((:decode bitfield) ((:decode byte-array-int) coll) fields))
-     :encode (fn [v len]
-               ((:encode byte-array-int) ((:encode bitfield) v fields) len))}))
+  (bitfield-funs {:res-db 0x0001
+                  :read-only 0x0002
+                  :appinfo-dirty 0x0004
+                  :backup 0x0008
+                  :install-newer 0x0010
+                  :reset 0x0020
+                  :no-copy 0x0040}))
 
 (def record-attrs
-  (let [fields {:secret 0x0010
-                :in-use 0x0020
-                :dirty 0x0040
-                :delete 0x0080}]
-  {:decode (fn [coll]
-             ((:decode bitfield) ((:decode byte-array-int) coll) fields))
-   :encode (fn [v len]
-               ((:encode byte-array-int) ((:encode bitfield) v fields) len))}))
+  (bitfield-funs {:secret 0x0010
+                  :in-use 0x0020
+                  :dirty 0x0040
+                  :delete 0x0080}))
 
 (def pdb-attributes
   [{:field :name :type mobi-string :len 32 :default "My eBook"}
