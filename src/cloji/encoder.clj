@@ -5,10 +5,12 @@
 
 (defn- encode-attributes [attrs values]
   (reduce into []
-        (for [{:keys [field type len skip default]} attrs]
-          (if-let [v (get values field)]
-            ((:encode type) v len)
-            ((:encode type) default len)))))
+          (for [{:keys [field type len skip default]} attrs]
+            (let [encoded
+                  (if-let [v (get values field)]
+                    ((:encode type) v len)
+                    ((:encode type) default len))]
+              (if skip (into (vec (take skip (repeat 0))) encoded) encoded)))))
 
 (defn- encode-record-info [record-meta]
   (reduce into []
@@ -16,9 +18,11 @@
                record-meta)))
 
 (defn encode-headers [values]
-  (let [pdb-header (encode-attributes pdb-attributes values)
-        record-list (encode-record-info (:record-list values))]
-    (into pdb-header record-list)))
+  (let [pdb-header (encode-attributes attributes/pdb-attributes values)
+        record-list (encode-record-info (:record-list values))
+        two-byte-sep [0 0]
+        palmdoc-header (encode-attributes attributes/palmdoc-attributes (:palmdoc-header values))]
+    (reduce into pdb-header [record-list two-byte-sep palmdoc-header])))
 
 (defn encode-record [headers s n])
 

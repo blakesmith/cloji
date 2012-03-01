@@ -39,5 +39,15 @@
     (testing "encoding the record list attributes (metadata)"
       (is (= (subvec headers 78 82) [0 0 0x06 0x40]))
       (is (= (subvec headers 82 83) [0]))
-      (is (= (subvec headers 83 86) [0 0 0])))))
+      (is (= (subvec headers 83 86) [0 0 0])))
+    (testing "palmdoc header compression"
+      (is (= (subvec headers 1600 1602) [0 02])))
+    (testing "palmdoc header text-length"
+      (is (= (subvec headers 1604 1608) [0 0x0B 0x23 0xED])))
+    (testing "palmdoc record count"
+      (is (= (subvec headers 1608 1610) [0 0xB3])))
+    (testing "palmdoc record size"
+      (is (= (subvec headers 1610 1612) [0x10 0])))
+    (testing "palmdoc current position"
+      (is (= (subvec headers 1612 1616) [0 0 0 0])))))
     
