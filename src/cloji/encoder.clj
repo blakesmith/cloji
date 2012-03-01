@@ -10,9 +10,15 @@
             ((:encode type) v len)
             ((:encode type) default len)))))
 
+(defn- encode-record-info [record-meta]
+  (reduce into []
+          (map (fn [r] (encode-attributes attributes/record-attributes r))
+               record-meta)))
+
 (defn encode-headers [values]
-  (let [pdb-header (encode-attributes pdb-attributes values)]
-    pdb-header))
+  (let [pdb-header (encode-attributes pdb-attributes values)
+        record-list (encode-record-info (:record-list values))]
+    (into pdb-header record-list)))
 
 (defn encode-record [headers s n])
 

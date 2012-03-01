@@ -65,13 +65,14 @@
                ((:encode byte-array-int) ((:encode bitfield) v fields) len))}))
 
 (def record-attrs
+  (let [fields {:secret 0x0010
+                :in-use 0x0020
+                :dirty 0x0040
+                :delete 0x0080}]
   {:decode (fn [coll]
-             ((:decode bitfield) ((:decode byte-array-int) coll)
-                       {:secret 0x0010
-                        :in-use 0x0020
-                        :dirty 0x0040
-                        :delete 0x0080}))
-   :encode (fn [attrs])})
+             ((:decode bitfield) ((:decode byte-array-int) coll) fields))
+   :encode (fn [v len]
+               ((:encode byte-array-int) ((:encode bitfield) v fields) len))}))
 
 (def pdb-attributes
   [{:field :name :type mobi-string :len 32 :default "My eBook"}

@@ -35,5 +35,9 @@
     (testing "encoding the next-record id"
       (is (= (subvec headers 72 76) [0 0 0 0])))
     (testing "encoding the record count"
-      (is (= (subvec headers 76 78) [0 0xBE])))))
+      (is (= (subvec headers 76 78) [0 0xBE])))
+    (testing "encoding the record list attributes (metadata)"
+      (is (= (subvec headers 78 82) [0 0 0x06 0x40]))
+      (is (= (subvec headers 82 83) [0]))
+      (is (= (subvec headers 83 86) [0 0 0])))))
     
