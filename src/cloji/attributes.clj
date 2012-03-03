@@ -30,20 +30,22 @@
    2 palmdoc-string
    17480 huffman-string})
 
-(defn type-lookup [types coll]
-  (get types ((:decode byte-array-int) coll)))
+(def type-lookup
+  {:decode (fn [types coll]
+             (get types ((:decode byte-array-int) coll)))
+   :encode (fn [types v len]
+             (let [lookup (first (filter #(= v (second %)) types))]
+               ((:encode byte-array-int) (or (first lookup) 0) len)))})
 
 (def encoding-type
   {:decode (fn [coll]
-             (type-lookup
+             ((:decode type-lookup)
               {65001 :utf-8
                1252 :cp1252} coll))
    :encode (fn [type])})
 
 (def mobi-type
-  {:decode (fn [coll]
-             (type-lookup
-              {2 :mobi-book
+  (let [types {2 :mobi-book
                3 :palmdoc-book
                4 :audio
                257 :news
@@ -54,8 +56,9 @@
                515 :xls
                516 :ppt
                517 :text
-               518 :html} coll))
-   :encode (fn [type])})
+               518 :html}]
+  {:decode (fn [coll] ((:decode type-lookup) types coll))
+   :encode (fn [v len] ((:encode type-lookup) types v len))}))
 
 (def palmdoc-attributes
   (bitfield-funs {:res-db 0x0001

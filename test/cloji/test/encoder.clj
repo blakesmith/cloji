@@ -49,5 +49,9 @@
     (testing "palmdoc record size"
       (is (= (subvec headers 1610 1612) [0x10 0])))
     (testing "palmdoc current position"
-      (is (= (subvec headers 1612 1616) [0 0 0 0])))))
+      (is (= (subvec headers 1612 1616) [0 0 0 0])))
+    (testing "mobi header header length"
+      (is (= (subvec headers 1620 1624) [0 0 0 0xE8])))
+    (testing "mobi header mobi type"
+      (is (= (subvec headers 1624 1628) [0 0 0 0x02])))))
     

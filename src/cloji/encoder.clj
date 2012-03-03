@@ -21,8 +21,10 @@
   (let [pdb-header (encode-attributes attributes/pdb-attributes values)
         record-list (encode-record-info (:record-list values))
         two-byte-sep [0 0]
-        palmdoc-header (encode-attributes attributes/palmdoc-attributes (:palmdoc-header values))]
-    (reduce into pdb-header [record-list two-byte-sep palmdoc-header])))
+        palmdoc-header (encode-attributes attributes/palmdoc-attributes (:palmdoc-header values))
+        mobi-header (encode-attributes (subvec attributes/mobi-attributes 0 2) (:mobi-header values))]
+    (reduce into pdb-header
+            [record-list two-byte-sep palmdoc-header mobi-header])))
 
 (defn encode-record [headers s n])
 
