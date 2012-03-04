@@ -38,11 +38,11 @@
                ((:encode byte-array-int) (or (first lookup) 0) len)))})
 
 (def encoding-type
-  {:decode (fn [coll]
-             ((:decode type-lookup)
-              {65001 :utf-8
-               1252 :cp1252} coll))
-   :encode (fn [type])})
+  (let [types {65001 :utf-8
+               1252 :cp1252}]
+    {:decode (fn [coll] ((:decode type-lookup) types coll))
+     :encode (fn [v len] ((:encode type-lookup) types v len))}))
+
 
 (def mobi-type
   (let [types {2 :mobi-book

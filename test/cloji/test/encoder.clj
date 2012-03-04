@@ -53,5 +53,7 @@
     (testing "mobi header header length"
       (is (= (subvec headers 1620 1624) [0 0 0 0xE8])))
     (testing "mobi header mobi type"
-      (is (= (subvec headers 1624 1628) [0 0 0 0x02])))))
+      (is (= (subvec headers 1624 1628) [0 0 0 0x02])))
+    (testing "mobi header encoding"
+      (is (= (subvec headers 1628 1632) [0 0 0xFD 0xE9])))))
     
