@@ -55,5 +55,15 @@
     (testing "mobi header mobi type"
       (is (= (subvec headers 1624 1628) [0 0 0 0x02])))
     (testing "mobi header encoding"
-      (is (= (subvec headers 1628 1632) [0 0 0xFD 0xE9])))))
+      (is (= (subvec headers 1628 1632) [0 0 0xFD 0xE9])))
+    (testing "mobi header first image offset"
+      (is (= (subvec headers 1708 1712) [0 0 0 0xB8])))
+    (testing "mobi header first huff rec"
+      (is (= (subvec headers 1712 1716) [0 0 0 0])))
+    (testing "mobi header huff rec count"
+      (is (= (subvec headers 1716 1720) [0 0 0 0])))
+    (testing "mobi header huff table offset"
+      (is (= (subvec headers 1720 1724) [0 0 0 0])))
+    (testing "mobi header table length"
+      (is (= (subvec headers 1724 1728) [0 0 0 0])))))
     
