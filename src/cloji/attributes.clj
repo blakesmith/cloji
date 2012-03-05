@@ -82,13 +82,13 @@
    {:field :creation-date :type mobi-date :len 4 :default (new java.util.Date)}
    {:field :modification-date :type mobi-date :len 4 :default (new java.util.Date)}
    {:field :backup-date :type mobi-date :len 4 :default nil}
-   {:field :modification-number :type byte-array-int :len 4}
-   {:field :appinfo-offset :type byte-array-int :len 4}
-   {:field :sortinfo-offset :type byte-array-int :len 4}
-   {:field :type :type mobi-string :len 4}
-   {:field :creator :type mobi-string :len 4}
+   {:field :modification-number :type byte-array-int :len 4 :default 0}
+   {:field :appinfo-offset :type byte-array-int :len 4 :default 0}
+   {:field :sortinfo-offset :type byte-array-int :len 4 :default 0}
+   {:field :type :type mobi-string :len 4 :default "BOOK"}
+   {:field :creator :type mobi-string :len 4 :default "MOBI"}
    {:field :seed-id :type byte-array-int :len 4}
-   {:field :next-record-id :type byte-array-int :len 4}
+   {:field :next-record-id :type byte-array-int :len 4 :default 0}
    {:field :record-count :type byte-array-int :len 2}])
 
 (def record-attributes
@@ -97,21 +97,21 @@
    {:field :id :type byte-array-int :len 3}])
 
 (def palmdoc-attributes
-  [{:field :compression :type byte-array-int :len 2}
+  [{:field :compression :type byte-array-int :len 2 :default 2}
    {:field :text-length :type byte-array-int :len 4 :skip 2}
    {:field :record-count :type byte-array-int :len 2}
-   {:field :record-size :type byte-array-int :len 2}
-   {:field :current-position :type byte-array-int :len 4}])
+   {:field :record-size :type byte-array-int :len 2 :default 4096}
+   {:field :current-position :type byte-array-int :len 4 :default 0}])
 
 (def mobi-attributes
   [{:field :header-length :type byte-array-int :len 4 :skip 4}
-   {:field :mobi-type :type mobi-type :len 4}
-   {:field :encoding :type encoding-type :len 4}
+   {:field :mobi-type :type mobi-type :len 4 :default 2}
+   {:field :encoding :type encoding-type :len 4 :default 65001}
    {:field :first-image-offset :type byte-array-int :len 4 :skip 76}
-   {:field :first-huff-rec :type byte-array-int :len 4}
-   {:field :huff-rec-count :type byte-array-int :len 4}
-   {:field :huff-table-offset :type byte-array-int :len 4}
-   {:field :huff-table-length :type byte-array-int :len 4}])
+   {:field :first-huff-rec :type byte-array-int :len 4 :default 0}
+   {:field :huff-rec-count :type byte-array-int :len 4 :default 0}
+   {:field :huff-table-offset :type byte-array-int :len 4 :default 0}
+   {:field :huff-table-length :type byte-array-int :len 4 :default 0}])
 
 (def extra-flag-attributes
-  [{:field :extra-flags :type byte-array-int :len 2}])
+  [{:field :extra-flags :type byte-array-int :len 2 :default 0}])
