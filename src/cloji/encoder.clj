@@ -22,7 +22,7 @@
         record-list (encode-record-info (:record-list values))
         two-byte-sep [0 0]
         palmdoc-header (encode-attributes attributes/palmdoc-attributes (:palmdoc-header values))
-        mobi-header (encode-attributes (subvec attributes/mobi-attributes 0 8) (:mobi-header values))]
+        mobi-header (encode-attributes attributes/mobi-attributes (:mobi-header values))]
     (reduce into pdb-header
             [record-list two-byte-sep palmdoc-header mobi-header])))
 
