@@ -107,7 +107,22 @@
   [{:field :header-length :type byte-array-int :len 4 :skip 4}
    {:field :mobi-type :type mobi-type :len 4 :default 2}
    {:field :encoding :type encoding-type :len 4 :default 65001}
-   {:field :first-image-offset :type byte-array-int :len 4 :skip 76}
+   {:field :unique-id :type byte-array-int :len 4 :default (int (* (rand) 1000000000))}
+   {:field :file-version :type byte-array-int :len 4 :default 6}
+   {:field :ortographic-index :type byte-array-int :len 4 :default 0xFFFFFFFF}
+   {:field :inflection-index :type byte-array-int :len 4 :default 0xFFFFFFFF}
+   {:field :index-names :type byte-array-int :len 4 :default 0xFFFFFFFF}
+   {:field :index-keys :type byte-array-int :len 4 :default 0xFFFFFFFF}
+   {:field :extra-index-0 :type byte-array-int :len 4 :default 0xFFFFFFFF}
+   {:field :extra-index-1 :type byte-array-int :len 4 :default 0xFFFFFFFF}
+   {:field :extra-index-2 :type byte-array-int :len 4 :default 0xFFFFFFFF}
+   {:field :extra-index-3 :type byte-array-int :len 4 :default 0xFFFFFFFF}
+   {:field :extra-index-4 :type byte-array-int :len 4 :default 0xFFFFFFFF}
+   {:field :extra-index-5 :type byte-array-int :len 4 :default 0xFFFFFFFF}
+   {:field :first-nonbook-offset :type byte-array-int :len 4}
+   {:field :full-name-offset :type byte-array-int :len 4}
+   {:field :full-name-length :type byte-array-int :len 4}
+   {:field :first-image-offset :type byte-array-int :len 4 :skip 16}
    {:field :first-huff-rec :type byte-array-int :len 4 :default 0}
    {:field :huff-rec-count :type byte-array-int :len 4 :default 0}
    {:field :huff-table-offset :type byte-array-int :len 4 :default 0}
