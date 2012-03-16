@@ -75,6 +75,10 @@
                   :dirty 0x0040
                   :delete 0x0080}))
 
+(def exth-flags
+  {:decode (fn [coll] (= 1 (bit-and (bit-shift-right ((:decode byte-array-int) coll) 6) 1)))
+   :encode (fn [v len] ((:encode byte-array-int) (bit-shift-left (if v 1 0) 6) len))})
+
 (def pdb-attributes
   [{:field :name :type mobi-string :len 32 :default "My eBook"}
    {:field :attributes :type palmdoc-attributes :len 2 :default []}
@@ -130,7 +134,8 @@
    {:field :first-huff-rec :type byte-array-int :len 4 :default 0}
    {:field :huff-rec-count :type byte-array-int :len 4 :default 0}
    {:field :huff-table-offset :type byte-array-int :len 4 :default 0}
-   {:field :huff-table-length :type byte-array-int :len 4 :default 0}])
+   {:field :huff-table-length :type byte-array-int :len 4 :default 0}
+   {:field :exth-flags :type exth-flags :len 4 :default 0}])
 
 (def extra-flag-attributes
   [{:field :extra-flags :type byte-array-int :len 2 :default 0}])

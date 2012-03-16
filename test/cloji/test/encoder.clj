@@ -65,5 +65,7 @@
     (testing "mobi header huff table offset"
       (is (= (subvec headers 1720 1724) [0 0 0 0])))
     (testing "mobi header table length"
-      (is (= (subvec headers 1724 1728) [0 0 0 0])))))
+      (is (= (subvec headers 1724 1728) [0 0 0 0])))
+    (testing "exth flags"
+      (is (= (subvec headers 1728 1732) [0 0 0 64])))))
     

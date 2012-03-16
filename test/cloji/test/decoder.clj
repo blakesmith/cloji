@@ -84,7 +84,8 @@
     (is (= 63 (:first-huff-rec (:mobi-header huff))))
     (is (= 3 (:huff-rec-count (:mobi-header huff))))
     (is (= 70 (:huff-table-offset (:mobi-header huff))))
-    (is (= 1 (:huff-table-length (:mobi-header huff)))))
+    (is (= 1 (:huff-table-length (:mobi-header huff))))
+    (is (= true (:exth-flags (:mobi-header huff)))))
   (testing "extra flags"
     (is (= 3 (:extra-flags (:mobi-header no-images))))))
 
