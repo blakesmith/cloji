@@ -76,7 +76,7 @@
 (def mobi-string
   {:decode (fn [coll & [encoding]]
              (let [e (or encoding "UTF-8")]
-               (String. (into-array Byte/TYPE (map #(.byteValue %) (filter #(not (= 0 %)) coll))) e)))
+               (String. (into-array Byte/TYPE (map #(.byteValue %) (filter (complement zero?) coll))) e)))
    :encode (fn [v len & [encoding]]
              (let [b (vec (.getBytes v (or encoding "UTF-8")))]
                (into b (take (- len (count b)) (repeat 0)))))})
