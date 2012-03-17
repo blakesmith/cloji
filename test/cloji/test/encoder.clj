@@ -67,5 +67,9 @@
     (testing "mobi header table length"
       (is (= (subvec headers 1724 1728) [0 0 0 0])))
     (testing "exth flags"
-      (is (= (subvec headers 1728 1732) [0 0 0 64])))))
+      (is (= (subvec headers 1728 1732) [0 0 0 64])))
+    (testing "32 unknown bytes (blank)"
+      (is (= (subvec headers 1732 1764) (take 32 (repeat 0)))))
+    (testing "drm offset"
+      (is (= (subvec headers 1764 1768) [0xff 0xff 0xff 0xff])))))
     

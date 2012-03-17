@@ -135,7 +135,11 @@
    {:field :huff-rec-count :type byte-array-int :len 4 :default 0}
    {:field :huff-table-offset :type byte-array-int :len 4 :default 0}
    {:field :huff-table-length :type byte-array-int :len 4 :default 0}
-   {:field :exth-flags :type exth-flags :len 4 :default 0}])
+   {:field :exth-flags :type exth-flags :len 4 :default 0}
+   {:field :drm-offset :type byte-array-int :len 4 :default 0xFFFFFFFF :skip 32}
+   {:field :drm-count :type byte-array-int :len 4 :default 0xFFFFFFFF}
+   {:field :drm-size :type byte-array-int :len 4 :default 0}
+   {:field :drm-flags :type byte-array-int :len 4 :default 0}])
 
 (def extra-flag-attributes
   [{:field :extra-flags :type byte-array-int :len 2 :default 0}])
