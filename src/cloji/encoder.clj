@@ -18,7 +18,18 @@
           (map (fn [r] (encode-attributes attributes/record-attributes r))
                record-meta)))
 
-(defn- record-maps [records offset])
+(defn- record-offsets [records offset]
+  (reduce
+   (fn [offsets r] (conj offsets (+ (last offsets) r)))
+   [offset]
+   (map count records)))
+
+(defn- record-maps [records offset]
+  (map
+   (fn [id offset]
+     {:data-offset offset :attributes '() :id id})
+   (map #(* 2 %) (range (count records)))
+   (record-offsets records offset)))
 
 (defn encode-headers [values]
   (let [pdb-header (encode-attributes attributes/pdb-attributes values)
