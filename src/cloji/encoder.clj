@@ -39,6 +39,16 @@
            (range 0 size 4096)
            (range 4096 (+ size 4096) 4096))))
 
+(defn- header-length [attrs]
+  (reduce
+   (fn [sum a]
+     (+ sum (:len a)))
+   0
+   (flatten attrs)))
+
+(defn- record-map-length [n]
+  (* n (header-length attributes/record-attributes)))
+
 (defn encode-mobi [headers body charset]
   (let [records (encode-body body charset)
-        record-size (* 8 (count records))]))
+        record-size (record-map-length (count records))]))
