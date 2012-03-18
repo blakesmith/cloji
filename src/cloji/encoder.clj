@@ -4,19 +4,15 @@
   (:use [cloji.core]
         [cloji.attributes]))
 
-(defn- encode-attributes [attrs values]
-  (reduce into []
-          (for [{:keys [field type len skip default]} attrs]
-            (let [encoded
-                  (if-let [v (get values field)]
-                    ((:encode type) v len)
-                    ((:encode type) default len))]
-              (if skip (into (vec (take skip (repeat 0))) encoded) encoded)))))
+(defn- header-length [attrs]
+  (reduce
+   (fn [sum a]
+     (+ sum (:len a)))
+   0
+   (flatten attrs)))
 
-(defn- encode-record-info [record-meta]
-  (reduce into []
-          (map (fn [r] (encode-attributes attributes/record-attributes r))
-               record-meta)))
+(defn- record-map-length [n]
+  (* n (header-length attributes/record-attributes)))
 
 (defn- record-offsets [records offset]
   (reduce
@@ -30,6 +26,20 @@
      {:data-offset offset :attributes '() :id id})
    (map #(* 2 %) (range (count records)))
    (record-offsets records offset)))
+
+(defn- encode-attributes [attrs values]
+  (reduce into []
+          (for [{:keys [field type len skip default]} attrs]
+            (let [encoded
+                  (if-let [v (get values field)]
+                    ((:encode type) v len)
+                    ((:encode type) default len))]
+              (if skip (into (vec (take skip (repeat 0))) encoded) encoded)))))
+
+(defn- encode-record-info [record-meta]
+  (reduce into []
+          (map (fn [r] (encode-attributes attributes/record-attributes r))
+               record-meta)))
 
 (defn encode-headers [values]
   (let [pdb-header (encode-attributes attributes/pdb-attributes values)
@@ -49,16 +59,6 @@
               (subs body start end)) charset))
            (range 0 size 4096)
            (range 4096 (+ size 4096) 4096))))
-
-(defn- header-length [attrs]
-  (reduce
-   (fn [sum a]
-     (+ sum (:len a)))
-   0
-   (flatten attrs)))
-
-(defn- record-map-length [n]
-  (* n (header-length attributes/record-attributes)))
 
 (defn encode-mobi [headers body charset]
   (let [records (encode-body body charset)
