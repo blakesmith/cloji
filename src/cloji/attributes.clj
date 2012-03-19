@@ -75,6 +75,20 @@
                   :dirty 0x0040
                   :delete 0x0080}))
 
+(defn- full-name-div-pad [s]
+  (let [size (count s)]
+    (into s (take
+             (if (zero? (rem size 4))
+               0
+               (- 4 (rem size 4)))
+             (repeat 0)))))
+
+(def encode-full-name
+  (fn [v _]
+    (-> ((:encode mobi-string) v (count v))
+        (conj 0 0)
+        (full-name-div-pad))))
+
 (def exth-flags
   {:decode (fn [coll] (= 1 (bit-and (bit-shift-right ((:decode byte-array-int) coll) 6) 1)))
    :encode (fn [v len] ((:encode byte-array-int) (bit-shift-left (if v 1 0) 6) len))})
