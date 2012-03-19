@@ -143,3 +143,9 @@
 
 (def extra-flag-attributes
   [{:field :extra-flags :type byte-array-int :len 2 :default 0}])
+
+(def static-attributes
+  (list
+   pdb-attributes
+   palmdoc-attributes
+   mobi-attributes))
