@@ -83,11 +83,17 @@
                (- 4 (rem size 4)))
              (repeat 0)))))
 
-(def encode-full-name
-  (fn [v _]
-    (-> ((:encode mobi-string) v (count v))
-        (conj 0 0)
-        (full-name-div-pad))))
+(defn- encode-full-name [v len]
+  (-> ((:encode mobi-string) v (count v))
+      (conj 0 0)
+      (full-name-div-pad)))
+
+(defn- decode-full-name [coll]
+  ((:decode mobi-string) coll))
+
+(def full-name
+  {:encode encode-full-name
+   :decode decode-full-name})
 
 (def exth-flags
   {:decode (fn [coll] (= 1 (bit-and (bit-shift-right ((:decode byte-array-int) coll) 6) 1)))
@@ -157,6 +163,9 @@
 
 (def extra-flag-attributes
   [{:field :extra-flags :type byte-array-int :len 2 :default 0}])
+
+(def full-name-attributes
+  [{:field :full-name :type full-name :len nil :default "My eBook"}])
 
 (def static-attributes
   (list

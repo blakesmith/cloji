@@ -34,24 +34,32 @@
         trail-size (decode-trail-size (bitset (:extra-flags (:mobi-header headers))) data)]
     (f headers is (drop-last trail-size data) encoding)))
 
+(defn- decode-full-name [is offset length]
+  (let [attrs (assoc (first full-name-attributes) :len length)]
+    (read-attributes [attrs] is offset)))
+
 (defn decode-headers [is]
   "Takes a mobipocket RandomAccessFile and decodes the mobipocket headers, returns a map of header attributes that are necessary for decoding the body and extracting images"
   (with-location 0 is
     (let [pdb-header (decode-attributes pdb-attributes is)
           record-list (decode-record-info record-attributes (:record-count pdb-header) is)
           first-offset (:data-offset (first record-list))
-          palmdoc-header
-            (read-attributes palmdoc-attributes is first-offset)
+          palmdoc-header (read-attributes palmdoc-attributes is first-offset)
           mobi-header (decode-attributes mobi-attributes is)
           extra-flags
             (if (or (= 0xE4 (:header-length mobi-header))
                     (= 0xE8 (:header-length mobi-header)))
               (read-attributes extra-flag-attributes is (+ first-offset 0xF2))
-              0)]
+              0)
+          full-name (decode-full-name
+                     is
+                     (+ (:full-name-offset mobi-header) first-offset)
+                     (:full-name-length mobi-header))]
       (-> pdb-header
         (assoc :record-list record-list)
         (assoc :palmdoc-header palmdoc-header)
-        (assoc :mobi-header (conj extra-flags mobi-header))))))
+        (assoc :mobi-header (conj extra-flags mobi-header))
+        (into full-name)))))
 
 (defn decode-image [headers is n]
   "Returns a BufferedImage from the mobi image record at offset n"

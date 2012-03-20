@@ -91,7 +91,9 @@
     (is (= 0 (:drm-size (:mobi-header huff))))
     (is (= 0 (:drm-flags (:mobi-header huff)))))
   (testing "extra flags"
-    (is (= 3 (:extra-flags (:mobi-header no-images))))))
+    (is (= 3 (:extra-flags (:mobi-header no-images)))))
+  (testing "full name"
+    (is (= "The Adventures of Sherlock Holmes" (:full-name no-images)))))
 
 (deftest palmdoc-decompression
   (testing "Literals and space compression"
