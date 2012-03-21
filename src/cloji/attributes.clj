@@ -143,14 +143,14 @@
    {:field :extra-index-3 :type byte-array-int :len 4 :default 0xFFFFFFFF}
    {:field :extra-index-4 :type byte-array-int :len 4 :default 0xFFFFFFFF}
    {:field :extra-index-5 :type byte-array-int :len 4 :default 0xFFFFFFFF}
-   {:field :first-nonbook-offset :type byte-array-int :len 4}
+   {:field :first-nonbook-offset :type byte-array-int :len 4 :default 0}
    {:field :full-name-offset :type byte-array-int :len 4}
    {:field :full-name-length :type byte-array-int :len 4}
    {:field :locale :type byte-array-int :len 4 :default 9}
    {:field :input-language :type byte-array-int :len 4 :default 0}
    {:field :output-language :type byte-array-int :len 4 :default 0}
    {:field :min-version :type byte-array-int :len 4 :default 6}
-   {:field :first-image-offset :type byte-array-int :len 4}
+   {:field :first-image-offset :type byte-array-int :len 4 :default 0}
    {:field :first-huff-rec :type byte-array-int :len 4 :default 0}
    {:field :huff-rec-count :type byte-array-int :len 4 :default 0}
    {:field :huff-table-offset :type byte-array-int :len 4 :default 0}
