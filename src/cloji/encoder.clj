@@ -64,7 +64,7 @@
            (range 4096 (+ size 4096) 4096))))
 
 (defn- populate-record-maps [headers records total-size]
-  (assoc headers :record-list (record-maps records total-size)))
+  (assoc headers :record-list (record-maps records (+ (:full-name-length (:mobi-header headers)) total-size))))
 
 (defn- populate-total-record-count [headers count]
   (assoc headers :record-count count))
@@ -89,9 +89,10 @@
         (populate-total-record-count (count records))
         (populate-body-record-count (count records))
         (populate-text-length records)
+        (populate-full-name-info total-size)
         (populate-record-maps records total-size)
-        (populate-seed-id)
-        (populate-full-name-info total-size))))
+        (populate-seed-id))))
+
 
 (defn encode-mobi [headers body charset]
   (let [records (encode-body body charset)
