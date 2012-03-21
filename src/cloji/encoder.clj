@@ -7,7 +7,7 @@
 (defn- header-length [attrs]
   (reduce
    (fn [sum a]
-     (+ sum (:len a)))
+     (+ sum (:len a) (if (:skip a) (:skip a) 0)))
    0
    (flatten attrs)))
 
@@ -83,6 +83,9 @@
       (assoc-in [:mobi-header :full-name-length] (count (:full-name headers)))
       (assoc-in [:mobi-header :full-name-offset] total-size)))
 
+(defn- populate-header-lengths [headers]
+  (assoc-in headers [:mobi-header :header-length] (header-length attributes/mobi-attributes)))
+
 (defn- fill-headers [headers records]
   (let [total-size (+ (record-map-length (count records)) (header-length attributes/static-attributes))]
     (-> headers
@@ -91,7 +94,8 @@
         (populate-text-length records)
         (populate-full-name-info total-size)
         (populate-record-maps records total-size)
-        (populate-seed-id))))
+        (populate-seed-id)
+        (populate-header-lengths))))
 
 
 (defn encode-mobi [headers body charset]
