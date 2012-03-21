@@ -63,10 +63,8 @@
            (range 0 size 4096)
            (range 4096 (+ size 4096) 4096))))
 
-(defn- populate-record-maps [headers records]
-  (let [record-size (record-map-length (count records))
-        header-size (header-length attributes/static-attributes)]
-    (assoc headers :record-list (record-maps records (+ record-size header-size)))))
+(defn- populate-record-maps [headers records total-size]
+  (assoc headers :record-list (record-maps records total-size)))
 
 (defn- populate-total-record-count [headers count]
   (assoc headers :record-count count))
@@ -80,13 +78,20 @@
 (defn- populate-text-length [headers records]
   (assoc-in headers [:palmdoc-header :text-length] (reduce + (record-sizes records))))
 
-(defn- fill-headers [headers records]
+(defn- populate-full-name-info [headers total-size]
   (-> headers
-      (populate-total-record-count (count records))
-      (populate-body-record-count (count records))
-      (populate-text-length records)
-      (populate-record-maps records)
-      (populate-seed-id)))
+      (assoc-in [:mobi-header :full-name-length] (count (:full-name headers)))
+      (assoc-in [:mobi-header :full-name-offset] total-size)))
+
+(defn- fill-headers [headers records]
+  (let [total-size (+ (record-map-length (count records)) (header-length attributes/static-attributes))]
+    (-> headers
+        (populate-total-record-count (count records))
+        (populate-body-record-count (count records))
+        (populate-text-length records)
+        (populate-record-maps records total-size)
+        (populate-seed-id)
+        (populate-full-name-info total-size))))
 
 (defn encode-mobi [headers body charset]
   (let [records (encode-body body charset)
