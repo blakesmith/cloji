@@ -49,9 +49,10 @@
         record-list (encode-record-info (:record-list values))
         two-byte-sep [0 0]
         palmdoc-header (encode-attributes attributes/palmdoc-attributes (:palmdoc-header values))
-        mobi-header (encode-attributes attributes/mobi-attributes (:mobi-header values))]
+        mobi-header (encode-attributes attributes/mobi-attributes (:mobi-header values))
+        full-name (encode-attributes attributes/full-name-attributes (:full-name values))]
     (reduce into pdb-header
-            [record-list two-byte-sep palmdoc-header mobi-header])))
+            [record-list two-byte-sep palmdoc-header mobi-header full-name])))
 
 (defn encode-body [body charset]
   (let [size (count body)]
@@ -96,7 +97,6 @@
         (populate-record-maps records total-size)
         (populate-seed-id)
         (populate-header-lengths))))
-
 
 (defn encode-mobi [headers body charset]
   (let [records (encode-body body charset)
