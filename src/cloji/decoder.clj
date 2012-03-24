@@ -50,7 +50,7 @@
             (if (or (= 0xE4 (:header-length mobi-header))
                     (= 0xE8 (:header-length mobi-header)))
               (read-attributes extra-flag-attributes is (+ first-offset 0xF2))
-              0)
+              {:extra-flags 0})
           full-name (decode-full-name
                      is
                      (+ (:full-name-offset mobi-header) first-offset)
