@@ -11,9 +11,9 @@
   (if (zero? (count attrs))
     maps
     (let [{:keys [field type len skip]} (first attrs)]
-      (attribute-mappings (rest attrs)
-                          (drop (+ len (or skip 0)) b)
-                          (assoc maps field ((:decode type) (take len (drop (or skip 0) b))))))))
+      (recur (rest attrs)
+             (drop (+ len (or skip 0)) b)
+             (assoc maps field ((:decode type) (take len (drop (or skip 0) b))))))))
 
 (defn decode-attributes [attrs is]
   (attribute-mappings attrs (bytes-from-attributes attrs is) {}))
