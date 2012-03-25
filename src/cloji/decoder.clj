@@ -68,7 +68,7 @@
         (assoc :record-list record-list)
         (assoc :palmdoc-header palmdoc-header)
         (assoc :mobi-header (conj extra-flags mobi-header))
-        (into full-name)))))
+        (conj full-name)))))
 
 (defn decode-image [headers is n]
   "Returns a BufferedImage from the mobi image record at offset n"
