@@ -4,10 +4,19 @@
   (:require [clojure.java.io :as io])
   (:import [javax.imageio ImageIO]))
 
+(defn- bytes-from-attributes [attrs is]
+  (read-bytes is (header-length attrs)))
+
+(defn attribute-mappings [attrs b maps]
+  (if (zero? (count attrs))
+    maps
+    (let [{:keys [field type len skip]} (first attrs)]
+      (attribute-mappings (rest attrs)
+                          (drop (+ len (or skip 0)) b)
+                          (assoc maps field ((:decode type) (take len (drop (or skip 0) b))))))))
+
 (defn decode-attributes [attrs is]
-  (into {}
-    (for [{:keys [field type len skip]} attrs]
-      [field ((:decode type) (read-bytes is len skip))])))
+  (attribute-mappings attrs (bytes-from-attributes attrs is) {}))
 
 (defn decode-trail-size [flags data]
   "Detects the trailing entry size for a record"

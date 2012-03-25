@@ -172,3 +172,14 @@
    pdb-attributes
    palmdoc-attributes
    mobi-attributes))
+
+(defn header-length [attrs]
+  (reduce
+   (fn [sum a]
+     (+ sum (:len a) (if (:skip a) (:skip a) 0)))
+   0
+   (flatten attrs)))
+
+(defn record-map-length [n]
+  (* n (header-length record-attributes)))
+

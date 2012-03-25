@@ -4,16 +4,6 @@
   (:use [cloji.core]
         [cloji.attributes]))
 
-(defn- header-length [attrs]
-  (reduce
-   (fn [sum a]
-     (+ sum (:len a) (if (:skip a) (:skip a) 0)))
-   0
-   (flatten attrs)))
-
-(defn- record-map-length [n]
-  (* n (header-length attributes/record-attributes)))
-
 (defn- record-sizes [records]
   (map count records))
 
@@ -85,10 +75,10 @@
       (assoc-in [:mobi-header :full-name-offset] total-size)))
 
 (defn- populate-header-lengths [headers]
-  (assoc-in headers [:mobi-header :header-length] (header-length attributes/mobi-attributes)))
+  (assoc-in headers [:mobi-header :header-length] (attributes/header-length attributes/mobi-attributes)))
 
 (defn- fill-headers [headers records]
-  (let [total-size (+ (record-map-length (count records)) (header-length attributes/static-attributes))]
+  (let [total-size (+ (attributes/record-map-length (count records)) (attributes/header-length attributes/static-attributes))]
     (-> headers
         (populate-total-record-count (count records))
         (populate-body-record-count (count records))
