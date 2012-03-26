@@ -128,7 +128,8 @@
    {:field :current-position :type byte-array-int :len 4 :default 0}])
 
 (def mobi-attributes
-  [{:field :header-length :type byte-array-int :len 4 :skip 4}
+  [{:field :identifier :type mobi-string :len 4 :default "MOBI"}
+   {:field :header-length :type byte-array-int :len 4}
    {:field :mobi-type :type mobi-type :len 4 :default 2}
    {:field :encoding :type encoding-type :len 4 :default 65001}
    {:field :unique-id :type byte-array-int :len 4 :default (int (* (rand) 1000000000))}

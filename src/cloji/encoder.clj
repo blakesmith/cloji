@@ -1,6 +1,7 @@
 (ns cloji.encoder
   (:require [cloji.attributes :as attributes]
             [cloji.palmdoc :as palmdoc])
+  (:import [java.io FileOutputStream])
   (:use [cloji.core]
         [cloji.attributes]))
 
@@ -78,7 +79,8 @@
   (assoc-in headers [:mobi-header :header-length] (attributes/header-length attributes/mobi-attributes)))
 
 (defn- fill-headers [headers records]
-  (let [total-size (+ (attributes/record-map-length (count records)) (attributes/header-length attributes/static-attributes))]
+  (let [records-length (attributes/record-map-length (count records))
+        total-size (+ records-length (attributes/header-length attributes/static-attributes))]
     (-> headers
         (populate-total-record-count (count records))
         (populate-body-record-count (count records))
@@ -91,5 +93,9 @@
 (defn encode-mobi [headers body charset]
   (let [records (encode-body body charset)
         h (encode-headers (fill-headers headers records))]
-    (into [] [h (flatten records)])))
+    (into h (flatten records))))
+
+(defn encode-to-file [headers body charset file]
+  (with-open [f (FileOutputStream. file)]
+    (.write f (into-array Byte/TYPE (map #(.byteValue %) (encode-mobi headers body charset))))))
   

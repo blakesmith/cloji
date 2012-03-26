@@ -1,6 +1,7 @@
 (ns cloji.test.encoder
   (:use [clojure.test]
         [cloji.test.helper])
+  (:import [java.io RandomAccessFile])
   (:require [cloji.encoder :as encoder]
             [cloji.decoder :as decoder]
             [cloji.core :as core]))
@@ -73,4 +74,15 @@
     (testing "drm offset"
       (is (= (subvec headers 1764 1768) [0xff 0xff 0xff 0xff])))))
 
-
+(deftest encoding-integration
+  (testing "encoding and decoding the whole mobi file"
+    (let [encoded-headers {:name "I-love-lamp" :full-name "I love lamp"}
+          body "I love lamp, I love desk, I love carpet"
+          file-loc "/tmp/cloji-test.mobi"
+          encoded-file (encoder/encode-to-file encoded-headers body "UTF-8" file-loc)
+          opened-file (RandomAccessFile. file-loc "r")
+          decoded-headers (decoder/decode-headers opened-file)]
+      (is (= 4096 (:record-size (:palmdoc-header decoded-headers))))
+      (is (= 2 (:record-count (:palmdoc-header decoded-headers))))
+      (is (= 2 (:compression (:palmdoc-header decoded-headers))))
+      (is (= 0 (:current-position (:palmdoc-header decoded-headers)))))))
