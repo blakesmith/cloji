@@ -8,18 +8,18 @@
 (defn- record-sizes [records]
   (map count records))
 
-(defn- record-offsets [records offset]
+(defn- record-offsets [records pdb-length offset]
   (reduce
    (fn [offsets r] (conj offsets (+ (last offsets) r)))
-   [offset]
+   [(+ 2 pdb-length) offset]
    (record-sizes records)))
 
-(defn- record-maps [records offset]
+(defn- record-maps [records pdb-length offset]
   (map
    (fn [id offset]
      {:data-offset offset :attributes '() :id id})
-   (map #(* 2 %) (range (count records)))
-   (record-offsets records offset)))
+   (map #(* 2 %) (range (inc (count records))))
+   (record-offsets records pdb-length offset)))
 
 (defn- encode-attributes [attrs values]
   (reduce into []
@@ -55,14 +55,15 @@
            (range 0 size 4096)
            (range 4096 (+ size 4096) 4096))))
 
-(defn- populate-record-maps [headers records total-size]
-  (assoc headers :record-list (record-maps records (+ (:full-name-length (:mobi-header headers)) total-size))))
+(defn- populate-record-maps [headers records pdb-length total-size]
+  (prn total-size)
+  (assoc headers :record-list (record-maps records pdb-length (+ (:full-name-length (:mobi-header headers)) total-size))))
 
 (defn- populate-total-record-count [headers count]
-  (assoc headers :record-count count))
+  (assoc headers :record-count (inc count)))
 
 (defn- populate-body-record-count [headers count]
-  (assoc-in headers [:palmdoc-header :record-count] count))
+  (assoc-in headers [:palmdoc-header :record-count] (inc count)))
 
 (defn- populate-seed-id [headers]
   (assoc headers :seed-id (rand-int 5000)))
@@ -80,13 +81,14 @@
 
 (defn- fill-headers [headers records]
   (let [records-length (attributes/record-map-length (count records))
+        pdb-length (+ records-length (attributes/header-length attributes/pdb-attributes))
         total-size (+ records-length (attributes/header-length attributes/static-attributes))]
     (-> headers
         (populate-total-record-count (count records))
         (populate-body-record-count (count records))
         (populate-text-length records)
         (populate-full-name-info total-size)
-        (populate-record-maps records total-size)
+        (populate-record-maps records pdb-length total-size)
         (populate-seed-id)
         (populate-header-lengths))))
 
