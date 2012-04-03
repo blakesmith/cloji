@@ -56,7 +56,6 @@
            (range 4096 (+ size 4096) 4096))))
 
 (defn- populate-record-maps [headers records pdb-length total-size]
-  (prn total-size)
   (assoc headers :record-list (record-maps records pdb-length (+ (:full-name-length (:mobi-header headers)) total-size))))
 
 (defn- populate-total-record-count [headers count]
@@ -80,7 +79,7 @@
   (assoc-in headers [:mobi-header :header-length] (attributes/header-length attributes/mobi-attributes)))
 
 (defn- fill-headers [headers records]
-  (let [records-length (attributes/record-map-length (count records))
+  (let [records-length (attributes/record-map-length (inc (count records)))
         pdb-length (+ records-length (attributes/header-length attributes/pdb-attributes))
         total-size (+ records-length (attributes/header-length attributes/static-attributes))]
     (-> headers

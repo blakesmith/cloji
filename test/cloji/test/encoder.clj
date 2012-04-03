@@ -82,13 +82,14 @@
         opened-file (RandomAccessFile. file-loc "r")
         decoded-headers (decoder/decode-headers opened-file)]
     (testing "encoding and decoding the mobi headers"
-      (prn decoded-headers)
       (is (= 4096 (:record-size (:palmdoc-header decoded-headers))))
       (is (= 2 (:record-count (:palmdoc-header decoded-headers))))
       (is (= 2 (:compression (:palmdoc-header decoded-headers))))
       (is (= 0 (:current-position (:palmdoc-header decoded-headers)))))
     (testing "encoding and decoding the record list"
+      (is (= 0 (:id (nth (:record-list decoded-headers) 0))))
+      (is (= 96 (:data-offset (nth (:record-list decoded-headers) 0))))
       (is (= 2 (:id (nth (:record-list decoded-headers) 1))))
-      (is (= 280 (:data-offset (nth (:record-list decoded-headers) 1)))))
+      (is (= 288 (:data-offset (nth (:record-list decoded-headers) 1)))))
     (testing "encoding and decoding the mobi body"
       (is (= body (decoder/decode-record decoded-headers opened-file 1))))))
