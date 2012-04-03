@@ -91,5 +91,7 @@
       (is (= 96 (:data-offset (nth (:record-list decoded-headers) 0))))
       (is (= 2 (:id (nth (:record-list decoded-headers) 1))))
       (is (= 288 (:data-offset (nth (:record-list decoded-headers) 1)))))
+    (testing "full name"
+      (is (= "I love lamp" (:full-name decoded-headers))))
     (testing "encoding and decoding the mobi body"
       (is (= body (decoder/decode-record decoded-headers opened-file 1))))))
