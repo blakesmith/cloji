@@ -8,6 +8,10 @@
 (defn- record-sizes [records]
   (map count records))
 
+(defn- full-name-length [s]
+  (let [slen (+ 2 (count s))]
+    (+ slen (count (take-while #(not= (rem % 4) 0) (iterate inc slen))))))
+
 (defn- record-offsets [records pdb-length offset]
   (reduce
    (fn [offsets r] (conj offsets (+ (last offsets) r)))
@@ -41,7 +45,7 @@
         two-byte-sep [0 0]
         palmdoc-header (encode-attributes attributes/palmdoc-attributes (:palmdoc-header values))
         mobi-header (encode-attributes attributes/mobi-attributes (:mobi-header values))
-        full-name (encode-attributes attributes/full-name-attributes (:full-name values))]
+        full-name (encode-attributes attributes/full-name-attributes values)]
     (reduce into pdb-header
             [record-list two-byte-sep palmdoc-header mobi-header full-name])))
 
@@ -56,7 +60,7 @@
            (range 4096 (+ size 4096) 4096))))
 
 (defn- populate-record-maps [headers records pdb-length total-size]
-  (assoc headers :record-list (record-maps records pdb-length (+ (:full-name-length (:mobi-header headers)) total-size))))
+  (assoc headers :record-list (record-maps records pdb-length (+ (full-name-length (:full-name headers)) total-size))))
 
 (defn- populate-total-record-count [headers count]
   (assoc headers :record-count (inc count)))
@@ -81,12 +85,13 @@
 (defn- fill-headers [headers records]
   (let [records-length (attributes/record-map-length (inc (count records)))
         pdb-length (+ records-length (attributes/header-length attributes/pdb-attributes))
-        total-size (+ records-length (attributes/header-length attributes/static-attributes))]
+        total-size (+ 2 records-length (attributes/header-length attributes/static-attributes))
+        full-name-offset (attributes/header-length (list attributes/palmdoc-attributes attributes/mobi-attributes))]
     (-> headers
         (populate-total-record-count (count records))
         (populate-body-record-count (count records))
         (populate-text-length records)
-        (populate-full-name-info total-size)
+        (populate-full-name-info full-name-offset)
         (populate-record-maps records pdb-length total-size)
         (populate-seed-id)
         (populate-header-lengths))))

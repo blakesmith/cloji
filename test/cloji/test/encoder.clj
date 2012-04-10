@@ -90,7 +90,9 @@
       (is (= 0 (:id (nth (:record-list decoded-headers) 0))))
       (is (= 96 (:data-offset (nth (:record-list decoded-headers) 0))))
       (is (= 2 (:id (nth (:record-list decoded-headers) 1))))
-      (is (= 288 (:data-offset (nth (:record-list decoded-headers) 1)))))
+      (is (= 180 (:full-name-offset (:mobi-header decoded-headers))))
+      (is (= 11 (:full-name-length (:mobi-header decoded-headers))))
+      (is (= 292 (:data-offset (nth (:record-list decoded-headers) 1)))))
     (testing "full name"
       (is (= "I love lamp" (:full-name decoded-headers))))
     (testing "encoding and decoding the mobi body"
