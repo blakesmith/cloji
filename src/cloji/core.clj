@@ -80,7 +80,7 @@
                  (doto (new Date) (.setTime (* 1000 t))))))
    :encode (fn [v len]
              (if (nil? v)
-               (take 4 (repeat 0))
+               (take len (repeat 0))
                ((:encode byte-array-int) (quot (.getTime v) 1000) len)))})
 
 
