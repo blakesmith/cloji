@@ -50,14 +50,7 @@
     (range (or max-count 16))))
 
 (defn read-bytes [is n]
-  (loop [coll [] bytes-read 0]
-    (if (= bytes-read n)
-      coll
-      (recur
-        (let [next-byte (.read is)]
-          (if (= -1 next-byte)
-            coll
-            (conj coll next-byte))) (inc bytes-read)))))
+  (vec (filter #(not= -1 %) (take n (repeatedly #(.read is))))))
 
 (defn record-info [headers n]
   "Helper function to retrieve the position offset in the file and read size for a record at index n"
