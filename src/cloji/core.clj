@@ -3,7 +3,7 @@
 
 (defmacro with-location [l is body]
   `(do (.seek ~is ~l)
-    ~body))
+       ~body))
 
 (defn unpack-type [coll f size & [offset]]
   ((:decode f) (take size (if offset (drop offset coll) coll))))

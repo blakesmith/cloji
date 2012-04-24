@@ -49,6 +49,9 @@
     (reduce into pdb-header
             [record-list two-byte-sep palmdoc-header mobi-header full-name])))
 
+(defn- encode-image [im]
+  "Take a BufferedImage and output its raw bytes")
+  
 (defn encode-body [body charset]
   (let [size (count body)]
     (map (fn [start end]
@@ -82,7 +85,7 @@
 (defn- populate-header-lengths [headers]
   (assoc-in headers [:mobi-header :header-length] (attributes/header-length attributes/mobi-attributes)))
 
-(defn- fill-headers [headers records]
+(defn- fill-headers [headers records & images]
   (let [records-length (attributes/record-map-length (inc (count records)))
         pdb-length (+ records-length (attributes/header-length attributes/pdb-attributes))
         total-size (+ 2 records-length (attributes/header-length attributes/static-attributes))
@@ -96,12 +99,12 @@
         (populate-seed-id)
         (populate-header-lengths))))
 
-(defn encode-mobi [headers body charset]
+(defn encode-mobi [headers body charset & images]
   (let [records (encode-body body charset)
-        h (encode-headers (fill-headers headers records))]
+        h (encode-headers (fill-headers headers records images))]
     (into h (flatten records))))
 
-(defn encode-to-file [headers body charset file]
+(defn encode-to-file [headers body charset images file]
   (with-open [f (FileOutputStream. file)]
-    (.write f (into-array Byte/TYPE (map #(.byteValue %) (encode-mobi headers body charset))))))
+    (.write f (into-array Byte/TYPE (map #(.byteValue %) (encode-mobi headers body charset images))))))
   

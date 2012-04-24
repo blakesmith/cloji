@@ -77,10 +77,19 @@
 (deftest encoding-integration
   (let [encoded-headers {:name "I-love-lamp" :full-name "I love lamp"}
         body "I love lamp, I love desk, I love carpet"
+        image (decoder/decode-image no-images ni 1)
         file-loc "/tmp/cloji-test.mobi"
-        encoded-file (encoder/encode-to-file encoded-headers body "UTF-8" file-loc)
+        
+        encoded-file (encoder/encode-to-file
+                      encoded-headers
+                      body
+                      "UTF-8"
+                      [image]
+                      file-loc)
+
         opened-file (RandomAccessFile. file-loc "r")
-        decoded-headers (decoder/decode-headers opened-file)]
+        decoded-headers (decoder/decode-headers opened-file)
+        decoded-image (decoder/decode-image decoded-headers opened-file 1)]
     (testing "encoding and decoding the mobi headers"
       (is (= 4096 (:record-size (:palmdoc-header decoded-headers))))
       (is (= 2 (:record-count (:palmdoc-header decoded-headers))))
@@ -95,5 +104,7 @@
       (is (= 292 (:data-offset (nth (:record-list decoded-headers) 1)))))
     (testing "full name"
       (is (= "I love lamp" (:full-name decoded-headers))))
+    (testing "encoding images"
+      (is (instance? java.awt.image.BufferedImage decoded-image)))
     (testing "encoding and decoding the mobi body"
       (is (= body (decoder/decode-record decoded-headers opened-file 1))))))
