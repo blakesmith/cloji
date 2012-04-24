@@ -81,7 +81,7 @@
 
 (defn decode-images [headers is]
   "Return a list of buffered images for the mobi file"
-  (take-while #(not (nil? %)) (map #(decode-image headers is %) (iterate inc 1))))
+  (take-while identity (map #(decode-image headers is %) (iterate inc 1))))
 
 (defn decode-to-file [is out]
   "Top level function to decode all text records and write them to a file"

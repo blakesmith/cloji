@@ -124,3 +124,8 @@
   (testing "returns a BufferedImage"
     (is (instance? java.awt.image.BufferedImage (decode-image with-images im 0)))))
 
+(deftest decode-all-images
+  (testing "decoding a file with only a cover image"
+    (is (= 1 (count (decode-images no-images ni)))))
+  (testing "decoding a file with many images"
+    (is (= 45 (count (decode-images with-images im))))))
