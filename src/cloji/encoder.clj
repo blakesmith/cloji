@@ -1,7 +1,8 @@
 (ns cloji.encoder
   (:require [cloji.attributes :as attributes]
             [cloji.palmdoc :as palmdoc])
-  (:import [java.io FileOutputStream])
+  (:import [java.io FileOutputStream ByteArrayOutputStream]
+           [javax.imageio ImageIO])
   (:use [cloji.core]
         [cloji.attributes]))
 
@@ -50,7 +51,11 @@
             [record-list two-byte-sep palmdoc-header mobi-header full-name])))
 
 (defn- encode-image [im]
-  "Take a BufferedImage and output its raw bytes")
+  "Take a BufferedImage and output its raw bytes"
+  (with-open [dos (ByteArrayOutputStream.)]
+    (do
+      (ImageIO/write im "jpg" dos)
+      (.toByteArray dos))))
   
 (defn encode-body [body charset]
   (let [size (count body)]
