@@ -89,7 +89,8 @@
 
         opened-file (RandomAccessFile. file-loc "r")
         decoded-headers (decoder/decode-headers opened-file)
-        decoded-image (decoder/decode-image decoded-headers opened-file 1)]
+        decoded-image 1];(decoder/decode-image decoded-headers opened-file 1)]
+        (prn decoded-headers)
     (testing "encoding and decoding the mobi headers"
       (is (= 4096 (:record-size (:palmdoc-header decoded-headers))))
       (is (= 2 (:record-count (:palmdoc-header decoded-headers))))
