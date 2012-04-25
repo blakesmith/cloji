@@ -14,17 +14,17 @@
     (+ slen (count (take-while #(not= (rem % 4) 0) (iterate inc slen))))))
 
 (defn- record-offsets
-  [records encoded-images bookend-records pdb-length offset]
+  [records encoded-images pdb-length offset]
   (reduce
    (fn [offsets r] (conj offsets (+ (last offsets) r)))
    [(+ 2 pdb-length) offset]
-   (record-sizes (reduce into [records encoded-images bookend-records]))))
+   (record-sizes (reduce into [records encoded-images]))))
 
 (defn- record-maps
-  [records encoded-images bookend-records pdb-length total-offset]
+  [records encoded-images pdb-length total-offset]
   (map (fn [id offset] {:data-offset offset :attributes '() :id id})
-   (map #(* 2 %) (range (+ (count records) (count encoded-images) (count bookend-records) 2)))
-   (record-offsets records encoded-images bookend-records pdb-length total-offset)))
+   (map #(* 2 %) (range (+ (count records) (count encoded-images) 2)))
+   (record-offsets records encoded-images pdb-length total-offset)))
 
 (defn- encode-attributes [attrs values]
   (reduce into []
@@ -68,8 +68,8 @@
            (range 4096 (+ size 4096) 4096))))
 
 (defn- populate-record-maps
-  [headers records encoded-images bookend-records pdb-length offset-to-body]
-  (assoc headers :record-list (record-maps records encoded-images bookend-records pdb-length (+ (full-name-length (:full-name headers)) offset-to-body))))
+  [headers records encoded-images pdb-length offset-to-body]
+  (assoc headers :record-list (record-maps records encoded-images pdb-length (+ (full-name-length (:full-name headers)) offset-to-body))))
 
 (defn- populate-total-record-count [headers count]
   (assoc headers :record-count (inc count)))
@@ -94,25 +94,24 @@
 (defn- populate-first-image-offset [headers idx]
   (assoc-in headers [:mobi-header :first-image-offset] idx))
 
-(defn- fill-headers [headers records bookend-records encoded-images]
-  (let [records-length (attributes/record-map-length (+ (count records) (count encoded-images) (count bookend-records) 2))
+(defn- fill-headers [headers records encoded-images]
+  (let [records-length (attributes/record-map-length (+ (count records) (count encoded-images) 2))
         pdb-length (+ records-length (attributes/header-length attributes/pdb-attributes))
         offset-to-body (+ 2 records-length (attributes/header-length attributes/static-attributes))
         full-name-offset (attributes/header-length (list attributes/palmdoc-attributes attributes/mobi-attributes))]
     (-> headers
-        (populate-total-record-count (+ (count records) (count encoded-images) (count bookend-records) 1))
+        (populate-total-record-count (+ (count records) (count encoded-images) 1))
         (populate-body-record-count (count records))
         (populate-text-length records)
         (populate-full-name-info full-name-offset)
-        (populate-record-maps records encoded-images bookend-records pdb-length offset-to-body)
+        (populate-record-maps records encoded-images pdb-length offset-to-body)
         (populate-first-image-offset (count records))
         (populate-seed-id)
         (populate-header-lengths))))
 
 (defn encode-mobi [headers body charset encoded-images]
   (let [records (vec (encode-body body charset))
-        bookend-records [[0 0]]
-        h (encode-headers (fill-headers headers records bookend-records encoded-images))]
+        h (encode-headers (fill-headers headers records encoded-images))]
     (into h (flatten records))))
 
 (defn encode-to-file [headers body charset images file]
@@ -120,6 +119,6 @@
     (with-open [f (FileOutputStream. file)]
       (do
         (.write f (into-array Byte/TYPE (map #(.byteValue %) (encode-mobi headers body charset encoded-images))))
-        (doseq [i (conj encoded-images (byte-array 2))]
+        (doseq [i encoded-images]
           (.write f i))))))
   

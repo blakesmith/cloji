@@ -96,15 +96,15 @@
       (is (= 2 (:compression (:palmdoc-header decoded-headers))))
       (is (= 0 (:current-position (:palmdoc-header decoded-headers)))))
     (testing "encoding and decoding the record list"
-      (is (= 5 (count (:record-list decoded-headers))))
+      (is (= 4 (count (:record-list decoded-headers))))
       (is (= 0 (:id (nth (:record-list decoded-headers) 0))))
-      (is (= 120 (:data-offset (nth (:record-list decoded-headers) 0))))
+      (is (= 112 (:data-offset (nth (:record-list decoded-headers) 0))))
       (is (= 2 (:id (nth (:record-list decoded-headers) 1))))
       (is (= 180 (:full-name-offset (:mobi-header decoded-headers))))
       (is (= 11 (:full-name-length (:mobi-header decoded-headers))))
-      (is (= 316 (:data-offset (nth (:record-list decoded-headers) 1))))
-      (is (= 6733 (:data-offset (last (:record-list decoded-headers)))))
-      (is (= 8 (:id (last  (:record-list decoded-headers))))))
+      (is (= 308 (:data-offset (nth (:record-list decoded-headers) 1))))
+      (is (= 6723 (:data-offset (last (:record-list decoded-headers)))))
+      (is (= 6 (:id (last  (:record-list decoded-headers))))))
     (testing "full name"
       (is (= "I love lamp" (:full-name decoded-headers))))
     (testing "encoding images"
