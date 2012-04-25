@@ -76,7 +76,7 @@
 
 (deftest encoding-integration
   (let [encoded-headers {:name "I-love-lamp" :full-name "I love lamp"}
-        body "I love lamp, I love desk, I love carpet"
+        body "<html><body>I love lamp, I love desk, I love carpet</body></html>"
         image (decoder/decode-image no-images ni 1)
         file-loc "/tmp/cloji-test.mobi"
         
@@ -103,7 +103,7 @@
       (is (= 180 (:full-name-offset (:mobi-header decoded-headers))))
       (is (= 11 (:full-name-length (:mobi-header decoded-headers))))
       (is (= 316 (:data-offset (nth (:record-list decoded-headers) 1))))
-      (is (= 6710 (:data-offset (last (:record-list decoded-headers)))))
+      (is (= 6733 (:data-offset (last (:record-list decoded-headers)))))
       (is (= 8 (:id (last  (:record-list decoded-headers))))))
     (testing "full name"
       (is (= "I love lamp" (:full-name decoded-headers))))
