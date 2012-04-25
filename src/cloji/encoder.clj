@@ -75,7 +75,7 @@
   (assoc headers :record-count (inc count)))
 
 (defn- populate-body-record-count [headers count]
-  (assoc-in headers [:palmdoc-header :record-count] (inc count)))
+  (assoc-in headers [:palmdoc-header :record-count] count))
 
 (defn- populate-seed-id [headers]
   (assoc headers :seed-id (rand-int 5000)))

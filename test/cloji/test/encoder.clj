@@ -92,7 +92,7 @@
         decoded-image (decoder/decode-image decoded-headers opened-file 1)]
     (testing "encoding and decoding the mobi headers"
       (is (= 4096 (:record-size (:palmdoc-header decoded-headers))))
-      (is (= 2 (:record-count (:palmdoc-header decoded-headers))))
+      (is (= 1 (:record-count (:palmdoc-header decoded-headers))))
       (is (= 2 (:compression (:palmdoc-header decoded-headers))))
       (is (= 0 (:current-position (:palmdoc-header decoded-headers)))))
     (testing "encoding and decoding the record list"
