@@ -97,13 +97,13 @@
   (assoc-in headers [:mobi-header :first-image-offset] offset))
 
 (defn- fill-headers [headers records bookend-records & encoded-images]
-  (let [records-length (attributes/record-map-length (+ (count records) (count encoded-images) (count bookend-records) 1))
+  (let [record-count (+ (count records) (count encoded-images) (count bookend-records) 1)
+        records-length (attributes/record-map-length record-count)
         pdb-length (+ records-length (attributes/header-length attributes/pdb-attributes))
         offset-to-body (+ 2 records-length (attributes/header-length attributes/static-attributes))
         full-name-offset (attributes/header-length (list attributes/palmdoc-attributes attributes/mobi-attributes))]
-    (prn records-length)
     (-> headers
-        (populate-total-record-count (+ (count records) (count encoded-images) (count bookend-records)))
+        (populate-total-record-count record-count)
         (populate-body-record-count (count records))
         (populate-first-image-offset (inc (count records)))
         (populate-text-length records)
