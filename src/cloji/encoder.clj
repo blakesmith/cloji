@@ -67,8 +67,8 @@
            (range 0 size 4096)
            (range 4096 (+ size 4096) 4096))))
 
-(defn- populate-record-maps [headers records pdb-length total-size]
-  (assoc headers :record-list (record-maps records pdb-length (+ (full-name-length (:full-name headers)) total-size))))
+(defn- populate-record-maps [headers records pdb-length offset-to-body]
+  (assoc headers :record-list (record-maps records pdb-length (+ (full-name-length (:full-name headers)) offset-to-body))))
 
 (defn- populate-total-record-count [headers count]
   (assoc headers :record-count (inc count)))
@@ -90,26 +90,30 @@
 (defn- populate-header-lengths [headers]
   (assoc-in headers [:mobi-header :header-length] (attributes/header-length attributes/mobi-attributes)))
 
-(defn- fill-headers [headers records & images]
+(defn- fill-headers [headers records & encoded-images]
   (let [records-length (attributes/record-map-length (inc (count records)))
         pdb-length (+ records-length (attributes/header-length attributes/pdb-attributes))
-        total-size (+ 2 records-length (attributes/header-length attributes/static-attributes))
+        offset-to-body (+ 2 records-length (attributes/header-length attributes/static-attributes))
         full-name-offset (attributes/header-length (list attributes/palmdoc-attributes attributes/mobi-attributes))]
     (-> headers
         (populate-total-record-count (count records))
         (populate-body-record-count (count records))
         (populate-text-length records)
         (populate-full-name-info full-name-offset)
-        (populate-record-maps records pdb-length total-size)
+        (populate-record-maps records pdb-length offset-to-body)
         (populate-seed-id)
         (populate-header-lengths))))
 
-(defn encode-mobi [headers body charset & images]
+(defn encode-mobi [headers body charset & encoded-images]
   (let [records (encode-body body charset)
-        h (encode-headers (fill-headers headers records images))]
+        h (encode-headers (fill-headers headers records encoded-images))]
     (into h (flatten records))))
 
 (defn encode-to-file [headers body charset images file]
-  (with-open [f (FileOutputStream. file)]
-    (.write f (into-array Byte/TYPE (map #(.byteValue %) (encode-mobi headers body charset images))))))
+  (let [encoded-images (map encode-image images)]
+    (with-open [f (FileOutputStream. file)]
+      (do
+        (.write f (into-array Byte/TYPE (map #(.byteValue %) (encode-mobi headers body charset encoded-images))))
+        (doseq [i encoded-images]
+          (.write f i))))))
   
