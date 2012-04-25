@@ -72,7 +72,7 @@
 
 (defn decode-image [headers is n]
   "Returns a BufferedImage from the mobi image record at offset n"
-  (let [ri (record-info headers (+ n (:first-image-offset (:mobi-header headers))))
+  (let [ri (record-info headers is (+ n (:first-image-offset (:mobi-header headers))))
         b (byte-array (:read-size ri))]
     (with-location (:seek ri) is
       (do

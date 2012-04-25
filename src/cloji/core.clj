@@ -52,16 +52,17 @@
 (defn read-bytes [is n]
   (vec (filter #(not= -1 %) (take n (repeatedly #(.read is))))))
 
-(defn record-info [headers n]
+(defn record-info [headers is n]
   "Helper function to retrieve the position offset in the file and read size for a record at index n"
   (let [record (nth (:record-list headers) n)
-        next-record (nth (:record-list headers) (inc n))]
-    {:read-size (- (:data-offset next-record) (:data-offset record))
+        next-offset (or (:data-offset (nth (:record-list headers) (inc n) nil))
+                        (.size (.getChannel is)))]
+    {:read-size (- next-offset (:data-offset record))
      :seek (:data-offset record)}))
 
 (defn read-record [headers is n]
   "Read the raw data in a record"
-  (let [ri (record-info headers n)]
+  (let [ri (record-info headers is n)]
     (with-location (:seek ri) is
       (read-bytes is (:read-size ri)))))
 
