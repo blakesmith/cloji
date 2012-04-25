@@ -18,15 +18,13 @@
   (reduce
    (fn [offsets r] (conj offsets (+ (last offsets) r)))
    [(+ 2 pdb-length) offset]
-   (record-sizes (reduce into [(vec records) encoded-images bookend-records]))))
+   (record-sizes (reduce into [records encoded-images bookend-records]))))
 
 (defn- record-maps
-  [records encoded-images bookend-records pdb-length offset]
-  (map
-   (fn [id offset]
-     {:data-offset offset :attributes '() :id id})
-   (map #(* 2 %) (range (+ (count records) (count encoded-images) (count bookend-records) 1)))
-   (record-offsets records encoded-images bookend-records pdb-length offset)))
+  [records encoded-images bookend-records pdb-length total-offset]
+  (map (fn [id offset] {:data-offset offset :attributes '() :id id})
+   (map #(* 2 %) (range (+ (count records) (count encoded-images) (count bookend-records) 2)))
+   (record-offsets records encoded-images bookend-records pdb-length total-offset)))
 
 (defn- encode-attributes [attrs values]
   (reduce into []
@@ -93,33 +91,33 @@
 (defn- populate-header-lengths [headers]
   (assoc-in headers [:mobi-header :header-length] (attributes/header-length attributes/mobi-attributes)))
 
-(defn- populate-first-image-offset [headers offset]
-  (assoc-in headers [:mobi-header :first-image-offset] offset))
+(defn- populate-first-image-offset [headers idx]
+  (assoc-in headers [:mobi-header :first-image-offset] idx))
 
 (defn- fill-headers [headers records bookend-records encoded-images]
-  (let [record-count (+ (count records) (count encoded-images) (count bookend-records) 1)
-        records-length (attributes/record-map-length record-count)
+  (let [records-length (attributes/record-map-length (+ (count records) (count encoded-images) (count bookend-records) 2))
         pdb-length (+ records-length (attributes/header-length attributes/pdb-attributes))
         offset-to-body (+ 2 records-length (attributes/header-length attributes/static-attributes))
         full-name-offset (attributes/header-length (list attributes/palmdoc-attributes attributes/mobi-attributes))]
     (-> headers
-        (populate-total-record-count record-count)
+        (populate-total-record-count (+ (count records) (count encoded-images) (count bookend-records) 1))
         (populate-body-record-count (count records))
-        (populate-first-image-offset (inc (count records)))
         (populate-text-length records)
         (populate-full-name-info full-name-offset)
         (populate-record-maps records encoded-images bookend-records pdb-length offset-to-body)
+        (populate-first-image-offset (inc (count records)))
         (populate-seed-id)
         (populate-header-lengths))))
 
 (defn encode-mobi [headers body charset encoded-images]
-  (let [records (encode-body body charset)
+  (let [records (vec (encode-body body charset))
         bookend-records [[0 0]]
         h (encode-headers (fill-headers headers records bookend-records encoded-images))]
+    (prn (fill-headers headers records bookend-records encoded-images))
     (reduce into [h (flatten records) (flatten bookend-records)])))
 
 (defn encode-to-file [headers body charset images file]
-  (let [encoded-images (map encode-image images)]
+  (let [encoded-images (vec (map encode-image images))]
     (with-open [f (FileOutputStream. file)]
       (do
         (.write f (into-array Byte/TYPE (map #(.byteValue %) (encode-mobi headers body charset encoded-images))))
