@@ -74,7 +74,6 @@
   "Returns a BufferedImage from the mobi image record at offset n"
   (let [ri (record-info headers (+ n (:first-image-offset (:mobi-header headers))))
         b (byte-array (:read-size ri))]
-    (prn (record-info headers (+ n (:first-image-offset (:mobi-header headers)))))
     (with-location (:seek ri) is
       (do
         (.read is b 0 (:read-size ri))

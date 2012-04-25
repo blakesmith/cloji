@@ -105,7 +105,7 @@
         (populate-text-length records)
         (populate-full-name-info full-name-offset)
         (populate-record-maps records encoded-images bookend-records pdb-length offset-to-body)
-        (populate-first-image-offset (inc (count records)))
+        (populate-first-image-offset (count records))
         (populate-seed-id)
         (populate-header-lengths))))
 
@@ -113,14 +113,13 @@
   (let [records (vec (encode-body body charset))
         bookend-records [[0 0]]
         h (encode-headers (fill-headers headers records bookend-records encoded-images))]
-    (prn (fill-headers headers records bookend-records encoded-images))
-    (reduce into [h (flatten records) (flatten bookend-records)])))
+    (into h (flatten records))))
 
 (defn encode-to-file [headers body charset images file]
   (let [encoded-images (vec (map encode-image images))]
     (with-open [f (FileOutputStream. file)]
       (do
         (.write f (into-array Byte/TYPE (map #(.byteValue %) (encode-mobi headers body charset encoded-images))))
-        (doseq [i encoded-images]
+        (doseq [i (conj encoded-images (byte-array 2))]
           (.write f i))))))
   
