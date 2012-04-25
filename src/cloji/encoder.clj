@@ -25,7 +25,7 @@
   (map
    (fn [id offset]
      {:data-offset offset :attributes '() :id id})
-   (map #(* 2 %) (range (inc (count records))))
+   (map #(* 2 %) (range (+ (count records) (count encoded-images) (count bookend-records) 1)))
    (record-offsets records encoded-images bookend-records pdb-length offset)))
 
 (defn- encode-attributes [attrs values]
@@ -96,7 +96,7 @@
 (defn- populate-first-image-offset [headers offset]
   (assoc-in headers [:mobi-header :first-image-offset] offset))
 
-(defn- fill-headers [headers records bookend-records & encoded-images]
+(defn- fill-headers [headers records bookend-records encoded-images]
   (let [record-count (+ (count records) (count encoded-images) (count bookend-records) 1)
         records-length (attributes/record-map-length record-count)
         pdb-length (+ records-length (attributes/header-length attributes/pdb-attributes))
@@ -112,7 +112,7 @@
         (populate-seed-id)
         (populate-header-lengths))))
 
-(defn encode-mobi [headers body charset & encoded-images]
+(defn encode-mobi [headers body charset encoded-images]
   (let [records (encode-body body charset)
         bookend-records [[0 0]]
         h (encode-headers (fill-headers headers records bookend-records encoded-images))]
