@@ -18,7 +18,7 @@
   (reduce
    (fn [offsets r] (conj offsets (+ (last offsets) r)))
    [(+ 2 pdb-length) offset]
-   (record-sizes (reduce into [records encoded-images bookend-records]))))
+   (record-sizes (reduce into [(vec records) encoded-images bookend-records]))))
 
 (defn- record-maps
   [records encoded-images bookend-records pdb-length offset]
