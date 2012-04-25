@@ -54,11 +54,11 @@
 
 (defn record-info [headers is n]
   "Helper function to retrieve the position offset in the file and read size for a record at index n"
-  (let [record (nth (:record-list headers) n)
+  (let [offset (:data-offset (nth (:record-list headers) n))
         next-offset (or (:data-offset (nth (:record-list headers) (inc n) nil))
                         (.size (.getChannel is)))]
-    {:read-size (- next-offset (:data-offset record))
-     :seek (:data-offset record)}))
+    {:read-size (- next-offset offset)
+     :seek offset}))
 
 (defn read-record [headers is n]
   "Read the raw data in a record"
