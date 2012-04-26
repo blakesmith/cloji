@@ -75,7 +75,7 @@
                   :dirty 0x0040
                   :delete 0x0080}))
 
-(defn- full-name-div-pad [s]
+(defn- pad-to-multiple-of-four [s]
   (let [size (count s)]
     (into s (take
              (if (zero? (rem size 4))
@@ -86,7 +86,7 @@
 (defn- encode-full-name [v len]
   (-> ((:encode mobi-string) v (count v))
       (conj 0 0)
-      (full-name-div-pad)))
+      (pad-to-multiple-of-four)))
 
 (defn- decode-full-name [coll]
   ((:decode mobi-string) coll))
