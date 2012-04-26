@@ -1,6 +1,7 @@
 (ns cloji.encoder
   (:require [cloji.attributes :as attributes]
-            [cloji.palmdoc :as palmdoc])
+            [cloji.palmdoc :as palmdoc]
+            [clojure.string :as string])
   (:import [java.io FileOutputStream ByteArrayOutputStream]
            [javax.imageio ImageIO])
   (:use [cloji.core]
@@ -95,7 +96,7 @@
   (assoc-in headers [:mobi-header :first-image-offset] idx))
 
 (defn- populate-pdb-name [headers]
-  (assoc headers :name (clojure.string/replace (:full-name headers) #"\s" "-")))
+  (assoc headers :name (string/replace (:full-name headers) #"\s" "-")))
 
 (defn- fill-headers [headers records encoded-images]
   (let [records-length (attributes/record-map-length (+ (count records) (count encoded-images) 2))
