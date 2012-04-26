@@ -55,6 +55,7 @@
           first-offset (:data-offset (first record-list))
           palmdoc-header (read-attributes palmdoc-attributes is first-offset)
           mobi-header (decode-attributes mobi-attributes is)
+          exth-header (read-attributes exth-attributes is (+ first-offset (:header-length mobi-header) 16))
           extra-flags
             (if (or (= 0xE4 (:header-length mobi-header))
                     (= 0xE8 (:header-length mobi-header)))
@@ -68,6 +69,7 @@
         (assoc :record-list record-list)
         (assoc :palmdoc-header palmdoc-header)
         (assoc :mobi-header (conj extra-flags mobi-header))
+        (assoc :exth-header exth-header)
         (conj full-name)))))
 
 (defn decode-image [headers is n]

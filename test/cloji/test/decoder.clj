@@ -90,6 +90,10 @@
     (is (= 0xFFFFFFFF (:drm-count (:mobi-header huff))))
     (is (= 0 (:drm-size (:mobi-header huff))))
     (is (= 0 (:drm-flags (:mobi-header huff)))))
+  (testing "exth header"
+    (is (= "EXTH" (:identifier (:exth-header no-images))))
+    (is (= 15 (:record-count (:exth-header no-images))))
+    (is (= 456 (:header-length (:exth-header no-images)))))
   (testing "extra flags"
     (is (= 3 (:extra-flags (:mobi-header no-images)))))
   (testing "full name"

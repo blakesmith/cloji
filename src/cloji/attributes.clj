@@ -162,6 +162,11 @@
    {:field :drm-size :type byte-array-int :len 4 :default 0}
    {:field :drm-flags :type byte-array-int :len 4 :default 0}])
 
+(def exth-attributes
+  [{:field :identifier :type mobi-string :len 4 :default "EXTH"}
+   {:field :header-length :type byte-array-int :len 4}
+   {:field :record-count :type byte-array-int :len 4}])
+
 (def extra-flag-attributes
   [{:field :extra-flags :type byte-array-int :len 2 :default 0}])
 
