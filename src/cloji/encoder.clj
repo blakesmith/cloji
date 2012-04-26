@@ -94,6 +94,9 @@
 (defn- populate-first-image-offset [headers idx]
   (assoc-in headers [:mobi-header :first-image-offset] idx))
 
+(defn- populate-pdb-name [headers]
+  (assoc headers :name (clojure.string/replace (:full-name headers) #"\s" "-")))
+
 (defn- fill-headers [headers records encoded-images]
   (let [records-length (attributes/record-map-length (+ (count records) (count encoded-images) 2))
         pdb-length (+ records-length (attributes/header-length attributes/pdb-attributes))
@@ -107,6 +110,7 @@
         (populate-record-maps records encoded-images pdb-length offset-to-body)
         (populate-first-image-offset (count records))
         (populate-seed-id)
+        (populate-pdb-name)
         (populate-header-lengths))))
 
 (defn encode-mobi [headers body charset encoded-images]

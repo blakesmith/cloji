@@ -75,7 +75,7 @@
       (is (= (subvec headers 1764 1768) [0xff 0xff 0xff 0xff])))))
 
 (deftest encoding-integration
-  (let [encoded-headers {:name "I-love-lamp" :full-name "I love lamp"}
+  (let [encoded-headers {:full-name "I love lamp"}
         body "<html><body>I love lamp, I love desk, I love carpet</body></html>"
         image (decoder/decode-image no-images ni 1)
         file-loc "/tmp/cloji-test.mobi"
@@ -91,6 +91,7 @@
         decoded-headers (decoder/decode-headers opened-file)
         decoded-image (decoder/decode-image decoded-headers opened-file 1)]
     (testing "encoding and decoding the mobi headers"
+      (is (= "I-love-lamp" (:name decoded-headers)))
       (is (= 4096 (:record-size (:palmdoc-header decoded-headers))))
       (is (= 1 (:record-count (:palmdoc-header decoded-headers))))
       (is (= 2 (:compression (:palmdoc-header decoded-headers))))
