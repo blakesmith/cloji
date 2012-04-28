@@ -94,6 +94,9 @@
     (is (= "EXTH" (:identifier (:exth-header no-images))))
     (is (= 15 (:record-count (:exth-header no-images))))
     (is (= 456 (:header-length (:exth-header no-images)))))
+  (testing "exth header records"
+    (let [records (:exth-records no-images)]
+      (is (= "Sir Arthur Conan Doyle" (:author records)))))
   (testing "extra flags"
     (is (= 3 (:extra-flags (:mobi-header no-images)))))
   (testing "full name"

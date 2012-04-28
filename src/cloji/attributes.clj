@@ -60,6 +60,12 @@
   {:decode (fn [coll] ((:decode type-lookup) types coll))
    :encode (fn [v len] ((:encode type-lookup) types v len))}))
 
+(def exth-type
+  (let [types {100 :author
+               101 :publisher
+               106 :publish-date}]
+    {:decode (fn [coll] ((:decode type-lookup) types coll))}))
+
 (def palmdoc-attributes
   (bitfield-funs {:res-db 0x0001
                   :read-only 0x0002

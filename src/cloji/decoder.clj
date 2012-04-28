@@ -47,6 +47,12 @@
   (let [attrs (assoc (first full-name-attributes) :len length)]
     (read-attributes [attrs] is offset)))
 
+(defn- decode-exth-record [is]
+  (let [type ((:decode exth-type) (read-bytes is 4))
+        len (- ((:decode byte-array-int) (read-bytes is 4)) 8)
+        value ((:decode mobi-string) (read-bytes is len))]
+    [type value]))
+
 (defn- extract-pdb-header [headers attrs is]
   (conj headers (decode-attributes attrs is)))
 
@@ -65,6 +71,12 @@
   (assoc headers :exth-header
          (read-attributes attrs is (+ (:data-offset (first (:record-list headers)))
                                       (:header-length (:mobi-header headers)) 16))))
+
+(defn- extract-exth-records [headers is]
+  (assoc headers :exth-records
+         (reduce conj {}
+                 (take (:record-count (:exth-header headers))
+                       (repeatedly (partial decode-exth-record is))))))
 
 (defn- extract-extra-flags [headers attrs is]
   (let [mobi-header (:mobi-header headers)]
@@ -92,6 +104,7 @@
         (extract-palmdoc-header palmdoc-attributes is)
         (extract-mobi-header mobi-attributes is)
         (extract-exth-header exth-attributes is)
+        (extract-exth-records is)
         (extract-extra-flags extra-flag-attributes is)
         (extract-full-name is))))
 
