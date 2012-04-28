@@ -84,10 +84,10 @@
 (defn- populate-text-length [headers records]
   (assoc-in headers [:palmdoc-header :text-length] (reduce + (record-sizes records))))
 
-(defn- populate-full-name-info [headers total-size]
+(defn- populate-full-name-info [headers offset]
   (-> headers
       (assoc-in [:mobi-header :full-name-length] (count (:full-name headers)))
-      (assoc-in [:mobi-header :full-name-offset] total-size)))
+      (assoc-in [:mobi-header :full-name-offset] offset)))
 
 (defn- populate-header-lengths [headers]
   (assoc-in headers [:mobi-header :header-length] (attributes/header-length attributes/mobi-attributes)))
@@ -102,12 +102,12 @@
   (let [records-length (attributes/record-map-length (+ (count records) (count encoded-images) 2))
         pdb-length (+ records-length (attributes/header-length attributes/pdb-attributes))
         offset-to-body (+ 2 records-length (attributes/header-length attributes/static-attributes))
-        full-name-offset (attributes/header-length (list attributes/palmdoc-attributes attributes/mobi-attributes))]
+        offset-to-full-name (attributes/header-length (list attributes/palmdoc-attributes attributes/mobi-attributes))]
     (-> headers
         (populate-total-record-count (+ (count records) (count encoded-images) 1))
         (populate-body-record-count (count records))
         (populate-text-length records)
-        (populate-full-name-info full-name-offset)
+        (populate-full-name-info offset-to-full-name)
         (populate-record-maps records encoded-images pdb-length offset-to-body)
         (populate-first-image-offset (count records))
         (populate-seed-id)
