@@ -37,6 +37,20 @@
              (let [lookup (first (filter #(= v (second %)) types))]
                ((:encode byte-array-int) (or (first lookup) 0) len)))})
 
+(def none-type
+  {:decode (fn [coll] coll)
+   :encode (fn [v _] v)})
+
+(def exth-type-mappings
+  {100 {:name :author :type mobi-string}
+   101 {:name :publisher :type mobi-string}
+   106 {:name :publish-date :type mobi-string}
+   109 {:name :rights :type mobi-string}
+   112 {:name :source :type mobi-string}
+   201 {:name :cover-offset :type byte-array-int}
+   204 {:name :creator :type byte-array-int}
+   300 {:name :font-signature :type none-type}})
+
 (def encoding-type
   (let [types {65001 :utf-8
                1252 :cp1252}]
@@ -61,9 +75,7 @@
    :encode (fn [v len] ((:encode type-lookup) types v len))}))
 
 (def exth-type
-  (let [types {100 :author
-               101 :publisher
-               106 :publish-date}]
+  (let [types (into {} (for [[k v] exth-type-mappings] [k (:name v)]))]
     {:decode (fn [coll] ((:decode type-lookup) types coll))}))
 
 (def palmdoc-attributes

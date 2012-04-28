@@ -48,9 +48,12 @@
     (read-attributes [attrs] is offset)))
 
 (defn- decode-exth-record [is]
-  (let [type ((:decode exth-type) (read-bytes is 4))
+  (let [type-coll (read-bytes is 4)
+        type-int ((:decode byte-array-int) type-coll)
+        type ((:decode exth-type) type-coll)
         len (- ((:decode byte-array-int) (read-bytes is 4)) 8)
-        value ((:decode mobi-string) (read-bytes is len))]
+        type-fn (or (:type (get exth-type-mappings type-int)) mobi-string)
+        value ((:decode type-fn) (read-bytes is len))]
     [type value]))
 
 (defn- extract-pdb-header [headers attrs is]

@@ -96,6 +96,12 @@
     (is (= 456 (:header-length (:exth-header no-images)))))
   (testing "exth header records"
     (let [records (:exth-records no-images)]
+      (is (= "1999-03-01" (:publish-date records)))
+      (is (= "Public domain in the USA." (:rights records)))
+      (is (= "http://www.gutenberg.org/files/1661/1661-h/1661-h.htm" (:source records)))
+      (is (= 54 (count (:font-signature records))))
+      (is (= 201 (:creator records)))
+      (is (= 0 (:cover-offset records)))
       (is (= "Sir Arthur Conan Doyle" (:author records)))))
   (testing "extra flags"
     (is (= 3 (:extra-flags (:mobi-header no-images)))))
