@@ -41,14 +41,24 @@
   {:decode (fn [coll] coll)
    :encode (fn [v _] v)})
 
+(def boolean-type
+  {:decode (fn [coll] (= 1 ((:decode byte-array-int) coll)))
+   :encode (fn [v len] ((:encode byte-array-int) (if v 1 0) len))})
+
 (def exth-type-mappings
   {100 {:name :author :type mobi-string}
    101 {:name :publisher :type mobi-string}
+   105 {:name :subject :type mobi-string}
    106 {:name :publish-date :type mobi-string}
    109 {:name :rights :type mobi-string}
    112 {:name :source :type mobi-string}
    201 {:name :cover-offset :type byte-array-int}
+   202 {:name :thumb-offset :type byte-array-int}
+   203 {:name :fake-cover :type boolean-type}
    204 {:name :creator :type byte-array-int}
+   205 {:name :creator-major :type byte-array-int}
+   206 {:name :creator-minor :type byte-array-int}
+   207 {:name :creator-build :type byte-array-int}
    300 {:name :font-signature :type none-type}})
 
 (def encoding-type
