@@ -68,15 +68,19 @@
   (assoc headers :mobi-header (decode-attributes attrs is)))
 
 (defn- extract-exth-header [headers attrs is]
-  (assoc headers :exth-header
-         (read-attributes attrs is (+ (:data-offset (first (:record-list headers)))
-                                      (:header-length (:mobi-header headers)) 16))))
+  (if (:exth-flags (:mobi-header headers))
+    (assoc headers :exth-header
+           (read-attributes attrs is (+ (:data-offset (first (:record-list headers)))
+                                        (:header-length (:mobi-header headers)) 16)))
+    headers))
 
 (defn- extract-exth-records [headers is]
-  (assoc headers :exth-records
-         (reduce conj {}
-                 (take (:record-count (:exth-header headers))
-                       (repeatedly (partial decode-exth-record is))))))
+  (if (:exth-header headers)
+    (assoc headers :exth-records
+           (reduce conj {}
+                   (take (:record-count (:exth-header headers))
+                         (repeatedly (partial decode-exth-record is)))))
+    headers))
 
 (defn- extract-extra-flags [headers attrs is]
   (let [mobi-header (:mobi-header headers)]
