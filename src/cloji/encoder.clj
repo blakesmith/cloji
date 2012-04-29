@@ -23,20 +23,23 @@
 
 (defn encode-exth-records [attrs]
   (reduce into []
-          (map
-           (fn [r]
-             (let [[key value] r
-                   mapping (first (filter #(= key (:name (second %)))
-                                          attributes/exth-type-mappings))
-                   num (first mapping)
-                   type (:type (second mapping))
-                   encode-fn (:encode type)]
-               (cond
-                (= mobi-string type) (encode-exth-record num (count value) encode-fn value)
-                (= none-type type) (encode-exth-record num (count value) encode-fn value)
-                (= boolean-type type) (encode-exth-record num 4 encode-fn value)
-                (= byte-array-int type) (encode-exth-record num 4 encode-fn value))))
-           attrs)))
+          (filter identity
+                  (map
+                   (fn [r]
+                     (let [[key value] r
+                           mapping (first (filter #(= key (:name (second %)))
+                                                  attributes/exth-type-mappings))
+                           num (first mapping)
+                           type (:type (second mapping))
+                           encode-fn (:encode type)]
+                       (if type
+                         (cond
+                          (= mobi-string type) (encode-exth-record num (count value) encode-fn value)
+                          (= none-type type) (encode-exth-record num (count value) encode-fn value)
+                          (= boolean-type type) (encode-exth-record num 4 encode-fn value)
+                          (= byte-array-int type) (encode-exth-record num 4 encode-fn value))
+                         nil)
+                       attrs))))))
 
 (defn- record-offsets
   [records encoded-images pdb-length offset]
