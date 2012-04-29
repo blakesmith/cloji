@@ -48,7 +48,7 @@
            ((:encode byte-array-int) (+ 8 size) 4)
            (encode-fn value size))))
 
-(defn encode-exth-records [attrs]
+(defn- encode-exth-records [attrs]
   (reduce into []
           (filter identity
                   (map
