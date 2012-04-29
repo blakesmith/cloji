@@ -48,10 +48,16 @@
 (def exth-type-mappings
   {100 {:name :author :type mobi-string}
    101 {:name :publisher :type mobi-string}
+   103 {:name :description :type mobi-string}
+   104 {:name :isbn :type mobi-string}
    105 {:name :subject :type mobi-string}
    106 {:name :publish-date :type mobi-string}
    109 {:name :rights :type mobi-string}
    112 {:name :source :type mobi-string}
+   115 {:name :sample :type boolean-type}
+   116 {:name :start-reading :type byte-array-int}
+   118 {:name :retail-price :type mobi-string}
+   119 {:name :currency :type mobi-string}
    201 {:name :cover-offset :type byte-array-int}
    202 {:name :thumb-offset :type byte-array-int}
    203 {:name :fake-cover :type boolean-type}
