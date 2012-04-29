@@ -14,33 +14,6 @@
   (let [slen (+ 2 (count s))]
     (+ slen (count (take-while #(not= (rem % 4) 0) (iterate inc slen))))))
 
-(defn- encode-exth-record [num size encode-fn value]
-  (reduce into []
-          (vector
-           ((:encode byte-array-int) num 4)
-           ((:encode byte-array-int) (+ 8 size) 4)
-           (encode-fn value size))))
-
-(defn encode-exth-records [attrs]
-  (reduce into []
-          (filter identity
-                  (map
-                   (fn [r]
-                     (let [[key value] r
-                           mapping (first (filter #(= key (:name (second %)))
-                                                  attributes/exth-type-mappings))
-                           num (first mapping)
-                           type (:type (second mapping))
-                           encode-fn (:encode type)]
-                       (if type
-                         (cond
-                          (= mobi-string type) (encode-exth-record num (count value) encode-fn value)
-                          (= none-type type) (encode-exth-record num (count value) encode-fn value)
-                          (= boolean-type type) (encode-exth-record num 4 encode-fn value)
-                          (= byte-array-int type) (encode-exth-record num 4 encode-fn value))
-                         nil)
-                       attrs))))))
-
 (defn- record-offsets
   [records encoded-images pdb-length offset]
   (reduce
@@ -67,6 +40,32 @@
   (reduce into []
           (map (fn [r] (encode-attributes attributes/record-attributes r))
                record-meta)))
+
+(defn- encode-exth-record [num size encode-fn value]
+  (reduce into []
+          (vector
+           ((:encode byte-array-int) num 4)
+           ((:encode byte-array-int) (+ 8 size) 4)
+           (encode-fn value size))))
+
+(defn encode-exth-records [attrs]
+  (reduce into []
+          (filter identity
+                  (map
+                   (fn [r]
+                     (let [[key value] r
+                           mapping (first (filter #(= key (:name (second %)))
+                                                  attributes/exth-type-mappings))
+                           num (first mapping)
+                           type (:type (second mapping))
+                           encode-fn (:encode type)]
+                       (when type
+                         (cond
+                          (= mobi-string type) (encode-exth-record num (count value) encode-fn value)
+                          (= none-type type) (encode-exth-record num (count value) encode-fn value)
+                          (= boolean-type type) (encode-exth-record num 4 encode-fn value)
+                          (= byte-array-int type) (encode-exth-record num 4 encode-fn value)))))
+                   attrs))))
 
 (defn encode-headers [values]
   (let [pdb-header (encode-attributes attributes/pdb-attributes values)
