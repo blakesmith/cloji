@@ -10,24 +10,6 @@
 (defn- record-sizes [records]
   (map count records))
 
-(defn- exth-records-size [attrs]
-  (reduce +
-          (filter identity
-                  (map
-                   (fn [r]
-                     (let [[key value] r
-                           mapping (first (filter #(= key (:name (second %)))
-                                                  attributes/exth-type-mappings))
-                           num (first mapping)
-                           type (:type (second mapping))]
-                       (when type
-                         (cond
-                          (= mobi-string type) (count value)
-                          (= none-type type) (count value)
-                          (= boolean-type type) 4
-                          (= byte-array-int type) 4))))
-                   attrs))))
-
 (defn- full-name-length [s]
   (let [slen (+ 2 (count s))]
     (+ slen (count (take-while #(not= (rem % 4) 0) (iterate inc slen))))))
@@ -139,10 +121,22 @@
 (defn- populate-first-image-offset [headers idx]
   (assoc-in headers [:mobi-header :first-image-offset] idx))
 
+(defn- populate-exth-flag [headers]
+  (if (contains? headers :exth-records)
+    (assoc-in [:mobi-header :exth-flags] true)
+    headers))
+
+(defn- populate-exth-header [headers exth-records]
+  (if (:exth-flags (:mobi-header headers))
+    (-> headers
+        (assoc-in [:exth-header :record-count] (count (:exth-records headers)))
+        (assoc-in [:exth-header :header-length] (+ (count exth-records) (attributes/header-length attributes/exth-attributes))))
+    headers))
+
 (defn- populate-pdb-name [headers]
   (assoc headers :name (string/replace (:full-name headers) #"\s" "-")))
 
-(defn- fill-headers [headers records encoded-images]
+(defn- fill-headers [headers exth-records records encoded-images]
   (let [records-length (attributes/record-map-length (+ (count records) (count encoded-images) 2))
         pdb-length (+ records-length (attributes/header-length attributes/pdb-attributes))
         offset-to-body (+ 2 records-length (attributes/header-length attributes/static-attributes))
@@ -151,6 +145,8 @@
         (populate-total-record-count (+ (count records) (count encoded-images) 1))
         (populate-body-record-count (count records))
         (populate-text-length records)
+        (populate-exth-flag)
+        (populate-exth-header exth-records)
         (populate-full-name-info offset-to-full-name)
         (populate-record-maps records encoded-images pdb-length offset-to-body)
         (populate-first-image-offset (count records))
@@ -160,7 +156,8 @@
 
 (defn encode-mobi [headers body charset encoded-images]
   (let [records (vec (encode-body body charset))
-        h (encode-headers (fill-headers headers records encoded-images))]
+        exth-records (encode-exth-records (:exth-records headers))
+        h (encode-headers (fill-headers headers exth-records records encoded-images))]
     (into h (flatten records))))
 
 (defn encode-to-file [headers body charset images file]
