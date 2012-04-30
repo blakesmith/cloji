@@ -10,7 +10,7 @@
 (def no-images (decoder/decode-headers ni))
 
 (deftest encode-headers-imp
-  (let [headers (encoder/encode-headers no-images)]
+  (let [headers (encoder/encode-headers no-images [])]
     (testing "encoding the pdb document name"
       (is (= (subvec headers 0 31) [0x54 0x68 0x65 0x5F 0x41 0x64 0x76 0x65 0x6E 0x74 0x75 0x72 0x2D 0x68 0x65 0x72 0x6C 0x6F 0x63 0x6B 0x5F 0x48 0x6F 0x6C 0x6D 0x65 0x73 00 00 00 00])))
     (testing "encoding the palmdoc attributes"
@@ -101,10 +101,10 @@
       (is (= 0 (:id (nth (:record-list decoded-headers) 0))))
       (is (= 112 (:data-offset (nth (:record-list decoded-headers) 0))))
       (is (= 2 (:id (nth (:record-list decoded-headers) 1))))
-      (is (= 180 (:full-name-offset (:mobi-header decoded-headers))))
+      (is (= 212 (:full-name-offset (:mobi-header decoded-headers))))
       (is (= 11 (:full-name-length (:mobi-header decoded-headers))))
-      (is (= 308 (:data-offset (nth (:record-list decoded-headers) 1))))
-      (is (= 6723 (:data-offset (last (:record-list decoded-headers)))))
+      (is (= 340 (:data-offset (nth (:record-list decoded-headers) 1))))
+      (is (= 6755 (:data-offset (last (:record-list decoded-headers)))))
       (is (= 6 (:id (last  (:record-list decoded-headers))))))
     (testing "full name"
       (is (= "I love lamp" (:full-name decoded-headers))))

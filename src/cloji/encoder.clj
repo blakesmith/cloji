@@ -68,7 +68,7 @@
                            (= byte-array-int type) (encode-exth-record num 4 encode-fn value)))))
                     attrs)))))
 
-(defn encode-headers [values]
+(defn encode-headers [values exth-records]
   (let [pdb-header (encode-attributes attributes/pdb-attributes values)
         record-list (encode-record-info (:record-list values))
         two-byte-sep [0 0]
@@ -76,7 +76,9 @@
         mobi-header (encode-attributes attributes/mobi-attributes (:mobi-header values))
         full-name (encode-attributes attributes/full-name-attributes values)]
     (reduce into pdb-header
-            [record-list two-byte-sep palmdoc-header mobi-header full-name])))
+            (if (:exth-header values)
+              [record-list two-byte-sep palmdoc-header mobi-header (encode-attributes attributes/exth-attributes (:exth-header values)) exth-records full-name]
+              [record-list two-byte-sep palmdoc-header mobi-header full-name]))))
 
 (defn- encode-image [im]
   "Take a BufferedImage and output its raw bytes"
@@ -116,7 +118,7 @@
       (assoc-in [:mobi-header :full-name-length] (count (:full-name headers)))
       (assoc-in [:mobi-header :full-name-offset] offset)))
 
-(defn- populate-header-lengths [headers]
+(defn- populate-mobi-header-length [headers]
   (assoc-in headers [:mobi-header :header-length] (attributes/header-length attributes/mobi-attributes)))
 
 (defn- populate-first-image-offset [headers idx]
@@ -140,25 +142,26 @@
 (defn- fill-headers [headers exth-records records encoded-images]
   (let [records-length (attributes/record-map-length (+ (count records) (count encoded-images) 2))
         pdb-length (+ records-length (attributes/header-length attributes/pdb-attributes))
-        offset-to-body (+ 2 records-length (attributes/header-length attributes/static-attributes))
-        offset-to-full-name (attributes/header-length (list attributes/palmdoc-attributes attributes/mobi-attributes))]
+        exth-header-length (if (:exth-records headers) (attributes/header-length attributes/exth-attributes) 0)
+        offset-to-body (+ 2 records-length exth-header-length (count exth-records) (attributes/header-length attributes/static-attributes))
+        offset-to-full-name (+ (attributes/header-length (list attributes/palmdoc-attributes attributes/mobi-attributes)) exth-header-length (count exth-records))]
     (-> headers
         (populate-total-record-count (+ (count records) (count encoded-images) 1))
         (populate-body-record-count (count records))
         (populate-text-length records)
-;        (populate-exth-flag)
+        (populate-exth-flag)
         (populate-exth-header exth-records)
         (populate-full-name-info offset-to-full-name)
         (populate-record-maps records encoded-images pdb-length offset-to-body)
         (populate-first-image-offset (count records))
         (populate-seed-id)
         (populate-pdb-name)
-        (populate-header-lengths))))
+        (populate-mobi-header-length))))
 
 (defn encode-mobi [headers body charset encoded-images]
   (let [records (vec (encode-body body charset))
         exth-records (encode-exth-records (:exth-records headers))
-        h (encode-headers (fill-headers headers exth-records records encoded-images))]
+        h (encode-headers (fill-headers headers exth-records records encoded-images) exth-records)]
     (into h (flatten records))))
 
 (defn encode-to-file [headers body charset images file]
