@@ -49,23 +49,24 @@
            (encode-fn value size))))
 
 (defn- encode-exth-records [attrs]
-  (reduce into []
-          (filter identity
-                  (map
-                   (fn [r]
-                     (let [[key value] r
-                           mapping (first (filter #(= key (:name (second %)))
-                                                  attributes/exth-type-mappings))
-                           num (first mapping)
-                           type (:type (second mapping))
-                           encode-fn (:encode type)]
-                       (when type
-                         (cond
-                          (= mobi-string type) (encode-exth-record num (count value) encode-fn value)
-                          (= none-type type) (encode-exth-record num (count value) encode-fn value)
-                          (= boolean-type type) (encode-exth-record num 4 encode-fn value)
-                          (= byte-array-int type) (encode-exth-record num 4 encode-fn value)))))
-                   attrs))))
+  (attributes/pad-to-multiple-of-four
+   (reduce into []
+           (filter identity
+                   (map
+                    (fn [r]
+                      (let [[key value] r
+                            mapping (first (filter #(= key (:name (second %)))
+                                                   attributes/exth-type-mappings))
+                            num (first mapping)
+                            type (:type (second mapping))
+                            encode-fn (:encode type)]
+                        (when type
+                          (cond
+                           (= mobi-string type) (encode-exth-record num (count value) encode-fn value)
+                           (= none-type type) (encode-exth-record num (count value) encode-fn value)
+                           (= boolean-type type) (encode-exth-record num 4 encode-fn value)
+                           (= byte-array-int type) (encode-exth-record num 4 encode-fn value)))))
+                    attrs)))))
 
 (defn encode-headers [values]
   (let [pdb-header (encode-attributes attributes/pdb-attributes values)

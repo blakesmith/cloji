@@ -109,7 +109,7 @@
                   :dirty 0x0040
                   :delete 0x0080}))
 
-(defn- pad-to-multiple-of-four [s]
+(defn pad-to-multiple-of-four [s]
   (let [size (count s)]
     (into s (take
              (if (zero? (rem size 4))
