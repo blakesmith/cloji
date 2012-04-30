@@ -123,7 +123,7 @@
 
 (defn- populate-exth-flag [headers]
   (if (contains? headers :exth-records)
-    (assoc-in [:mobi-header :exth-flags] true)
+    (assoc-in headers [:mobi-header :exth-flags] true)
     headers))
 
 (defn- populate-exth-header [headers exth-records]
@@ -145,7 +145,7 @@
         (populate-total-record-count (+ (count records) (count encoded-images) 1))
         (populate-body-record-count (count records))
         (populate-text-length records)
-        (populate-exth-flag)
+;        (populate-exth-flag)
         (populate-exth-header exth-records)
         (populate-full-name-info offset-to-full-name)
         (populate-record-maps records encoded-images pdb-length offset-to-body)

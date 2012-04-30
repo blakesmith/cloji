@@ -75,7 +75,7 @@
       (is (= (subvec headers 1764 1768) [0xff 0xff 0xff 0xff])))))
 
 (deftest encoding-integration
-  (let [encoded-headers {:full-name "I love lamp"}
+  (let [encoded-headers {:full-name "I love lamp" :exth-records {:author "Blake Smith"}}
         body "<html><body>I love lamp, I love desk, I love carpet</body></html>"
         image (decoder/decode-image no-images ni 1)
         file-loc "/tmp/cloji-test.mobi"
