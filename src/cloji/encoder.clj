@@ -10,6 +10,24 @@
 (defn- record-sizes [records]
   (map count records))
 
+(defn- exth-records-size [attrs]
+  (reduce +
+          (filter identity
+                  (map
+                   (fn [r]
+                     (let [[key value] r
+                           mapping (first (filter #(= key (:name (second %)))
+                                                  attributes/exth-type-mappings))
+                           num (first mapping)
+                           type (:type (second mapping))]
+                       (when type
+                         (cond
+                          (= mobi-string type) (count value)
+                          (= none-type type) (count value)
+                          (= boolean-type type) 4
+                          (= byte-array-int type) 4))))
+                   attrs))))
+
 (defn- full-name-length [s]
   (let [slen (+ 2 (count s))]
     (+ slen (count (take-while #(not= (rem % 4) 0) (iterate inc slen))))))
