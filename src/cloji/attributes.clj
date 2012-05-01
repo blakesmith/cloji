@@ -184,7 +184,7 @@
    {:field :locale :type byte-array-int :len 4 :default 9}
    {:field :input-language :type byte-array-int :len 4 :default 0}
    {:field :output-language :type byte-array-int :len 4 :default 0}
-   {:field :min-version :type byte-array-int :len 4 :default 6}
+   {:field :min-version :type byte-array-int :len 4 :default 4}
    {:field :first-image-offset :type byte-array-int :len 4 :default 0}
    {:field :first-huff-rec :type byte-array-int :len 4 :default 0}
    {:field :huff-rec-count :type byte-array-int :len 4 :default 0}
