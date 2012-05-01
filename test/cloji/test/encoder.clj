@@ -101,10 +101,10 @@
       (is (= 0 (:id (nth (:record-list decoded-headers) 0))))
       (is (= 112 (:data-offset (nth (:record-list decoded-headers) 0))))
       (is (= 2 (:id (nth (:record-list decoded-headers) 1))))
-      (is (= 212 (:full-name-offset (:mobi-header decoded-headers))))
+      (is (= 280 (:full-name-offset (:mobi-header decoded-headers))))
       (is (= 11 (:full-name-length (:mobi-header decoded-headers))))
-      (is (= 340 (:data-offset (nth (:record-list decoded-headers) 1))))
-      (is (= 6755 (:data-offset (last (:record-list decoded-headers)))))
+      (is (= 408 (:data-offset (nth (:record-list decoded-headers) 1))))
+      (is (= 6823 (:data-offset (last (:record-list decoded-headers)))))
       (is (= 6 (:id (last  (:record-list decoded-headers))))))
     (testing "full name"
       (is (= "I love lamp" (:full-name decoded-headers))))
