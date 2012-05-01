@@ -181,7 +181,7 @@
    {:field :first-nonbook-offset :type byte-array-int :len 4 :default 0}
    {:field :full-name-offset :type byte-array-int :len 4}
    {:field :full-name-length :type byte-array-int :len 4}
-   {:field :locale :type byte-array-int :len 4 :default 9}
+   {:field :locale :type byte-array-int :len 4 :default 1033}
    {:field :input-language :type byte-array-int :len 4 :default 0}
    {:field :output-language :type byte-array-int :len 4 :default 0}
    {:field :min-version :type byte-array-int :len 4 :default 4}
@@ -194,7 +194,8 @@
    {:field :drm-offset :type byte-array-int :len 4 :default 0xFFFFFFFF :skip 32}
    {:field :drm-count :type byte-array-int :len 4 :default 0xFFFFFFFF}
    {:field :drm-size :type byte-array-int :len 4 :default 0}
-   {:field :drm-flags :type byte-array-int :len 4 :default 0}])
+   {:field :drm-flags :type byte-array-int :len 4 :default 0}
+   {:field :indx-offset :type byte-array-int :len 4 :default 0 :skip 64}])
 
 (def exth-attributes
   [{:field :identifier :type mobi-string :len 4 :default "EXTH"}
