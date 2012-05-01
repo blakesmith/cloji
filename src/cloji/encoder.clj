@@ -137,7 +137,7 @@
     headers))
 
 (defn- populate-pdb-name [headers]
-  (assoc headers :name (string/replace (:full-name headers) #"\s" "-")))
+  (assoc headers :name (apply str (take 31 (string/replace (:full-name headers) #"\s" "-")))))
 
 (defn- fill-headers [headers exth-records records encoded-images]
   (let [records-length (attributes/record-map-length (+ (count records) (count encoded-images) 2))
