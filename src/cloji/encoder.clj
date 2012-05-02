@@ -110,8 +110,8 @@
 (defn- populate-seed-id [headers]
   (assoc headers :seed-id (rand-int 5000)))
 
-(defn- populate-text-length [headers records]
-  (assoc-in headers [:palmdoc-header :text-length] (reduce + (record-sizes records))))
+(defn- populate-text-length [headers text-length]
+  (assoc-in headers [:palmdoc-header :text-length] text-length))
 
 (defn- populate-full-name-info [headers offset]
   (-> headers
@@ -139,7 +139,7 @@
 (defn- populate-pdb-name [headers]
   (assoc headers :name (apply str (take 31 (string/replace (:full-name headers) #"\s" "-")))))
 
-(defn- fill-headers [headers exth-records records encoded-images]
+(defn- fill-headers [headers text-length exth-records records encoded-images]
   (let [records-length (attributes/record-map-length (+ (count records) (count encoded-images) 2))
         pdb-length (+ records-length (attributes/header-length attributes/pdb-attributes))
         exth-header-length (if (:exth-records headers) (attributes/header-length attributes/exth-attributes) 0)
@@ -148,7 +148,7 @@
     (-> headers
         (populate-total-record-count (+ (count records) (count encoded-images) 1))
         (populate-body-record-count (count records))
-        (populate-text-length records)
+        (populate-text-length text-length)
         (populate-exth-flag)
         (populate-exth-header exth-records)
         (populate-full-name-info offset-to-full-name)
@@ -161,7 +161,8 @@
 (defn encode-mobi [headers body charset encoded-images]
   (let [records (vec (encode-body body charset))
         exth-records (encode-exth-records (:exth-records headers))
-        h (encode-headers (fill-headers headers exth-records records encoded-images) exth-records)]
+        text-length (count (.getBytes body charset))
+        h (encode-headers (fill-headers headers text-length exth-records records encoded-images) exth-records)]
     (into h (flatten records))))
 
 (defn encode-to-file [headers body charset images file]
