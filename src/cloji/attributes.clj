@@ -167,7 +167,7 @@
    {:field :mobi-type :type mobi-type :len 4 :default 2}
    {:field :encoding :type encoding-type :len 4 :default :utf-8}
    {:field :unique-id :type byte-array-int :len 4 :default (int (* (rand) 1000000000))}
-   {:field :file-version :type byte-array-int :len 4 :default 6}
+   {:field :file-version :type byte-array-int :len 4 :default 4}
    {:field :ortographic-index :type byte-array-int :len 4 :default 0xFFFFFFFF}
    {:field :inflection-index :type byte-array-int :len 4 :default 0xFFFFFFFF}
    {:field :index-names :type byte-array-int :len 4 :default 0xFFFFFFFF}
