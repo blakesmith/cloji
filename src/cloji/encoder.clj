@@ -153,7 +153,7 @@
         (populate-exth-header exth-records)
         (populate-full-name-info offset-to-full-name)
         (populate-record-maps records encoded-images pdb-length offset-to-body)
-        (populate-first-image-offset (count records))
+        (populate-first-image-offset (inc (count records)))
         (populate-seed-id)
         (populate-pdb-name)
         (populate-mobi-header-length))))

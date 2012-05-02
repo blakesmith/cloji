@@ -89,7 +89,7 @@
 
         opened-file (RandomAccessFile. file-loc "r")
         decoded-headers (decoder/decode-headers opened-file)
-        decoded-image (decoder/decode-image decoded-headers opened-file 1)]
+        decoded-image (decoder/decode-image decoded-headers opened-file 0)]
     (testing "encoding and decoding the mobi headers"
       (is (= "I-love-lamp" (:name decoded-headers)))
       (is (= 4096 (:record-size (:palmdoc-header decoded-headers))))
