@@ -14,4 +14,4 @@ Cloji is a Clojure based mobi pocket library. Mobi pocket files are an ebook for
 ## What doesn't work
 
 - Huffman encoding
-- Huffman decoding (almost works, see the perl implementation in docs)
+- Huffman decoding (almost works, see the mobiunpack.py implementation in docs)
