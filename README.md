@@ -6,10 +6,10 @@ Cloji is a Clojure based mobi pocket library. Mobi pocket files are an ebook for
 
 ## What works
 
-Reading / writing mobi metadata
-Reading / writing PalmDOC compressed content
-Reading / writing uncompressed content
-Reading / writing images
+- Reading / writing mobi metadata
+- Reading / writing PalmDOC compressed content
+- Reading / writing uncompressed content
+- Reading / writing images
 
 ## What doesn't work
 
